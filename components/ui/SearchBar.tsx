@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+//import { useState } from "react";
 //import { Search } from "lucide-react";
 
 interface SearchBarProps {
@@ -8,8 +8,10 @@ interface SearchBarProps {
   onSearch: (query: string) => void;
 }
 
-export default function SearchBar({ placeholder = "Search machines...", onSearch }: SearchBarProps) {
-  const [query, setQuery] = useState("");
+export default function SearchBar({ 
+  //placeholder = "Search machines...", onSearch 
+  }: SearchBarProps) {
+  //const [query, setQuery] = useState("");
 
   /*
   const handleSubmit = (e: React.FormEvent) => {

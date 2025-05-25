@@ -6,6 +6,8 @@ type Machine = {
   imageUrl: string;
   location: string;
   pricePerDay: number;
+  rating: number;
+  description: string;
 };
 
 interface PopularMachinesProps {

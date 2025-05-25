@@ -99,7 +99,7 @@ export default function Home() {
     <main className="min-h-screen bg-white">
       <Navbar />
       <Hero />
-      <PopularMachines machines={machines} onBook={(id) => console.log("Book", id)} />;
+      <PopularMachines machines={machines} />;
       <Steps steps={steps} />;
       <Benefits />
       <Stats  stats={data} />

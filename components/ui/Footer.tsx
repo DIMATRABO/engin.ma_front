@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function Footer() {
     return (
       <footer className="bg-gray-900 text-white py-10">
@@ -12,10 +14,10 @@ export default function Footer() {
           <div>
             <h4 className="text-md font-semibold mb-2">Quick Links</h4>
             <ul className="space-y-2 text-sm text-gray-400">
-              <li><a href="/" className="hover:text-white">Home</a></li>
-              <li><a href="/machines" className="hover:text-white">Machines</a></li>
-              <li><a href="/contact" className="hover:text-white">Contact</a></li>
-              <li><a href="/about" className="hover:text-white">About Us</a></li>
+              <li><Link href="/" className="hover:text-white">Home</Link></li>
+              <li><Link href="/machines" className="hover:text-white">Machines</Link></li>
+              <li><Link href="/contact" className="hover:text-white">Contact</Link></li>
+              <li><Link href="/about" className="hover:text-white">About Us</Link></li>
             </ul>
           </div>
   
@@ -39,11 +41,6 @@ export default function Footer() {
             </form>
           </div>
         </div>
-  
-        <div className="text-center text-gray-500 text-sm mt-8">
-          © {new Date().getFullYear()} Engin.ma. All rights reserved.
-        </div>
       </footer>
     );
-  }
-  
+}
