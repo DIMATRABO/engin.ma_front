@@ -11,10 +11,12 @@ type Machine = {
   
   interface MachineCardProps {
     machine: Machine;
-    onBook?: (id: string) => void;
+    //onBook?: (id: string) => void;
   }
   
-  export default function MachineCard({ machine, onBook }: MachineCardProps) {
+  export default function MachineCard({ machine
+  //  , onBook 
+  }: MachineCardProps) {
     return (
       <div
       key={machine.id}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Search } from "lucide-react";
+//import { Search } from "lucide-react";
 
 interface SearchBarProps {
   placeholder?: string;
@@ -11,10 +11,12 @@ interface SearchBarProps {
 export default function SearchBar({ placeholder = "Search machines...", onSearch }: SearchBarProps) {
   const [query, setQuery] = useState("");
 
+  /*
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSearch(query.trim());
   };
+  */
 
   return (
     <div className="bg-white rounded-lg shadow-xl p-6 text-gray-900 max-w-5xl">

@@ -10,10 +10,13 @@ type Machine = {
 
 interface PopularMachinesProps {
   machines: Machine[];
-  onBook?: (id: string) => void;
+  //onBook?: (id: string) => void;
 }
 
-export default function PopularMachines({ machines, onBook }: PopularMachinesProps) {
+export default function PopularMachines({ 
+  machines
+  //,onBook 
+  }: PopularMachinesProps) {
   return (
     <section className="py-16 bg-gray-50">
      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -22,7 +25,8 @@ export default function PopularMachines({ machines, onBook }: PopularMachinesPro
       </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {machines.map((machine) => (
-            <MachineCard key={machine.id} machine={machine} onBook={onBook} />
+            <MachineCard key={machine.id} machine={machine} //onBook={onBook} 
+            />
           ))}
         </div>
       </div>

@@ -8,7 +8,7 @@ export default function Navbar() {
               <a className="nav-link" href="#">Browse</a>
               <a className="nav-link" href="#">How it works</a>
               <a className="nav-link" href="#">List your machine</a>
-              <button className="primary-btn">Sign In</button>
+              <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">Sign In</button>
             </div>
           </div>
         </div>
