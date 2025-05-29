@@ -1,6 +1,5 @@
 export async function GET() {
-    return Response.json({
-        "machines":[
+    return Response.json([
             {
               id: "1",
               name: "Excavator",
@@ -55,6 +54,5 @@ export async function GET() {
               rating: 4.4,
               description: "A versatile skid steer loader for various construction tasks.",
             }
-          ]
-    })
+          ])
 }

@@ -21,7 +21,7 @@ export default async function LocaleLayout({
   console.log("Direction:", getDirection(locale));
 
   return (
-    <html lang={locale} dir={getDirection(locale)}>
+    <html lang={locale} dir={getDirection(locale)} suppressHydrationWarning>
       <body>
         <NextIntlClientProvider locale={locale}>
           {children}

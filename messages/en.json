@@ -47,6 +47,7 @@
   },
   "popular": {
     "title": "Popular Machines",
+    "loading": "loading",
     "showAll": "Show all machines"
   },
   "machine": {
