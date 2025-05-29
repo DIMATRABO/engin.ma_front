@@ -1,16 +1,21 @@
-import { ReactNode } from "react";
+'use client'
+
+import { ReactNode } from 'react'
+import { useTranslations } from 'next-intl'
 
 interface StatItem {
-  label: string;
-  value: string;
-  icon?: ReactNode;
+  label: string
+  value: string
+  icon?: ReactNode
 }
 
 interface StatsProps {
-  stats: StatItem[];
+  stats: StatItem[]
 }
 
 export default function Stats({ stats }: StatsProps) {
+  const t = useTranslations('stats')
+
   return (
     <section className="py-12 bg-gray-50">
       <div className="container mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 text-center">
@@ -21,10 +26,10 @@ export default function Stats({ stats }: StatsProps) {
           >
             {stat.icon && <div className="text-primary mb-2">{stat.icon}</div>}
             <p className="text-2xl font-bold text-gray-800">{stat.value}</p>
-            <p className="text-sm text-gray-500">{stat.label}</p>
+            <p className="text-sm text-gray-500">{t(`${index}.label`)}</p>
           </div>
         ))}
       </div>
     </section>
-  );
+  )
 }

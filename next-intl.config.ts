@@ -1,8 +1,7 @@
-const config = {
-    locales: ['en', 'fr', 'ar'],
-    defaultLocale: 'en',
-  };
-  
-  export default config;
-  export const {locales, defaultLocale} = config;
-  
+import {NextConfig} from 'next';
+import createNextIntlPlugin from 'next-intl/plugin';
+ 
+const nextConfig: NextConfig = {};
+ 
+const withNextIntl = createNextIntlPlugin();
+export default withNextIntl(nextConfig);

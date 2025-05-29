@@ -1,16 +1,23 @@
 "use client";
-import Navbar from '../components/ui/Navbar'
-import Hero from '../components/ui/Hero'
-import PopularMachines from '../components/ui/PopularMachines'
-import Steps from '../components/ui/Steps'
-import Benefits from '../components/ui/Benefits'
-import Stats from '../components/ui/Stats'
-import CTA from '../components/ui/CTA'
-import Footer from '../components/ui/Footer'
+import Navbar from '../../../components/ui/Navbar'
+import Hero from '../../../components/ui/Hero'
+import PopularMachines from '../../../components/ui/PopularMachines'
+import Steps from '../../../components/ui/Steps'
+import Benefits from '../../../components/ui/Benefits'
+import Stats from '../../../components/ui/Stats'
+import CTA from '../../../components/ui/CTA'
+import Footer from '../../../components/ui/Footer'
 
 import { Search,Users, CalendarDays, FileCheck2, Truck, Building2, Star  } from "lucide-react";
 
-export default function Home() {
+
+interface PageProps {
+  params: Promise<{ locale: string }>; // Correct type for params
+}
+
+
+export default async function Home({ params }: PageProps) {
+  const { locale } = await params; // Await the promise to resolve params
   const machines = [
     {
       id: "1",
@@ -66,7 +73,8 @@ export default function Home() {
       rating: 4.4,
       description: "A versatile skid steer loader for various construction tasks.",
     }
-  ];
+  ]
+
   const steps = [
     {
       title: "Search Machine",
@@ -97,7 +105,7 @@ export default function Home() {
   ];
   return (
     <main className="min-h-screen bg-white">
-      <Navbar />
+      <Navbar locale={locale} />
       <Hero />
       <PopularMachines machines={machines} />;
       <Steps steps={steps} />;

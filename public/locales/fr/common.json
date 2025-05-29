@@ -1,0 +1,14 @@
+{
+  "brandName": "Engin.ma",
+  "language": {
+    "english": "English",
+    "french": "Français",
+    "arabic": "العربية"
+  },
+  "menu": {
+    "browse": "Parcourir",
+    "howItWorks": "Comment ça marche",
+    "listYourMachine": "Lister votre machine",
+    "signIn": "Se connecter"
+  }
+}

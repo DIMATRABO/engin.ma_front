@@ -1,4 +1,111 @@
 {
-    "welcome": "Welcome",
-    "greeting": "Hello, {name}!"
+  "brandName": "Engin.ma",
+  "language": {
+    "english": "English",
+    "french": "Français",
+    "arabic": "العربية"
+  },
+  "menu": {
+    "browse": "Parcourir",
+    "howItWorks": "Comment ça marche",
+    "listYourMachine": "Lister votre machine",
+    "signIn": "Se connecter"
+  },
+  "HomePage": {
+    "title": "Location de machines lourdes",
+    "about": "Engin.ma est une plateforme de location de machines lourdes, où vous pouvez louer des machines auprès d'entreprises locales.",
+    "subtitle": "Louez des machines lourdes auprès d'entreprises locales",
+    "searchPlaceholder": "Rechercher une machine ou un emplacement",
+    "searchButton": "Rechercher",
+    "featuredMachines": "Machines en vedette",
+    "viewAllMachines": "Voir toutes les machines"
+  },
+  "hero": {
+    "title": "Trouvez des engins de chantier pour votre prochain projet",
+    "subtitle": "Découvrez et réservez parmi des milliers de machines vérifiées à travers le Maroc"
+  },
+  "search": {
+    "location": "Emplacement",
+    "locationPlaceholder": "Où avez-vous besoin d'équipement ?",
+    "machineType": "Type de machine",
+    "allMachines": "Toutes les machines",
+    "excavators": "Excavatrices",
+    "bulldozers": "Bulldozers",
+    "jcb": "JCB",
+    "bobcat": "Bobcat",
+    "cranes": "Grues",
+    "startDate": "Date de début",
+    "endDate": "Date de fin",
+    "search": "Rechercher"
+  },
+  "popular": {
+    "title": "Machines populaires",
+    "showAll": "Voir toutes les machines"
+  },
+  "machine": {
+    "viewDetails": "Voir les détails",
+    "currency": "MAD"
+  },
+  "benefits": {
+    "title": "Pourquoi choisir Engin.ma ?",
+    "subtitle": "Nous rendons la location de machines simple, transparente et fiable.",
+    "verifiedMachines": {
+      "title": "Machines vérifiées",
+      "description": "Toutes les annonces sont vérifiées manuellement pour plus de fiabilité et de sécurité."
+    },
+    "nationwideCoverage": {
+      "title": "Couverture nationale",
+      "description": "Trouvez des machines partout au Maroc grâce à la recherche par localisation."
+    },
+    "flexibleBooking": {
+      "title": "Réservation flexible",
+      "description": "Réservez à la journée, à la semaine ou pour la durée de votre projet, avec des prix transparents."
+    }
+  },
+  "cta": {
+    "heading": "Prêt à louer la bonne machine ?",
+    "description": "Rejoignez des milliers de professionnels du BTP qui font confiance à Engin.ma pour leurs besoins en équipements",
+    "find": "Trouver un équipement",
+    "list": "Mettre en location votre machine"
+  },
+  "steps": {
+    "title": "Comment ça marche",
+    "0": {
+      "title": "Rechercher",
+      "description": "Parcourez des milliers de machines par type, emplacement ou disponibilité."
+    },
+    "1": {
+      "title": "Comparer",
+      "description": "Consultez les notes, les prix et la disponibilité pour choisir la meilleure option."
+    },
+    "2": {
+      "title": "Réserver",
+      "description": "Réservez la machine dont vous avez besoin en quelques clics."
+    },
+    "3": {
+      "title": "Travaillez",
+      "description": "Lancez votre projet en toute confiance avec l’équipement adéquat."
+    }
+  },
+  "stats": {
+    "0": { "label": "Machines disponibles" },
+    "1": { "label": "Villes desservies" },
+    "2": { "label": "Clients satisfaits" },
+    "3": { "label": "Réservations effectuées" }
+  },
+  "footer": {
+    "title": "Engin.ma",
+    "description": "Votre plateforme de confiance pour la location de machines sans tracas.",
+    "quickLinks": "Liens rapides",
+    "links": {
+      "home": "Accueil",
+      "machines": "Machines",
+      "contact": "Contact",
+      "about": "À propos"
+    },
+    "stayConnected": "Restez connecté",
+    "newsletter": "Abonnez-vous à notre newsletter pour les mises à jour.",
+    "emailPlaceholder": "Votre e-mail",
+    "subscribe": "S'abonner"
   }
+}

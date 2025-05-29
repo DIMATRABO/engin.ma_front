@@ -1,4 +1,118 @@
 {
-    "welcome": "Welcome",
-    "greeting": "Hello, {name}!"
+  "brandName": "Engin.ma",
+  "language": {
+    "english": "English",
+    "french": "Français",
+    "arabic": "العربية"
+  },
+  "menu": {
+    "browse": "Browse",
+    "howItWorks": "How it works",
+    "listYourMachine": "List your machine",
+    "signIn": "Sign In"
+  },
+  "HomePage": {
+    "title": "Heavy Machinery Rental",
+    "about": "Engin.ma is a platform for renting heavy machinery, where you can rent machines from local companies.",
+    "subtitle": "Rent heavy machinery from local companies",
+    "searchPlaceholder": "Search for a machine or location",
+    "searchButton": "Search",
+    "featuredMachines": "Featured Machines",
+    "viewAllMachines": "View All Machines"
+  },
+  "common":{
+    "language": {
+      "english": "English",
+      "french": "Français",
+      "arabic": "العربية"
+    }
+  },
+  "hero": {
+    "title": "Find construction machines for your next project",
+    "subtitle": "Discover and book from thousands of verified machines across Morocco"
+  },
+  "search": {
+    "location": "Location",
+    "locationPlaceholder": "Where do you need equipment?",
+    "machineType": "Machine Type",
+    "allMachines": "All machines",
+    "excavators": "Excavators",
+    "bulldozers": "Bulldozers",
+    "jcb": "JCB",
+    "bobcat": "Bobcat",
+    "cranes": "Cranes",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "search": "Search"
+  },
+  "popular": {
+    "title": "Popular Machines",
+    "showAll": "Show all machines"
+  },
+  "machine": {
+    "viewDetails": "View Details",
+    "currency": "MAD"
+  },
+  "benefits": {
+    "title": "Why choose Engin.ma?",
+    "subtitle": "We make machine rental easy, transparent, and reliable.",
+    "verifiedMachines": {
+      "title": "Verified Machines",
+      "description": "All listings are manually verified for reliability and safety."
+    },
+    "nationwideCoverage": {
+      "title": "Nationwide Coverage",
+      "description": "Find machines anywhere in Morocco with location-based search."
+    },
+    "flexibleBooking": {
+      "title": "Flexible Booking",
+      "description": "Book by the day, week, or project duration with transparent pricing."
+    }
+  },
+  "cta": {
+    "heading": "Ready to rent the right machine?",
+    "description": "Join thousands of construction professionals who trust Engin.ma for their equipment needs",
+    "find": "Find Equipment",
+    "list": "List Your Machine"
+  },
+  "steps": {
+    "title": "How It Works",
+    "0": {
+      "title": "Search",
+      "description": "Browse thousands of machines by type, location, or availability."
+    },
+    "1": {
+      "title": "Compare",
+      "description": "View ratings, prices, and availability to choose the best option."
+    },
+    "2": {
+      "title": "Book",
+      "description": "Reserve the machine you need in just a few clicks."
+    },
+    "3": {
+      "title": "Get to Work",
+      "description": "Start your project with confidence and the right equipment."
+    }
+  },
+  "stats": {
+    "0": { "label": "Machines Available" },
+    "1": { "label": "Cities Covered" },
+    "2": { "label": "Happy Clients" },
+    "3": { "label": "Bookings Completed" }
+  },
+  "footer": {
+    "title": "Engin.ma",
+    "description": "Your trusted platform for hassle-free machine rentals.",
+    "quickLinks": "Quick Links",
+    "links": {
+      "home": "Home",
+      "machines": "Machines",
+      "contact": "Contact",
+      "about": "About Us"
+    },
+    "stayConnected": "Stay Connected",
+    "newsletter": "Subscribe to our newsletter for updates.",
+    "emailPlaceholder": "Your email",
+    "subscribe": "Subscribe"
   }
+}
