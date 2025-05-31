@@ -1,36 +1,154 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚜 engin.ma – JCB Rental Platform
 
-## Getting Started
+**engin.ma** is a modern web platform that connects clients looking to rent construction machinery (like JCBs) with machine owners. Admins manage and monitor the platform. Inspired by [booking.com](https://booking.com), the goal is to offer a fast, responsive, and multilingual user experience.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 📦 Tech Stack
+
+| Layer       | Tech                              |
+|-------------|-----------------------------------|
+| Frontend    | Next.js (App Router, TypeScript)  |
+| Styling     | Tailwind CSS                      |
+| UI Fonts    | Geist (Sans & Mono)               |
+| Map         | React Leaflet                     |
+| Forms       | React Hook Form                   |
+| i18n        | next-intl                         |
+| Auth        | JWT Token (from backend)          |
+| Hosting     | Vercel (Frontend) / Render (Backend) |
+| Backend     | FastAPI (Python)                  |
+| Database    | PostgreSQL                        |
+
+---
+
+## 🌍 Multilingual Support
+
+- Full support for RTL (Arabic) and LTR (French/English)
+- Language switcher and layout orientation adapted
+
+---
+
+## 🔐 Roles
+
+### 👷 Owner
+- List and manage machines
+- Accept or reject booking requests
+- Manage profile and calendar
+
+### 🧑‍💼 Client
+- Explore and filter machines
+- Book or request rentals
+- Write reviews post-booking
+- Manage own profile
+
+### 🛠 Admin
+- Dashboard for global overview
+- Manage users and machines
+- Review and moderate content
+
+---
+
+## 📂 Frontend Folder Structure
+
+```
+/app
+  /[locale]
+    /page.tsx                         ← Public homepage
+
+    /auth
+      login/page.tsx
+      register/page.tsx
+
+    /machines
+      page.tsx                        ← Public machine listing
+      [id]/page.tsx                   ← Machine details (with reviews, map)
+
+    /add-machine/page.tsx            ← Only for owners
+
+    /client
+      layout.tsx
+      dashboard/page.tsx
+      profile/page.tsx
+      orders/page.tsx
+
+    /owner
+      layout.tsx
+      dashboard/page.tsx
+      profile/page.tsx
+      my-machines/page.tsx
+      bookings/page.tsx
+
+    /admin
+      layout.tsx
+      dashboard/page.tsx
+      users/page.tsx
+      machines/page.tsx
+
+    layout.tsx
+    not-found.tsx
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📄 Interfaces & Use Cases
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Page                           | Description |
+|--------------------------------|-------------|
+| `/`                            | Landing page with filters (type, city, dates) |
+| `/machines`                   | Machine listing (with filter by category) |
+| `/machines/[id]`             | Machine detail view: photos, map, owner info, reviews |
+| `/auth/login`                | Login form (client, owner) |
+| `/auth/register`             | Registration forms (based on role clicked) |
+| `/add-machine`               | Add machine form for owners |
+| `/client/dashboard`          | Summary view of client activity |
+| `/client/profile`            | Update personal info |
+| `/client/orders`             | View bookings history |
+| `/owner/dashboard`           | Summary for owner |
+| `/owner/profile`             | Update owner info |
+| `/owner/my-machines`         | List and manage owned machines |
+| `/owner/bookings`            | View bookings per machine |
+| `/admin/dashboard`           | Admin insights |
+| `/admin/users`               | Manage user list |
+| `/admin/machines`            | Validate/manage machines |
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 🌟 Features
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- 🔍 Filter by category, city, and date
+- 🌐 Multilanguage + layout direction
+- 🧾 Booking system (via backend)
+- 📷 Machine detail with photos and map
+- 📝 Review system (clients review machine, driver, owner after booking)
+- 📱 Mobile responsive (with future APK possibility)
+- 🛠 Admin moderation tools
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 📚 Inspiration
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- [btp360.ma](https://btp360.ma) – structure and categories
+- [booking.com](https://booking.com) – style, UX reference
+- [Leaflet Map](https://leafletjs.com)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 🚀 Development Guidelines
+
+- Reusable components
+- Centralized styles
+- Keep code modular and easy to test
+- Respect file-based routing and role separation
+- Translate all content via `next-intl`
+- Use layouts per role
+
+---
+
+## ✨ Coming Next
+
+- Calendar availability
+- Booking calendar sync
+- Future payment integration
+- Notifications system
+
+---
