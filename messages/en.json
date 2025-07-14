@@ -8,8 +8,10 @@
   "menu": {
     "browse": "Browse",
     "howItWorks": "How it works",
+    "roadmap": "See roadmap",
     "listYourMachine": "List your machine",
-    "signIn": "Sign In"
+    "signIn": "Sign In",
+    "getEarlyAccess": "Get Early Access"
   },
   "HomePage": {
     "title": "Heavy Machinery Rental",
@@ -115,5 +117,124 @@
     "newsletter": "Subscribe to our newsletter for updates.",
     "emailPlaceholder": "Your email",
     "subscribe": "Subscribe"
+  },
+  "marketing": {
+    "seo": {
+      "title": "Heavy Equipment Rental Platform - Morocco",
+      "description": "Connect equipment owners with renters across Morocco. Join our beta platform for transparent, reliable heavy machinery rentals.",
+      "keywords": "heavy equipment, machinery rental, construction, Morocco, beta"
+    },
+    "hero": {
+      "title": "Transform Heavy Equipment Rentals in Morocco",
+      "subtitle": "Be the first to transform heavy-equipment rentals in Morocco.",
+      "cta": "Get Early Access",
+      "secondaryCta": "See roadmap"
+    },
+    "splitBenefits": {
+      "title": "Built for Both Sides of the Market",
+      "subtitle": "Whether you own equipment or need to rent, we've designed early-bird benefits for you.",
+      "owners": {
+        "title": "For Equipment Owners",
+        "benefit1": {
+          "title": "Earn on idle machines",
+          "description": "Turn your unused equipment into steady income"
+        },
+        "benefit2": {
+          "title": "Early-bird listing credits",
+          "description": "First 100 owners get free premium listings for 6 months"
+        },
+        "benefit3": {
+          "title": "Priority support in beta",
+          "description": "Direct access to our team for onboarding and support"
+        }
+      },
+      "renters": {
+        "title": "For Renters",
+        "benefit1": {
+          "title": "Access reliable gear fast",
+          "description": "Pre-vetted equipment ready when you need it"
+        },
+        "benefit2": {
+          "title": "Up-front transparent pricing",
+          "description": "No hidden fees or last-minute price changes"
+        },
+        "benefit3": {
+          "title": "No middle-man mark-ups",
+          "description": "Deal directly with owners for better rates"
+        }
+      }
+    },
+    "roadmap": {
+      "title": "What's Coming",
+      "subtitle": "Our development roadmap for the next 12 months",
+      "q3_2025_title": "Q3 2025",
+      "q3_2025_description": "Owner onboarding & listing dashboard",
+      "q4_2025_title": "Q4 2025",
+      "q4_2025_description": "Secure escrow payments & insurance options",
+      "early_2026_title": "Early 2026",
+      "early_2026_description": "Mobile app + real-time tracking"
+    },
+    "waitlist": {
+      "bannerText": "Join {count}+ people already on the wait-list"
+    },
+    "leadCapture": {
+      "title": "Get Early Access",
+      "subtitle": "Be among the first to use our platform when we launch",
+      "modalTitle": "Join Our Beta",
+      "roleLabel": "I am a:",
+      "roleOwner": "Equipment Owner",
+      "roleOwnerDescription": "I have machines to rent out",
+      "roleRenter": "Renter",
+      "roleRenterDescription": "I need to rent equipment",
+      "roleError": "Please select a role",
+      "emailLabel": "Email Address",
+      "emailPlaceholder": "Enter your email",
+      "submitButton": "Join Beta Waitlist",
+      "submitting": "Submitting...",
+      "successTitle": "You're on the list!",
+      "successMessage": "Thanks for joining our beta waitlist. We'll notify you as soon as we launch.",
+      "closeButton": "Close",
+      "errorMessage": "Something went wrong. Please try again."
+    },
+    "steps": {
+      "title": "How Engin.ma Works",
+      "subtitle": "Simple, secure, and efficient equipment rental in three steps",
+      "search": {
+        "title": "Search & Discover",
+        "description": "Browse verified equipment listings with detailed specifications, photos, and real-time availability."
+      },
+      "connect": {
+        "title": "Connect & Negotiate",
+        "description": "Direct communication with equipment owners for flexible terms and competitive pricing."
+      },
+      "transact": {
+        "title": "Secure Transaction",
+        "description": "Complete bookings with escrow protection and comprehensive insurance coverage."
+      }
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "subtitle": "Get answers to common questions about our platform",
+      "question1": {
+        "question": "How does the escrow service work?",
+        "answer": "Our escrow service securely holds rental payments until equipment is delivered and the rental period is complete. This protects both equipment owners and renters from fraud."
+      },
+      "question2": {
+        "question": "What types of equipment can I list or rent?",
+        "answer": "We support all types of heavy machinery including excavators, bulldozers, cranes, loaders, compactors, and specialized construction equipment. All equipment must meet safety standards."
+      },
+      "question3": {
+        "question": "How are equipment owners verified?",
+        "answer": "We conduct comprehensive verification including business registration checks, equipment documentation review, and on-site inspections for high-value equipment."
+      },
+      "question4": {
+        "question": "What insurance coverage is available?",
+        "answer": "All rentals include comprehensive insurance covering equipment damage, liability, and operator coverage. Additional options are available."
+      },
+      "question5": {
+        "question": "How long does it take to start renting my equipment?",
+        "answer": "After verification is complete (typically 2-3 business days), you can list immediately. Most owners see their first booking within a week."
+      }
+    }
   }
 }

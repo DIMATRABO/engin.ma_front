@@ -1,6 +1,6 @@
-# 🚜 engin.ma – JCB Rental Platform
+# 🚜 enginchantier.ma – JCB Rental Platform
 
-**engin.ma** is a modern web platform that connects clients looking to rent construction machinery (like JCBs) with machine owners. Admins manage and monitor the platform. Inspired by [booking.com](https://booking.com), the goal is to offer a fast, responsive, and multilingual user experience.
+**enginchantier.ma** is a modern web platform that connects clients looking to rent construction machinery (like JCBs) with machine owners. Admins manage and monitor the platform. Inspired by [booking.com](https://booking.com), the goal is to offer a fast, responsive, and multilingual user experience.
 
 ---
 

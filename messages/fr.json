@@ -8,8 +8,10 @@
   "menu": {
     "browse": "Parcourir",
     "howItWorks": "Comment ça marche",
+    "roadmap": "Voir la feuille de route",
     "listYourMachine": "Lister votre machine",
-    "signIn": "Se connecter"
+    "signIn": "Se connecter",
+    "getEarlyAccess": "Accès Anticipé"
   },
   "HomePage": {
     "title": "Location de machines lourdes",
@@ -85,7 +87,7 @@
     },
     "3": {
       "title": "Travaillez",
-      "description": "Lancez votre projet en toute confiance avec l’équipement adéquat."
+      "description": "Lancez votre projet en toute confiance avec l'équipement adéquat."
     }
   },
   "stats": {
@@ -106,7 +108,127 @@
     },
     "stayConnected": "Restez connecté",
     "newsletter": "Abonnez-vous à notre newsletter pour les mises à jour.",
-    "emailPlaceholder": "Votre e-mail",
+    "emailPlaceholder": "Votre email",
     "subscribe": "S'abonner"
+  },
+  "marketing": {
+    "seo": {
+      "title": "Plateforme de Location d'Équipements Lourds - Maroc",
+      "description": "Connectez les propriétaires d'équipements avec les locataires à travers le Maroc. Rejoignez notre plateforme bêta pour des locations de machines lourdes transparentes et fiables.",
+      "keywords": "équipement lourd, location de machines, construction, Maroc, bêta"
+    },
+    "hero": {
+      "title": "Transformez la Location d'Équipements Lourds au Maroc",
+      "subtitle": "Soyez le premier à transformer la location d'équipements lourds au Maroc.",
+      "cta": "Accès Anticipé",
+      "secondaryCta": "Voir la feuille de route"
+    },
+    "steps": {
+      "title": "Comment Fonctionne Engin.ma",
+      "subtitle": "Location d'équipement simple, sécurisée et efficace en trois étapes",
+      "search": {
+        "title": "Rechercher & Découvrir",
+        "description": "Parcourez les annonces d'équipements vérifiés avec spécifications détaillées, photos et disponibilité en temps réel."
+      },
+      "connect": {
+        "title": "Connecter & Négocier",
+        "description": "Communication directe avec les propriétaires d'équipements pour des conditions flexibles et des prix compétitifs."
+      },
+      "transact": {
+        "title": "Transaction Sécurisée",
+        "description": "Réservations complètes avec protection séquestre et couverture d'assurance complète."
+      }
+    },
+    "faq": {
+      "title": "Questions Fréquemment Posées",
+      "subtitle": "Obtenez des réponses aux questions courantes sur notre plateforme",
+      "question1": {
+        "question": "Comment fonctionne le service de séquestre ?",
+        "answer": "Notre service de séquestre retient de manière sécurisée les paiements de location jusqu'à ce que l'équipement soit livré et la période de location terminée. Cela protège à la fois les propriétaires d'équipements et les locataires contre la fraude."
+      },
+      "question2": {
+        "question": "Quels types d'équipements puis-je lister ou louer ?",
+        "answer": "Nous supportons tous types de machines lourdes incluant excavatrices, bulldozers, grues, chargeurs, compacteurs et équipements de construction spécialisés. Tous les équipements doivent respecter les normes de sécurité."
+      },
+      "question3": {
+        "question": "Comment les propriétaires d'équipements sont-ils vérifiés ?",
+        "answer": "Nous effectuons une vérification complète incluant les contrôles d'enregistrement d'entreprise, l'examen de la documentation des équipements et des inspections sur site pour les équipements de haute valeur."
+      },
+      "question4": {
+        "question": "Quelle couverture d'assurance est disponible ?",
+        "answer": "Toutes les locations incluent une assurance complète couvrant les dommages aux équipements, la responsabilité civile et la couverture opérateur. Des options supplémentaires sont disponibles."
+      },
+      "question5": {
+        "question": "Combien de temps faut-il pour commencer à louer mon équipement ?",
+        "answer": "Après que la vérification soit complète (typiquement 2-3 jours ouvrables), vous pouvez lister immédiatement. La plupart des propriétaires voient leur première réservation dans la semaine."
+      }
+    },
+    "splitBenefits": {
+      "title": "Conçu pour les Deux Côtés du Marché",
+      "subtitle": "Que vous possédiez des équipements ou que vous ayez besoin de louer, nous avons conçu des avantages pour les premiers utilisateurs.",
+      "owners": {
+        "title": "Pour les Propriétaires d'Équipements",
+        "benefit1": {
+          "title": "Gagnez avec vos machines inactives",
+          "description": "Transformez vos équipements inutilisés en revenus réguliers"
+        },
+        "benefit2": {
+          "title": "Crédits de listing pour les premiers",
+          "description": "Les 100 premiers propriétaires obtiennent des listings premium gratuits pendant 6 mois"
+        },
+        "benefit3": {
+          "title": "Support prioritaire en bêta",
+          "description": "Accès direct à notre équipe pour l'intégration et le support"
+        }
+      },
+      "renters": {
+        "title": "Pour les Locataires",
+        "benefit1": {
+          "title": "Accès rapide à des équipements fiables",
+          "description": "Équipements pré-vérifiés prêts quand vous en avez besoin"
+        },
+        "benefit2": {
+          "title": "Prix transparents dès le départ",
+          "description": "Pas de frais cachés ou de changements de prix de dernière minute"
+        },
+        "benefit3": {
+          "title": "Pas de marges d'intermédiaire",
+          "description": "Traitez directement avec les propriétaires pour de meilleurs tarifs"
+        }
+      }
+    },
+    "roadmap": {
+      "title": "Ce qui Arrive",
+      "subtitle": "Notre feuille de route de développement pour les 12 prochains mois",
+      "q3_2025_title": "T3 2025",
+      "q3_2025_description": "Intégration des propriétaires et tableau de bord des annonces",
+      "q4_2025_title": "T4 2025",
+      "q4_2025_description": "Paiements sécurisés et options d'assurance",
+      "early_2026_title": "Début 2026",
+      "early_2026_description": "Application mobile + suivi en temps réel"
+    },
+    "waitlist": {
+      "bannerText": "Rejoignez {count}+ personnes déjà sur la liste d'attente"
+    },
+    "leadCapture": {
+      "title": "Accès Anticipé",
+      "subtitle": "Soyez parmi les premiers à utiliser notre plateforme lors du lancement",
+      "modalTitle": "Rejoindre Notre Bêta",
+      "roleLabel": "Je suis un :",
+      "roleOwner": "Propriétaire d'Équipement",
+      "roleOwnerDescription": "J'ai des machines à louer",
+      "roleRenter": "Locataire",
+      "roleRenterDescription": "J'ai besoin de louer des équipements",
+      "roleError": "Veuillez sélectionner un rôle",
+      "emailLabel": "Adresse Email",
+      "emailPlaceholder": "Entrez votre email",
+      "submitButton": "Rejoindre la Liste d'Attente Bêta",
+      "submitting": "Envoi en cours...",
+      "successTitle": "Vous êtes sur la liste !",
+      "successMessage": "Merci de rejoindre notre liste d'attente bêta. Nous vous préviendrons dès que nous lancerons.",
+      "closeButton": "Fermer",
+      "errorMessage": "Quelque chose s'est mal passé. Veuillez réessayer."
+    }
   }
 }
+

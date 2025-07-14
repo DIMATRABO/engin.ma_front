@@ -1,4 +1,3 @@
-"use client";
 import Navbar from '../../../components/ui/Navbar'
 import Hero from '../../../components/ui/Hero'
 import PopularMachines from '../../../components/ui/PopularMachines'
@@ -10,11 +9,19 @@ import Footer from '../../../components/ui/Footer'
 
 import { Search,Users, CalendarDays, FileCheck2, Truck, Building2, Star  } from "lucide-react";
 
+export const dynamic = 'force-static'
 
 interface PageProps {
   params: Promise<{ locale: string }>; // Correct type for params
 }
 
+export async function generateStaticParams() {
+  return [
+    { locale: 'en' },
+    { locale: 'fr' },
+    { locale: 'ar' }
+  ]
+}
 
 export default async function Home({ params }: PageProps) {
   const { locale } = await params; // Await the promise to resolve params

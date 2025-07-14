@@ -17,13 +17,22 @@ export default async function LocaleLayout({
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
+
+  // Load messages for the locale
+  let messages;
+  try {
+    messages = (await import(`../../messages/${locale}.json`)).default;
+  } catch (error) {
+    notFound();
+  }
+
   console.log("Locale:", locale);
   console.log("Direction:", getDirection(locale));
 
   return (
     <html lang={locale} dir={getDirection(locale)} suppressHydrationWarning>
       <body>
-        <NextIntlClientProvider locale={locale}>
+        <NextIntlClientProvider locale={locale} messages={messages}>
           {children}
         </NextIntlClientProvider>
       </body>
