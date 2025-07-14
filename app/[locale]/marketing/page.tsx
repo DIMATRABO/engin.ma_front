@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: t('description'),
       type: 'website',
       locale: locale,
-      siteName: 'Engin.ma',
+      siteName: 'Enginchantier.ma',
     },
     twitter: {
       card: 'summary_large_image',
@@ -54,7 +54,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       'application/ld+json': JSON.stringify({
         '@context': 'https://schema.org',
         '@type': 'SoftwareApplication',
-        name: 'Engin.ma',
+        name: 'Enginchantier.ma',
         applicationCategory: 'Marketplace',
         operatingSystem: 'Web',
         description: t('description'),
@@ -79,7 +79,7 @@ export default function MarketingPage() {
       <Roadmap />
       <FAQ />
       <footer className="bg-gray-100 py-8 text-center text-sm text-gray-600">
-        Engin.ma is currently in closed beta; features and timelines may change.
+        Enginchantier.ma is currently in closed beta; features and timelines may change.
       </footer>
     </main>
   )

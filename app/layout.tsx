@@ -3,7 +3,7 @@ import './globals.css';
 import { ReactNode } from 'react';
 
 export const metadata = {
-  title: 'Engin.ma',
+  title: 'Enginchantier.ma',
   description: 'JCB machine rental platform',
 };
 

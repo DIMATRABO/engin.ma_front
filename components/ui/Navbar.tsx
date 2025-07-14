@@ -30,7 +30,7 @@ export default function Navbar({ locale }: { locale: string }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center space-x-3">
-            <span className="text-2xl font-bold text-blue-600">Engin.ma</span>
+            <span className="text-2xl font-bold text-blue-600">Enginchantier.ma</span>
             <span className="bg-orange-100 text-orange-800 text-xs font-medium px-2 py-1 rounded-full">
               Beta • In Development
             </span>

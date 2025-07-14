@@ -1,5 +1,5 @@
 {
-  "brandName": "Engin.ma",
+  "brandName": "Enginchantier.ma",
   "language": {
     "english": "English",
     "french": "Français",
@@ -15,7 +15,7 @@
   },
   "HomePage": {
     "title": "Location de machines lourdes",
-    "about": "Engin.ma est une plateforme de location de machines lourdes, où vous pouvez louer des machines auprès d'entreprises locales.",
+    "about": "Enginchantier.ma est une plateforme de location de machines lourdes, où vous pouvez louer des machines auprès d'entreprises locales.",
     "subtitle": "Louez des machines lourdes auprès d'entreprises locales",
     "searchPlaceholder": "Rechercher une machine ou un emplacement",
     "searchButton": "Rechercher",
@@ -50,7 +50,7 @@
     "currency": "MAD"
   },
   "benefits": {
-    "title": "Pourquoi choisir Engin.ma ?",
+    "title": "Pourquoi choisir Enginchantier.ma ?",
     "subtitle": "Nous rendons la location de machines simple, transparente et fiable.",
     "verifiedMachines": {
       "title": "Machines vérifiées",
@@ -67,7 +67,7 @@
   },
   "cta": {
     "heading": "Prêt à louer la bonne machine ?",
-    "description": "Rejoignez des milliers de professionnels du BTP qui font confiance à Engin.ma pour leurs besoins en équipements",
+    "description": "Rejoignez des milliers de professionnels du BTP qui font confiance à Enginchantier.ma pour leurs besoins en équipements",
     "find": "Trouver un équipement",
     "list": "Mettre en location votre machine"
   },
@@ -97,7 +97,7 @@
     "3": { "label": "Réservations effectuées" }
   },
   "footer": {
-    "title": "Engin.ma",
+    "title": "Enginchantier.ma",
     "description": "Votre plateforme de confiance pour la location de machines sans tracas.",
     "quickLinks": "Liens rapides",
     "links": {
@@ -124,7 +124,7 @@
       "secondaryCta": "Voir la feuille de route"
     },
     "steps": {
-      "title": "Comment Fonctionne Engin.ma",
+      "title": "Comment Fonctionne Enginchantier.ma",
       "subtitle": "Location d'équipement simple, sécurisée et efficace en trois étapes",
       "search": {
         "title": "Rechercher & Découvrir",

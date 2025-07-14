@@ -1,5 +1,5 @@
 {
-  "brandName": "Engin.ma",
+  "brandName": "Enginchantier.ma",
   "language": {
     "english": "English",
     "french": "Français",
@@ -15,7 +15,7 @@
   },
   "HomePage": {
     "title": "تأجير الآلات الثقيلة",
-    "about": "Engin.ma هو منصة لتأجير الآلات الثقيلة، حيث يمكنك استئجار آلات من الشركات المحلية.",
+    "about": "Enginchantier.ma هو منصة لتأجير الآلات الثقيلة، حيث يمكنك استئجار آلات من الشركات المحلية.",
     "subtitle": "استأجر آلات ثقيلة من الشركات المحلية",
     "searchPlaceholder": "ابحث عن آلة أو موقع",
     "searchButton": "بحث",
@@ -50,7 +50,7 @@
     "currency": "درهم"
   },
   "benefits": {
-    "title": "لماذا تختار Engin.ma؟",
+    "title": "لماذا تختار Enginchantier.ma؟",
     "subtitle": "نجعل تأجير الآلات سهلاً وشفافاً وموثوقاً.",
     "verifiedMachines": {
       "title": "آلات موثوقة",
@@ -67,7 +67,7 @@
   },
   "cta": {
     "heading": "هل أنت مستعد لاستئجار الآلة المناسبة؟",
-    "description": "انضم إلى آلاف المهنيين في مجال البناء الذين يثقون في Engin.ma لتلبية احتياجاتهم من المعدات",
+    "description": "انضم إلى آلاف المهنيين في مجال البناء الذين يثقون في Enginchantier.ma لتلبية احتياجاتهم من المعدات",
     "find": "ابحث عن المعدات",
     "list": "أضف آلتك للإيجار"
   },
@@ -97,7 +97,7 @@
     "3": { "label": "عدد الحجوزات" }
   },
   "footer": {
-    "title": "Engin.ma",
+    "title": "Enginchantier.ma",
     "description": "منصتك الموثوقة لتأجير الآلات بدون عناء.",
     "quickLinks": "روابط سريعة",
     "links": {
@@ -124,7 +124,7 @@
       "secondaryCta": "رؤية خارطة الطريق"
     },
     "steps": {
-      "title": "كيف تعمل Engin.ma",
+      "title": "كيف تعمل Enginchantier.ma",
       "subtitle": "تأجير معدات بسيط وآمن وفعال في ثلاث خطوات",
       "search": {
         "title": "البحث والاكتشاف",

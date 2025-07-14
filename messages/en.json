@@ -1,5 +1,5 @@
 {
-  "brandName": "Engin.ma",
+  "brandName": "Enginchantier.ma",
   "language": {
     "english": "English",
     "french": "Français",
@@ -15,7 +15,7 @@
   },
   "HomePage": {
     "title": "Heavy Machinery Rental",
-    "about": "Engin.ma is a platform for renting heavy machinery, where you can rent machines from local companies.",
+    "about": "Enginchantier.ma is a platform for renting heavy machinery, where you can rent machines from local companies.",
     "subtitle": "Rent heavy machinery from local companies",
     "searchPlaceholder": "Search for a machine or location",
     "searchButton": "Search",
@@ -57,7 +57,7 @@
     "currency": "MAD"
   },
   "benefits": {
-    "title": "Why choose Engin.ma?",
+    "title": "Why choose Enginchantier.ma?",
     "subtitle": "We make machine rental easy, transparent, and reliable.",
     "verifiedMachines": {
       "title": "Verified Machines",
@@ -74,7 +74,7 @@
   },
   "cta": {
     "heading": "Ready to rent the right machine?",
-    "description": "Join thousands of construction professionals who trust Engin.ma for their equipment needs",
+    "description": "Join thousands of construction professionals who trust Enginchantier.ma for their equipment needs",
     "find": "Find Equipment",
     "list": "List Your Machine"
   },
@@ -104,7 +104,7 @@
     "3": { "label": "Bookings Completed" }
   },
   "footer": {
-    "title": "Engin.ma",
+    "title": "Enginchantier.ma",
     "description": "Your trusted platform for hassle-free machine rentals.",
     "quickLinks": "Quick Links",
     "links": {
@@ -197,7 +197,7 @@
       "errorMessage": "Something went wrong. Please try again."
     },
     "steps": {
-      "title": "How Engin.ma Works",
+      "title": "How Enginchantier.ma Works",
       "subtitle": "Simple, secure, and efficient equipment rental in three steps",
       "search": {
         "title": "Search & Discover",
