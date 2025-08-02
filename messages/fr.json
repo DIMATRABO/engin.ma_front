@@ -91,10 +91,18 @@
     }
   },
   "stats": {
-    "0": { "label": "Machines disponibles" },
-    "1": { "label": "Villes desservies" },
-    "2": { "label": "Clients satisfaits" },
-    "3": { "label": "Réservations effectuées" }
+    "0": {
+      "label": "Machines disponibles"
+    },
+    "1": {
+      "label": "Villes desservies"
+    },
+    "2": {
+      "label": "Clients satisfaits"
+    },
+    "3": {
+      "label": "Réservations effectuées"
+    }
   },
   "footer": {
     "title": "Enginchantier.ma",
@@ -229,6 +237,11 @@
       "closeButton": "Fermer",
       "errorMessage": "Quelque chose s'est mal passé. Veuillez réessayer."
     }
+  },
+  "contactLanding": {
+    "left": {
+      "title": "Transformez la Location d'Équipements Lourds au Maroc",
+      "subtitle": "Soyez le premier à transformer la location d'équipements lourds au Maroc."
+    }
   }
 }
-

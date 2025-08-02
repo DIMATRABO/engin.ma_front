@@ -22,7 +22,7 @@
     "featuredMachines": "Featured Machines",
     "viewAllMachines": "View All Machines"
   },
-  "common":{
+  "common": {
     "language": {
       "english": "English",
       "french": "Français",
@@ -98,10 +98,18 @@
     }
   },
   "stats": {
-    "0": { "label": "Machines Available" },
-    "1": { "label": "Cities Covered" },
-    "2": { "label": "Happy Clients" },
-    "3": { "label": "Bookings Completed" }
+    "0": {
+      "label": "Machines Available"
+    },
+    "1": {
+      "label": "Cities Covered"
+    },
+    "2": {
+      "label": "Happy Clients"
+    },
+    "3": {
+      "label": "Bookings Completed"
+    }
   },
   "footer": {
     "title": "Enginchantier.ma",
@@ -235,6 +243,12 @@
         "question": "How long does it take to start renting my equipment?",
         "answer": "After verification is complete (typically 2-3 business days), you can list immediately. Most owners see their first booking within a week."
       }
+    }
+  },
+  "contactLanding": {
+    "left": {
+      "title": "Transform Heavy Equipment Rentals in Morocco",
+      "subtitle": "Be the first to transform heavy-equipment rentals in Morocco."
     }
   }
 }
