@@ -240,8 +240,18 @@
   },
   "contactLanding": {
     "left": {
-      "title": "Transformez la Location d'Équipements Lourds au Maroc",
-      "subtitle": "Soyez le premier à transformer la location d'équipements lourds au Maroc."
+      "title": "Gardez vos chantiers sur la bonne voie avec du matériel fiable",
+      "subtitle": "Évitez les retards coûteux et les frais cachés : louez des engins haut de gamme partout au Maroc, quand vous en avez besoin."
+    },
+    "right": {
+      "title": "Contactez-nous",
+      "namePlaceholder": "Votre nom",
+      "emailPlaceholder": "Votre e-mail",
+      "phonePlaceholder": "Votre numéro de téléphone",
+      "messagePlaceholder": "Votre message",
+      "messageHelper": "Donnez-nous quelques détails : lieu du chantier, dates ou besoins spécifiques.",
+      "submit": "Envoyer",
+      "whatsappLabel": "Discuter sur WhatsApp"
     }
   }
 }

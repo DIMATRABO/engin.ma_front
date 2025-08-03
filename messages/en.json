@@ -247,8 +247,18 @@
   },
   "contactLanding": {
     "left": {
-      "title": "Transform Heavy Equipment Rentals in Morocco",
-      "subtitle": "Be the first to transform heavy-equipment rentals in Morocco."
+      "title": "Keep Your Projects on Track with Reliable Construction Equipment",
+      "subtitle": "Avoid costly delays and surprise fees—rent top-quality machinery anywhere in Morocco, exactly when you need it."
+    },
+    "right": {
+      "title": "Contact Us",
+      "namePlaceholder": "Your Name",
+      "emailPlaceholder": "Your Email",
+      "phonePlaceholder": "Your Phone Number",
+      "messagePlaceholder": "Your Message",
+      "messageHelper": "Please share a few details—project location, dates, or any special requirements.",
+      "submit": "Send Message",
+      "whatsappLabel": "Chat on WhatsApp"
     }
   }
 }
