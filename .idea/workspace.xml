@@ -5,15 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="687d8bb4-2ff7-463e-b1d7-4c71a56e2b80" name="Changes" comment="fix build error">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/engin.ma_front.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/material_theme_project_new.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/[locale]/marketing/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/[locale]/marketing/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/ui/MarketingHero.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ui/MarketingHero.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/[locale]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/[locale]/page.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -107,6 +99,7 @@
       <workItem from="1754143868752" duration="6177000" />
       <workItem from="1754152856001" duration="53000" />
       <workItem from="1754152922497" duration="2686000" />
+      <workItem from="1754471709366" duration="62000" />
     </task>
     <task id="LOCAL-00001" summary="add webstorm stuff">
       <option name="closed" value="true" />

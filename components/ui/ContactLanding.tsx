@@ -1,6 +1,11 @@
+
 'use client'
 
+import React from 'react';
 import { useTranslations, useLocale } from 'next-intl';
+import { useRouter, usePathname } from '@/i18n/navigation';
+import { routing } from '@/i18n/routing';
+import GlobeIcon from '@/public/globe.svg';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -19,8 +24,24 @@ type ContactFormData = z.infer<typeof contactFormSchema>;
 export default function ContactLanding() {
   const tLeft = useTranslations('contactLanding.left');
   const tRight = useTranslations('contactLanding.right');
+  // Language names in their original language
+  const languageNames: Record<string, string> = {
+    ar: 'العربية',
+    fr: 'Français',
+    en: 'English',
+  };
+
+
+  // Show languages in the order: Arabic, French, English
+  const availableLocales = ['ar', 'fr', 'en'];
+
+  // Dropdown state
+  const [showDropdown, setShowDropdown] = React.useState(false);
   const locale = useLocale();
   const dir = locale === 'ar' ? 'rtl' : 'ltr';
+  const router = useRouter();
+  const pathname = usePathname();
+  // removed duplicate declaration
 
   const {
     register,
@@ -33,16 +54,27 @@ export default function ContactLanding() {
 
   const onSubmit = async (data: ContactFormData) => {
     try {
-      // Handle form submission here
-      console.log('Form data:', data);
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
       
-      // You can add your API call here
-      // await submitContactForm(data);
+      const response = await fetch(`${apiBaseUrl}/contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('Contact form submitted successfully:', result);
       
       // Reset form after successful submission
       reset();
       
-      // You could show a success message here
+      // Show success message
       alert('Message sent successfully!');
     } catch (error) {
       console.error('Error submitting form:', error);
@@ -56,7 +88,40 @@ export default function ContactLanding() {
       dir={dir}
       className="min-h-screen bg-gradient-to-br from-blue-700 via-blue-800 to-blue-900 text-white overflow-hidden flex flex-col lg:flex-row"
     >
-      {/* Left: Welcome Section */}
+      {/* Language Switcher Dropdown */}
+      <div
+        className={`absolute top-4 z-20 flex gap-2 items-center ${dir === 'rtl' ? 'right-4' : 'left-4'}`}
+      >
+        <div className="relative">
+          <button
+            type="button"
+            aria-label="Change language"
+            className="flex items-center justify-center w-10 h-10 text-white rounded-full bg-white/10 hover:bg-white/20 border border-white/30 focus:outline-none"
+            onClick={() => setShowDropdown((v) => !v)}
+            tabIndex={0}
+          >
+            <Image src={GlobeIcon} alt="Languages" width={22} height={22} />
+          </button>
+          {showDropdown && (
+            <div className={`absolute mt-2 ${dir === 'rtl' ? 'right-0' : 'left-0'} bg-white text-gray-900 rounded shadow-lg min-w-[120px] border border-gray-200 overflow-hidden z-50`}>
+              {availableLocales.map((loc: string) => (
+                <button
+                  key={loc}
+                  onClick={() => {
+                    setShowDropdown(false);
+                    router.replace(pathname, { locale: loc });
+                  }}
+                  className={`block w-full text-left px-4 py-2 text-sm hover:bg-blue-100 ${locale === loc ? 'font-bold bg-blue-50' : ''}`}
+                  aria-current={locale === loc ? 'page' : undefined}
+                >
+                  {languageNames[loc]}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+  {/* Left: Welcome Section */}
       <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-20 relative">
         <div className="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none select-none">
           <Image
@@ -149,10 +214,11 @@ export default function ContactLanding() {
             </button>
           </form>
         </div>
-<a
+        <a
           href={`https://wa.me/212646737878`}
           target="_blank"
           rel="noopener noreferrer"
+          title="WhatsApp"
           className={'absolute bottom-6 bg-green-500 hover:bg-green-600 p-5 rounded-full shadow-lg animate-bounce ' + (dir === 'ltr' ? 'right-6' : 'left-6')}
         >
           <Image
