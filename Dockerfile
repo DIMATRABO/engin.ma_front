@@ -4,6 +4,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 
+# Copy entire project including public
 COPY . .
 
 RUN npm run build
@@ -15,7 +16,7 @@ COPY package*.json ./
 RUN npm ci --only=production
 
 COPY --from=builder /app/.next ./.next
-# Removed public copy because it doesn't exist
+COPY --from=builder /app/public ./public
 
 ENV NODE_ENV=production
 ENV PORT=3000
