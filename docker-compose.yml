@@ -2,17 +2,14 @@ version: '3.8'
 
 services:
   frontend:
-    build:
-    context: .
-    dockerfile: Dockerfile
-    args:
-      NEXT_DISABLE_ESLINT: "true" # Disable ESLint during build
+    build: .
     container_name: frontend
     restart: always
     networks:
       - proxy
     environment:
       NEXT_PUBLIC_API_BASE_URL: "https://api.enginchantier.ma"
+      NEXT_DISABLE_ESLINT: "true" # Pass to container at build/runtime
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=proxy"
