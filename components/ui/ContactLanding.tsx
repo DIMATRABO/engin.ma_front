@@ -1,15 +1,13 @@
-
 'use client'
 
 import React from 'react';
-import { useTranslations, useLocale } from 'next-intl';
-import { useRouter, usePathname } from '@/i18n/navigation';
-import { routing } from '@/i18n/routing';
+import {useLocale, useTranslations} from 'next-intl';
+import {usePathname, useRouter} from '@/i18n/navigation';
 import GlobeIcon from '@/public/globe.svg';
 import Image from 'next/image';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import {useForm} from 'react-hook-form';
+import {zodResolver} from '@hookform/resolvers/zod';
+import {z} from 'zod';
 
 // Define the form schema with Zod
 const contactFormSchema = z.object({
@@ -55,8 +53,8 @@ export default function ContactLanding() {
   const onSubmit = async (data: ContactFormData) => {
     try {
       const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-      
-      const response = await fetch(`${apiBaseUrl}/contact`, {
+
+      const response = await fetch(`https://api.enginchantier.ma/contact`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
