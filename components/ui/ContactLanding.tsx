@@ -8,6 +8,8 @@ import Image from 'next/image';
 import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {z} from 'zod';
+import {http} from '@/services/http';
+import {getApiBaseUrl} from '@/lib/env';
 
 // Define the form schema with Zod
 const contactFormSchema = z.object({
@@ -52,26 +54,16 @@ export default function ContactLanding() {
 
   const onSubmit = async (data: ContactFormData) => {
     try {
-      const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-
-      const response = await fetch(`https://api.enginchantier.ma/contact`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
+      const base = getApiBaseUrl() ?? 'https://api.enginchantier.ma';
+      const res = await http.post<{ success?: boolean; message?: string }>('/contact', data, {
+        baseUrlOverride: base,
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+      console.log('Contact form submitted successfully:', res.data);
 
-      const result = await response.json();
-      console.log('Contact form submitted successfully:', result);
-      
       // Reset form after successful submission
       reset();
-      
+
       // Show success message
       alert('Message sent successfully!');
     } catch (error) {

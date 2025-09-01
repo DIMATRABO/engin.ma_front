@@ -1,39 +1,38 @@
-import { NextIntlClientProvider, hasLocale } from 'next-intl';
-import { notFound } from 'next/navigation';
-import { Locale, routing } from '@/i18n/routing';
-import { getDirection } from '@/i18n/direction';
+import {hasLocale, NextIntlClientProvider} from 'next-intl';
+import {notFound} from 'next/navigation';
+import {Locale, routing} from '@/i18n/routing';
+import {getDirection} from '@/i18n/direction';
+import LanguageSwitcherWrapper from '@/components/common/LanguageSwitcherWrapper';
+import {AppProviders} from '@/components/providers/AppProviders';
 
 export default async function LocaleLayout({
   children,
   params,
 }: {
   children: React.ReactNode;
-  params: Promise<{ locale: Locale }>; // Adjusted type to Promise
+    params: Promise<{ locale: Locale }>;
 }) {
-  // Await the promise to resolve `params`
   const { locale } = await params;
 
-  // Ensure that the incoming `locale` is valid
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
 
-  // Load messages for the locale
   let messages;
   try {
     messages = (await import(`../../messages/${locale}.json`)).default;
-  } catch (error) {
+  } catch {
     notFound();
   }
-
-  console.log("Locale:", locale);
-  console.log("Direction:", getDirection(locale));
 
   return (
     <html lang={locale} dir={getDirection(locale)} suppressHydrationWarning>
       <body>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          {children}
+            <AppProviders>
+                <LanguageSwitcherWrapper/>
+                {children}
+            </AppProviders>
         </NextIntlClientProvider>
       </body>
     </html>

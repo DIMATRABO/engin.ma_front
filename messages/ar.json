@@ -253,5 +253,83 @@
       "submit": "إرسال",
       "whatsappLabel": "الدردشة عبر واتساب"
     }
+  },
+  "admin": {
+    "login": {
+      "title": "تسجيل دخول المسؤول",
+      "subtitle": "سجّل الدخول للوصول إلى لوحة التحكم",
+      "usernameOrEmail": "البريد الإلكتروني أو اسم المستخدم",
+      "password": "كلمة المرور",
+      "signIn": "تسجيل الدخول",
+      "signingIn": "جارٍ تسجيل الدخول…",
+      "invalid": "بيانات الاعتماد غير صحيحة",
+      "genericError": "حدث خطأ. يرجى المحاولة مرة أخرى."
+    },
+    "dashboard": {
+      "title": "لوحة تحكم المسؤول",
+      "welcome": "مرحباً بك في إدارة EnginChantier.ma",
+      "logout": "تسجيل الخروج",
+      "loggingOut": "جارٍ تسجيل الخروج…",
+      "quickLink": "رابط سريع",
+      "equipmentsComing": "المعدات (قريباً)",
+      "usersComing": "المستخدمون (قريباً)",
+      "bookingsComing": "الحجوزات (قريباً)"
+    },
+    "nav": {
+      "dashboard": "لوحة التحكم",
+      "users": "المستخدمون",
+      "equipments": "المعدات",
+      "brands": "العلامات التجارية",
+      "cities": "المدن",
+      "models": "الطرازات",
+      "bookings": "الحجوزات"
+    },
+    "topbar": {
+      "admin": "الإدارة",
+      "searchPlaceholder": "بحث...",
+      "logout": "تسجيل الخروج",
+      "loggingOut": "جارٍ تسجيل الخروج..."
+    },
+    "equipments": {
+      "title": "المعدات",
+      "subtitle": "تصفح وأدر مخزون المعدات.",
+      "labels": {
+        "search": "بحث",
+        "searchPlaceholder": "ابحث حسب العنوان...",
+        "city": "المدينة",
+        "owner": "المالك",
+        "pilot": "الطيار",
+        "fieldsOfActivity": "مجالات النشاط",
+        "modelYearRange": "نطاق سنة الطراز",
+        "constructionYearRange": "نطاق سنة التصنيع",
+        "customsYearRange": "نطاق سنة التخليص الجمركي",
+        "priceRange": "نطاق السعر",
+        "ratingRange": "نطاق التقييم"
+      },
+      "buttons": {
+        "apply": "تطبيق",
+        "reset": "إعادة تعيين",
+        "retry": "إعادة المحاولة",
+        "clearFilters": "مسح المرشحات"
+      },
+      "table": {
+        "title": "العنوان",
+        "brand": "العلامة",
+        "model": "الطراز",
+        "city": "المدينة",
+        "pricePerDay": "السعر/اليوم",
+        "available": "متوفر",
+        "actions": "إجراءات",
+        "yes": "نعم",
+        "no": "لا"
+      },
+      "empty": "لا توجد معدات",
+      "error": "فشل تحميل المعدات",
+      "pagination": {
+        "pageOf": "الصفحة {page} من {total}",
+        "previous": "السابق",
+        "next": "التالي"
+      }
+    }
   }
 }
