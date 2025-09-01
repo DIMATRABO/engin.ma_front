@@ -4,8 +4,43 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="687d8bb4-2ff7-463e-b1d7-4c71a56e2b80" name="Changes" comment="fix build error">
-      <change beforePath="$PROJECT_DIR$/app/[locale]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/[locale]/page.tsx" afterDir="false" />
+    <list default="true" id="687d8bb4-2ff7-463e-b1d7-4c71a56e2b80" name="Changes" comment="hardcode endpoint base url">
+      <change afterPath="$PROJECT_DIR$/ADMIN_PHASES.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/[locale]/admin/login/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/[locale]/admin/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/api/auth/login/route.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/api/auth/logout/route.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/global-error.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/not-found.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/components/common/LanguageSwitcher.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/components/providers/AppProviders.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/env.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/seo.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/services/auth.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/services/bookings.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/services/equipments.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/services/http.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/services/images.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/services/refs.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/services/users.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/swagger.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/types/api.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/[locale]/landing/page.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/[locale]/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/[locale]/layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/[locale]/marketing/page.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/lead/route.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/machine/route.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/stats/route.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/ui/ContactLanding.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ui/ContactLanding.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/messages/ar.json" beforeDir="false" afterPath="$PROJECT_DIR$/messages/ar.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/messages/en.json" beforeDir="false" afterPath="$PROJECT_DIR$/messages/en.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/messages/fr.json" beforeDir="false" afterPath="$PROJECT_DIR$/messages/fr.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/middleware.ts" beforeDir="false" afterPath="$PROJECT_DIR$/middleware.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,7 +50,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="main" />
+        <entry key="$PROJECT_DIR$" value="landing-page" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -50,12 +85,14 @@
     &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;landing-page&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;admin-panel&quot;,
     &quot;js.debugger.nextJs.config.created.client&quot;: &quot;true&quot;,
     &quot;js.debugger.nextJs.config.created.server&quot;: &quot;true&quot;,
     &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/adnan/WebstormProjects/engin.ma_front&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -64,7 +101,8 @@
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;npm.Next.js: server-side.executor&quot;: &quot;Run&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;settings.nodejs&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/media/adnan/development/engin.ma_front/node_modules/typescript/lib&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/home/adnan/WebstormProjects/engin.ma_front/node_modules/typescript/lib&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -84,6 +122,13 @@
       <method v="2" />
     </configuration>
   </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-b598e85cdad2-JavaScript-WS-252.25557.126" />
+      </set>
+    </attachedChunks>
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="687d8bb4-2ff7-463e-b1d7-4c71a56e2b80" name="Changes" comment="" />
@@ -100,6 +145,13 @@
       <workItem from="1754152856001" duration="53000" />
       <workItem from="1754152922497" duration="2686000" />
       <workItem from="1754471709366" duration="62000" />
+      <workItem from="1755037264787" duration="240000" />
+      <workItem from="1755112982164" duration="417000" />
+      <workItem from="1755458578236" duration="5924000" />
+      <workItem from="1755956208802" duration="385000" />
+      <workItem from="1756655663220" duration="5176000" />
+      <workItem from="1756661936344" duration="11804000" />
+      <workItem from="1756756630914" duration="2462000" />
     </task>
     <task id="LOCAL-00001" summary="add webstorm stuff">
       <option name="closed" value="true" />
@@ -117,7 +169,15 @@
       <option name="project" value="LOCAL" />
       <updated>1752526496382</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="hardcode endpoint base url">
+      <option name="closed" value="true" />
+      <created>1755037414327</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1755037414327</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -139,7 +199,8 @@
     <option name="CHECK_NEW_TODO" value="false" />
     <MESSAGE value="add webstorm stuff" />
     <MESSAGE value="fix build error" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix build error" />
+    <MESSAGE value="hardcode endpoint base url" />
+    <option name="LAST_COMMIT_MESSAGE" value="hardcode endpoint base url" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="NON_MODAL_COMMIT_POSTPONE_SLOW_CHECKS" value="false" />

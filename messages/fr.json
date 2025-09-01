@@ -253,5 +253,83 @@
       "submit": "Envoyer",
       "whatsappLabel": "Discuter sur WhatsApp"
     }
+  },
+  "admin": {
+    "login": {
+      "title": "Connexion Admin",
+      "subtitle": "Connectez-vous pour accéder au panneau d'administration",
+      "usernameOrEmail": "Email ou Nom d'utilisateur",
+      "password": "Mot de passe",
+      "signIn": "Se connecter",
+      "signingIn": "Connexion…",
+      "invalid": "Identifiants invalides",
+      "genericError": "Une erreur s'est produite. Veuillez réessayer."
+    },
+    "dashboard": {
+      "title": "Tableau de bord Admin",
+      "welcome": "Bienvenue sur l'administration EnginChantier.ma",
+      "logout": "Se déconnecter",
+      "loggingOut": "Déconnexion…",
+      "quickLink": "Raccourci",
+      "equipmentsComing": "Équipements (bientôt)",
+      "usersComing": "Utilisateurs (bientôt)",
+      "bookingsComing": "Réservations (bientôt)"
+    },
+    "nav": {
+      "dashboard": "Tableau de bord",
+      "users": "Utilisateurs",
+      "equipments": "Équipements",
+      "brands": "Marques",
+      "cities": "Villes",
+      "models": "Modèles",
+      "bookings": "Réservations"
+    },
+    "topbar": {
+      "admin": "Admin",
+      "searchPlaceholder": "Rechercher...",
+      "logout": "Se déconnecter",
+      "loggingOut": "Déconnexion..."
+    },
+    "equipments": {
+      "title": "Équipements",
+      "subtitle": "Parcourir et gérer l'inventaire des équipements.",
+      "labels": {
+        "search": "Recherche",
+        "searchPlaceholder": "Rechercher par titre...",
+        "city": "Ville",
+        "owner": "Propriétaire",
+        "pilot": "Pilote",
+        "fieldsOfActivity": "Domaines d'activité",
+        "modelYearRange": "Plage année du modèle",
+        "constructionYearRange": "Plage année de construction",
+        "customsYearRange": "Plage année de dédouanement",
+        "priceRange": "Plage de prix",
+        "ratingRange": "Plage de note"
+      },
+      "buttons": {
+        "apply": "Appliquer",
+        "reset": "Réinitialiser",
+        "retry": "Réessayer",
+        "clearFilters": "Effacer les filtres"
+      },
+      "table": {
+        "title": "Titre",
+        "brand": "Marque",
+        "model": "Modèle",
+        "city": "Ville",
+        "pricePerDay": "Prix/Jour",
+        "available": "Disponible",
+        "actions": "Actions",
+        "yes": "Oui",
+        "no": "Non"
+      },
+      "empty": "Aucun équipement trouvé",
+      "error": "Échec du chargement des équipements",
+      "pagination": {
+        "pageOf": "Page {page} sur {total}",
+        "previous": "Précédent",
+        "next": "Suivant"
+      }
+    }
   }
 }

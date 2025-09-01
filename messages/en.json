@@ -260,5 +260,86 @@
       "submit": "Send Message",
       "whatsappLabel": "Chat on WhatsApp"
     }
+  },
+  "admin": {
+    "login": {
+      "title": "Admin Login",
+      "subtitle": "Sign in to access the admin panel",
+      "usernameOrEmail": "Email or Username",
+      "password": "Password",
+      "signIn": "Sign in",
+      "signingIn": "Signing in…",
+      "invalid": "Invalid credentials",
+      "genericError": "Something went wrong. Please try again."
+    },
+    "dashboard": {
+      "title": "Admin Dashboard",
+      "welcome": "Welcome to EnginChantier.ma admin",
+      "logout": "Logout",
+      "loggingOut": "Logging out…",
+      "quickLink": "Quick link",
+      "equipmentsComing": "Equipments (coming next)",
+      "usersComing": "Users (coming next)",
+      "bookingsComing": "Bookings (coming next)"
+    },
+    "nav": {
+      "dashboard": "Dashboard",
+      "users": "Users",
+      "equipments": "Equipments",
+      "brands": "Brands",
+      "cities": "Cities",
+      "models": "Models",
+      "bookings": "Bookings"
+    },
+    "topbar": {
+      "admin": "Admin",
+      "searchPlaceholder": "Search...",
+      "logout": "Logout",
+      "loggingOut": "Logging out..."
+    },
+    "equipments": {
+      "title": "Equipments",
+      "subtitle": "Browse and manage equipment inventory.",
+      "labels": {
+        "search": "Search",
+        "searchPlaceholder": "Search by title...",
+        "city": "City",
+        "owner": "Owner",
+        "pilot": "Pilot",
+        "fieldsOfActivity": "Fields of activity",
+        "modelYearRange": "Model year range",
+        "constructionYearRange": "Construction year range",
+        "customsYearRange": "Customs clearance year range",
+        "priceRange": "Price range",
+        "ratingRange": "Rating range",
+        "all": "All",
+        "allOwners": "All owners",
+        "allPilots": "All pilots"
+      },
+      "buttons": {
+        "apply": "Apply",
+        "reset": "Reset",
+        "retry": "Retry",
+        "clearFilters": "Clear filters"
+      },
+      "table": {
+        "title": "Title",
+        "brand": "Brand",
+        "model": "Model",
+        "city": "City",
+        "pricePerDay": "Price/Day",
+        "available": "Available",
+        "actions": "Actions",
+        "yes": "Yes",
+        "no": "No"
+      },
+      "empty": "No equipments found",
+      "error": "Failed to load equipments",
+      "pagination": {
+        "pageOf": "Page {page} of {total}",
+        "previous": "Previous",
+        "next": "Next"
+      }
+    }
   }
 }
