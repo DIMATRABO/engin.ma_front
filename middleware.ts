@@ -11,7 +11,7 @@ const intl = createMiddleware({
 function isAdminPath(pathname: string): boolean {
     // Expect paths like /ar/admin..., /fr/admin..., /en/admin...
     // routing.locales contains valid locales
-    const locales = (routing.locales ?? []) as string[];
+    const locales: readonly string[] = routing.locales ?? [];
     for (const loc of locales) {
         if (pathname === `/${loc}/admin` || pathname.startsWith(`/${loc}/admin/`)) {
             return true;
@@ -21,7 +21,7 @@ function isAdminPath(pathname: string): boolean {
 }
 
 function getLocaleFromPath(pathname: string): string | null {
-    const locales = (routing.locales ?? []) as string[];
+    const locales: readonly string[] = routing.locales ?? [];
     for (const loc of locales) {
         if (pathname === `/${loc}` || pathname.startsWith(`/${loc}/`)) {
             return loc;

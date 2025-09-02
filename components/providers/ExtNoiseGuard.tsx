@@ -65,7 +65,7 @@ export function ExtNoiseGuard() {
             return prevOnError ? prevOnError(message, source, lineno, colno, error) : undefined
         }
 
-        const onUnhandledRejection: (this: Window, ev: PromiseRejectionEvent) => unknown = function (event) {
+        const onUnhandledRejection = function (event: PromiseRejectionEvent) {
             if (messageMatchesNoise(event?.reason)) {
                 event.preventDefault()
                 return true
