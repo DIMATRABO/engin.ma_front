@@ -304,7 +304,10 @@
         "constructionYearRange": "نطاق سنة التصنيع",
         "customsYearRange": "نطاق سنة التخليص الجمركي",
         "priceRange": "نطاق السعر",
-        "ratingRange": "نطاق التقييم"
+        "ratingRange": "نطاق التقييم",
+        "all": "الكل",
+        "allOwners": "جميع المالكين",
+        "allPilots": "جميع الطيارين"
       },
       "buttons": {
         "apply": "تطبيق",
@@ -329,6 +332,13 @@
         "pageOf": "الصفحة {page} من {total}",
         "previous": "السابق",
         "next": "التالي"
+      },
+      "foa": {
+        "CONSTRUCTION": "البناء",
+        "TRANSPORT": "النقل",
+        "LIFTING": "الرفع",
+        "ROADWORKS": "أعمال الطرق",
+        "AGRICULTURE": "الزراعة"
       }
     }
   }

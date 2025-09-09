@@ -125,20 +125,20 @@ export default function AdminLayout({children}: { children: React.ReactNode }) {
                         >
                             ☰
                         </button>
-                        <div className="text-sm text-slate-500">{tTopbar('admin')} / {crumb}</div>
+                        <div className="text-sm text-muted-foreground">{tTopbar('admin')} / {crumb}</div>
                     </div>
                     <div className="flex items-center gap-2">
                         <input
                             type="search"
                             placeholder={tTopbar('searchPlaceholder')}
-                            className="hidden md:block border rounded-md px-3 py-1.5 text-sm"
+                            className="hidden md:block h-9 border border-input bg-background rounded-md px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                             aria-label={tTopbar('searchPlaceholder')}
                         />
                         <LanguageSwitcher inline/>
                         <button
                             onClick={logout}
                             disabled={loggingOut}
-                            className="inline-flex items-center rounded-md bg-slate-900 text-white text-sm px-3 py-1.5 disabled:opacity-50"
+                            className="inline-flex items-center h-9 rounded-md bg-primary text-primary-foreground px-3 text-sm disabled:opacity-50"
                         >
                             {loggingOut ? tTopbar('loggingOut') : tTopbar('logout')}
                         </button>

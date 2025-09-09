@@ -14,4 +14,7 @@ export const refsService = {
     // Models
     getModels: () => http.get<unknown[]>('/models'),
     createModel: (payload: CreateName) => http.post<unknown, CreateName>('/models', payload),
+
+    // Fields of Activity
+    getFoa: () => http.get<string[]>('/foa'),
 }

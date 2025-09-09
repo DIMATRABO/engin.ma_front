@@ -4,6 +4,7 @@ import React from 'react'
 import {useQuery} from '@tanstack/react-query'
 import {refsService} from '@/services/refs'
 import {useTranslations} from 'next-intl'
+import {DualRangeSlider} from '@/components/ui/DualRangeSlider'
 
 // Reference item minimal shape
 interface RefItem {
@@ -163,6 +164,7 @@ function getUserLabel(u?: UserItem): string {
 
 export default function AdminEquipmentsPage() {
     const t = useTranslations('admin.equipments')
+    const tFoa = useTranslations('admin.equipments.foa')
     const [pageIndex, setPageIndex] = React.useState(1)
     const [pageSize] = React.useState(10)
 
@@ -176,32 +178,49 @@ export default function AdminEquipmentsPage() {
         staleTime: 60_000,
     })
 
-    // Load users to populate Pilot dropdown
-    const {data: usersData} = useQuery<UserItem[]>({
-        queryKey: ['users', 'list', {pageIndex: 1, pageSize: 100}],
+    // Load fields of activity list
+    const {data: foaData} = useQuery<string[]>({
+        queryKey: ['refs', 'foa'],
+        queryFn: () => refsService.getFoa().then((r) => r.data).catch(() => [] as string[]),
+        staleTime: 60_000,
+    })
+    const foaList: string[] = Array.isArray(foaData) ? foaData : []
+
+    // Load owners list (for Owner dropdown)
+    const {data: ownersData} = useQuery<UserItem[]>({
+        queryKey: ['owners', 'list'],
         queryFn: async () => {
-            const body = {
-                pageIndex: 1,
-                pageSize: 100,
-                sort: {key: 'created_at', order: 'desc' as const},
-                query: '',
-            }
-            const res = await fetch('/api/users/list', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(body),
-            })
+            const res = await fetch('/api/owners', {method: 'GET'})
             if (!res.ok) {
-                // Surface backend error yet keep UI resilient
                 const err = await res.text().catch(() => '')
-                throw new Error(err || 'Failed to load users')
+                throw new Error(err || 'Failed to load owners')
             }
             const raw = await res.json().catch(() => ({} as unknown)) as unknown
-            if (raw && typeof raw === 'object') {
-                const obj = raw as { items?: unknown[]; data?: unknown[] }
-                const arr = Array.isArray(obj.items) ? obj.items : Array.isArray(obj.data) ? obj.data : []
-                // Normalize unknown entries into UserItem shape
-                return (arr as Array<Record<string, unknown>>).map((u) => ({
+            if (Array.isArray(raw)) {
+                return (raw as Array<Record<string, unknown>>).map((u) => ({
+                    id: typeof u.id === 'string' ? u.id : undefined,
+                    name: typeof u.name === 'string' ? u.name : undefined,
+                    username: typeof u.username === 'string' ? u.username : undefined,
+                    email: typeof u.email === 'string' ? u.email : undefined,
+                }))
+            }
+            return [] as UserItem[]
+        },
+        staleTime: 60_000,
+    })
+
+    // Load pilots list (for Pilot dropdown)
+    const {data: pilotsData} = useQuery<UserItem[]>({
+        queryKey: ['pilotes', 'list'],
+        queryFn: async () => {
+            const res = await fetch('/api/pilotes', {method: 'GET'})
+            if (!res.ok) {
+                const err = await res.text().catch(() => '')
+                throw new Error(err || 'Failed to load pilots')
+            }
+            const raw = await res.json().catch(() => ({} as unknown)) as unknown
+            if (Array.isArray(raw)) {
+                return (raw as Array<Record<string, unknown>>).map((u) => ({
                     id: typeof u.id === 'string' ? u.id : undefined,
                     name: typeof u.name === 'string' ? u.name : undefined,
                     username: typeof u.username === 'string' ? u.username : undefined,
@@ -264,30 +283,30 @@ export default function AdminEquipmentsPage() {
     return (
         <div className="space-y-4">
             <div>
-                <h1 className="text-xl font-semibold">Equipments</h1>
-                <p className="text-sm text-slate-600">Browse and manage equipment inventory.</p>
+                <h1 className="text-2xl font-semibold tracking-tight">{t('title')}</h1>
+                <p className="text-sm text-muted-foreground">{t('subtitle')}</p>
             </div>
 
             {/* Toolbar */}
-            <div className="rounded-lg border bg-white p-3 flex flex-wrap gap-2 items-end">
+            <div className="rounded-lg border bg-card p-4 flex flex-wrap gap-3 items-end">
                 <div className="flex-1 min-w-[200px]">
-                    <label className="block text-xs text-slate-600 mb-1">Search</label>
+                    <label className="block text-xs text-muted-foreground mb-1">{t('labels.search')}</label>
                     <input
                         type="search"
-                        className="w-full border rounded-md px-3 py-2 text-sm"
-                        placeholder="Search by title..."
+                        className="w-full h-9 border border-input bg-background rounded-md px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        placeholder={t('labels.searchPlaceholder')}
                         value={filters.query}
                         onChange={(e) => setFilters((f) => ({...f, query: e.target.value}))}
                     />
                 </div>
                 <div>
-                    <label className="block text-xs text-slate-600 mb-1">City</label>
+                    <label className="block text-xs text-muted-foreground mb-1">{t('labels.city')}</label>
                     <select
-                        className="border rounded-md px-2 py-2 text-sm min-w-[160px]"
+                        className="h-9 border border-input bg-background rounded-md px-2 text-sm min-w-[160px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         value={filters.city_id ?? ''}
                         onChange={(e) => setFilters((f) => ({...f, city_id: e.target.value || undefined}))}
                     >
-                        <option value="">All</option>
+                        <option value="">{t('labels.all')}</option>
                         {cities.map((c, idx) => (
                             <option key={`${c.id ?? c._id ?? c.name ?? idx}`}
                                     value={c.id ?? c._id ?? ''}>{c.name ?? '-'}</option>
@@ -296,14 +315,14 @@ export default function AdminEquipmentsPage() {
                 </div>
                 {/* Supported filters */}
                 <div>
-                    <label className="block text-xs text-slate-600 mb-1">Owner</label>
+                    <label className="block text-xs text-muted-foreground mb-1">{t('labels.owner')}</label>
                     <select
-                        className="border rounded-md px-2 py-2 text-sm min-w-[220px]"
+                        className="h-9 border border-input bg-background rounded-md px-2 text-sm min-w-[220px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         value={filters.owner_id ?? ''}
                         onChange={(e) => setFilters((f) => ({...f, owner_id: e.target.value || undefined}))}
                     >
-                        <option value="">All owners</option>
-                        {(usersData ?? []).map((u, idx) => {
+                        <option value="">{t('labels.allOwners')}</option>
+                        {(ownersData ?? []).map((u, idx) => {
                             const id = u.id ?? ''
                             const label = getUserLabel(u)
                             return (
@@ -315,14 +334,14 @@ export default function AdminEquipmentsPage() {
                     </select>
                 </div>
                 <div>
-                    <label className="block text-xs text-slate-600 mb-1">Pilot</label>
+                    <label className="block text-xs text-muted-foreground mb-1">{t('labels.pilot')}</label>
                     <select
-                        className="border rounded-md px-2 py-2 text-sm min-w-[220px]"
+                        className="h-9 border border-input bg-background rounded-md px-2 text-sm min-w-[220px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         value={filters.pilot_id ?? ''}
                         onChange={(e) => setFilters((f) => ({...f, pilot_id: e.target.value || undefined}))}
                     >
-                        <option value="">All pilots</option>
-                        {(usersData ?? []).map((u, idx) => {
+                        <option value="">{t('labels.allPilots')}</option>
+                        {(pilotsData ?? []).map((u, idx) => {
                             const id = u.id ?? ''
                             const label = getUserLabel(u)
                             return (
@@ -334,189 +353,175 @@ export default function AdminEquipmentsPage() {
                     </select>
                 </div>
                 <div>
-                    <label className="block text-xs text-slate-600 mb-1">Fields of activity</label>
-                    <input
-                        type="text"
-                        className="border rounded-md px-2 py-2 text-sm min-w-[220px]"
-                        placeholder="e.g. TRANSPORT, CHANTIER"
+                    <label className="block text-xs text-muted-foreground mb-1">{t('labels.fieldsOfActivity')}</label>
+                    <select
+                        className="h-9 border border-input bg-background rounded-md px-2 text-sm min-w-[220px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         value={filters.fields_of_activity ?? ''}
                         onChange={(e) => setFilters((f) => ({...f, fields_of_activity: e.target.value || undefined}))}
+                    >
+                        <option value="">{t('labels.all')}</option>
+                        {(foaList).map((val) => (
+                            <option key={val} value={val}>{tFoa(val)}</option>
+                        ))}
+                    </select>
+                </div>
+                {/* Ranges (Dual sliders) */}
+                {/* Model year */}
+                <div className="flex flex-col min-w-[240px]">
+                    <label className="block text-xs text-muted-foreground mb-2">{t('labels.modelYearRange')}</label>
+                    <DualRangeSlider
+                        min={1970}
+                        max={new Date().getFullYear()}
+                        step={1}
+                        value={[
+                            (filters.model_year_min ?? 1970),
+                            (filters.model_year_max ?? new Date().getFullYear()),
+                        ]}
+                        onValueChange={(vals) =>
+                            setFilters((f) => ({
+                                ...f,
+                                model_year_min: Array.isArray(vals) ? (vals[0] as number) : undefined,
+                                model_year_max: Array.isArray(vals) ? (vals[1] as number) : undefined,
+                            }))
+                        }
+                        label={(v) => (v != null ? Math.round(v) : '')}
                     />
                 </div>
-                {/* Ranges */}
-                <div className="flex flex-col">
-                    <label className="block text-xs text-slate-600 mb-1">Model year range</label>
-                    <div className="flex gap-2">
-                        <input
-                            type="number"
-                            className="border rounded-md px-2 py-2 text-sm w-24"
-                            placeholder="min"
-                            value={filters.model_year_min ?? ''}
-                            onChange={(e) => setFilters((f) => ({
+                {/* Construction year */}
+                <div className="flex flex-col min-w-[240px]">
+                    <label
+                        className="block text-xs text-muted-foreground mb-2">{t('labels.constructionYearRange')}</label>
+                    <DualRangeSlider
+                        min={1970}
+                        max={new Date().getFullYear()}
+                        step={1}
+                        value={[
+                            (filters.construction_year_min ?? 1970),
+                            (filters.construction_year_max ?? new Date().getFullYear()),
+                        ]}
+                        onValueChange={(vals) =>
+                            setFilters((f) => ({
                                 ...f,
-                                model_year_min: e.target.value ? Number(e.target.value) : undefined
-                            }))}
-                        />
-                        <input
-                            type="number"
-                            className="border rounded-md px-2 py-2 text-sm w-24"
-                            placeholder="max"
-                            value={filters.model_year_max ?? ''}
-                            onChange={(e) => setFilters((f) => ({
-                                ...f,
-                                model_year_max: e.target.value ? Number(e.target.value) : undefined
-                            }))}
-                        />
-                    </div>
+                                construction_year_min: Array.isArray(vals) ? (vals[0] as number) : undefined,
+                                construction_year_max: Array.isArray(vals) ? (vals[1] as number) : undefined,
+                            }))
+                        }
+                        label={(v) => (v != null ? Math.round(v) : '')}
+                    />
                 </div>
-                <div className="flex flex-col">
-                    <label className="block text-xs text-slate-600 mb-1">Construction year range</label>
-                    <div className="flex gap-2">
-                        <input
-                            type="number"
-                            className="border rounded-md px-2 py-2 text-sm w-24"
-                            placeholder="min"
-                            value={filters.construction_year_min ?? ''}
-                            onChange={(e) => setFilters((f) => ({
+                {/* Customs clearance year */}
+                <div className="flex flex-col min-w-[260px]">
+                    <label className="block text-xs text-muted-foreground mb-2">{t('labels.customsYearRange')}</label>
+                    <DualRangeSlider
+                        min={1970}
+                        max={new Date().getFullYear()}
+                        step={1}
+                        value={[
+                            (filters.customs_clearance_year_min ?? 1970),
+                            (filters.customs_clearance_year_max ?? new Date().getFullYear()),
+                        ]}
+                        onValueChange={(vals) =>
+                            setFilters((f) => ({
                                 ...f,
-                                construction_year_min: e.target.value ? Number(e.target.value) : undefined
-                            }))}
-                        />
-                        <input
-                            type="number"
-                            className="border rounded-md px-2 py-2 text-sm w-24"
-                            placeholder="max"
-                            value={filters.construction_year_max ?? ''}
-                            onChange={(e) => setFilters((f) => ({
-                                ...f,
-                                construction_year_max: e.target.value ? Number(e.target.value) : undefined
-                            }))}
-                        />
-                    </div>
+                                customs_clearance_year_min: Array.isArray(vals) ? (vals[0] as number) : undefined,
+                                customs_clearance_year_max: Array.isArray(vals) ? (vals[1] as number) : undefined,
+                            }))
+                        }
+                        label={(v) => (v != null ? Math.round(v) : '')}
+                    />
                 </div>
-                <div className="flex flex-col">
-                    <label className="block text-xs text-slate-600 mb-1">Customs clearance year range</label>
-                    <div className="flex gap-2">
-                        <input
-                            type="number"
-                            className="border rounded-md px-2 py-2 text-sm w-24"
-                            placeholder="min"
-                            value={filters.customs_clearance_year_min ?? ''}
-                            onChange={(e) => setFilters((f) => ({
+                {/* Price */}
+                <div className="flex flex-col min-w-[260px]">
+                    <label className="block text-xs text-muted-foreground mb-2">{t('labels.priceRange')}</label>
+                    <DualRangeSlider
+                        min={0}
+                        max={100000}
+                        step={50}
+                        value={[
+                            (filters.price_min ?? 0),
+                            (filters.price_max ?? 100000),
+                        ]}
+                        onValueChange={(vals) =>
+                            setFilters((f) => ({
                                 ...f,
-                                customs_clearance_year_min: e.target.value ? Number(e.target.value) : undefined
-                            }))}
-                        />
-                        <input
-                            type="number"
-                            className="border rounded-md px-2 py-2 text-sm w-24"
-                            placeholder="max"
-                            value={filters.customs_clearance_year_max ?? ''}
-                            onChange={(e) => setFilters((f) => ({
-                                ...f,
-                                customs_clearance_year_max: e.target.value ? Number(e.target.value) : undefined
-                            }))}
-                        />
-                    </div>
+                                price_min: Array.isArray(vals) ? (vals[0] as number) : undefined,
+                                price_max: Array.isArray(vals) ? (vals[1] as number) : undefined,
+                            }))
+                        }
+                        label={(v) => (v != null ? `${Math.round(v)} MAD` : '')}
+                    />
                 </div>
-                <div className="flex flex-col">
-                    <label className="block text-xs text-slate-600 mb-1">Price range</label>
-                    <div className="flex gap-2">
-                        <input
-                            type="number"
-                            className="border rounded-md px-2 py-2 text-sm w-24"
-                            placeholder="min"
-                            value={filters.price_min ?? ''}
-                            onChange={(e) => setFilters((f) => ({
+                {/* Rating */}
+                <div className="flex flex-col min-w-[240px]">
+                    <label className="block text-xs text-slate-600 mb-2">{t('labels.ratingRange')}</label>
+                    <DualRangeSlider
+                        min={0}
+                        max={5}
+                        step={0.1}
+                        value={[
+                            (filters.rating_min ?? 0),
+                            (filters.rating_max ?? 5),
+                        ]}
+                        onValueChange={(vals) =>
+                            setFilters((f) => ({
                                 ...f,
-                                price_min: e.target.value ? Number(e.target.value) : undefined
-                            }))}
-                        />
-                        <input
-                            type="number"
-                            className="border rounded-md px-2 py-2 text-sm w-24"
-                            placeholder="max"
-                            value={filters.price_max ?? ''}
-                            onChange={(e) => setFilters((f) => ({
-                                ...f,
-                                price_max: e.target.value ? Number(e.target.value) : undefined
-                            }))}
-                        />
-                    </div>
-                </div>
-                <div className="flex flex-col">
-                    <label className="block text-xs text-slate-600 mb-1">Rating range</label>
-                    <div className="flex gap-2">
-                        <input
-                            type="number"
-                            step="0.1"
-                            className="border rounded-md px-2 py-2 text-sm w-24"
-                            placeholder="min"
-                            value={filters.rating_min ?? ''}
-                            onChange={(e) => setFilters((f) => ({
-                                ...f,
-                                rating_min: e.target.value ? Number(e.target.value) : undefined
-                            }))}
-                        />
-                        <input
-                            type="number"
-                            step="0.1"
-                            className="border rounded-md px-2 py-2 text-sm w-24"
-                            placeholder="max"
-                            value={filters.rating_max ?? ''}
-                            onChange={(e) => setFilters((f) => ({
-                                ...f,
-                                rating_max: e.target.value ? Number(e.target.value) : undefined
-                            }))}
-                        />
-                    </div>
+                                rating_min: Array.isArray(vals) ? Number((vals[0] as number).toFixed(1)) : undefined,
+                                rating_max: Array.isArray(vals) ? Number((vals[1] as number).toFixed(1)) : undefined,
+                            }))
+                        }
+                        label={(v) => (v != null ? v.toFixed(1) : '')}
+                    />
                 </div>
                 <div className="ms-auto flex items-center gap-3">
                     <button
                         onClick={applyFilters}
-                        className="inline-flex items-center bg-slate-900 text-white text-sm px-3 py-2 rounded-md disabled:opacity-50"
+                        className="inline-flex items-center h-9 rounded-md bg-primary text-primary-foreground px-3 disabled:opacity-50"
                         disabled={isFetching}
                     >
-                        Apply
+                        {t('buttons.apply')}
                     </button>
                     <button
                         onClick={resetFilters}
-                        className="inline-flex items-center border text-sm px-3 py-2 rounded-md"
+                        className="inline-flex items-center h-9 rounded-md border border-input bg-background px-3 text-sm hover:bg-accent hover:text-accent-foreground"
                     >
-                        Reset
+                        {t('buttons.reset')}
                     </button>
                 </div>
             </div>
 
             {/* Table container */}
-            <div className="rounded-lg border bg-white">
+            <div className="rounded-lg border bg-card">
                 {isError ? (
                     <div className="p-4">
-                        <div
-                            className="text-sm text-red-600">{(error as Error)?.message || 'Failed to load equipments'}</div>
-                        <button onClick={() => refetch()}
-                                className="mt-2 inline-flex items-center border px-3 py-1.5 rounded-md text-sm">Retry
+                        <div className="text-sm text-red-600">{(error as Error)?.message || t('error')}</div>
+                        <button
+                            onClick={() => refetch()}
+                            className="mt-2 inline-flex items-center h-9 rounded-md border border-input bg-background px-3 text-sm hover:bg-accent hover:text-accent-foreground"
+                        >
+                            {t('buttons.retry')}
                         </button>
                     </div>
                 ) : items.length === 0 && !isFetching ? (
-                    <div className="p-8 text-center text-slate-600">
-                        <div className="mb-2">No equipments found</div>
-                        <button onClick={resetFilters}
-                                className="inline-flex items-center border px-3 py-1.5 rounded-md text-sm">Clear filters
+                    <div className="p-8 text-center text-muted-foreground">
+                        <div className="mb-2">{t('empty')}</div>
+                        <button
+                            onClick={resetFilters}
+                            className="inline-flex items-center h-9 rounded-md border border-input bg-background px-3 text-sm hover:bg-accent hover:text-accent-foreground"
+                        >{t('buttons.clearFilters')}
                         </button>
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
                         <table className="min-w-full text-sm">
-                            <thead className="bg-slate-50 text-slate-700">
+                            <thead className="bg-muted text-muted-foreground">
                             <tr>
-                                <th className="text-left font-medium px-3 py-2 border-b">Title</th>
-                                <th className="text-left font-medium px-3 py-2 border-b">Brand</th>
-                                <th className="text-left font-medium px-3 py-2 border-b">Model</th>
-                                <th className="text-left font-medium px-3 py-2 border-b">City</th>
-                                <th className="text-left font-medium px-3 py-2 border-b">Price/Day</th>
-                                <th className="text-left font-medium px-3 py-2 border-b">Available</th>
-                                <th className="text-left font-medium px-3 py-2 border-b">Actions</th>
+                                <th className="text-left font-medium px-3 py-2 border-b">{t('table.title')}</th>
+                                <th className="text-left font-medium px-3 py-2 border-b">{t('table.brand')}</th>
+                                <th className="text-left font-medium px-3 py-2 border-b">{t('table.model')}</th>
+                                <th className="text-left font-medium px-3 py-2 border-b">{t('table.city')}</th>
+                                <th className="text-left font-medium px-3 py-2 border-b">{t('table.pricePerDay')}</th>
+                                <th className="text-left font-medium px-3 py-2 border-b">{t('table.available')}</th>
+                                <th className="text-left font-medium px-3 py-2 border-b">{t('table.actions')}</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -524,25 +529,25 @@ export default function AdminEquipmentsPage() {
                                 [...Array(5)].map((_, i) => (
                                     <tr key={i} className="animate-pulse">
                                         <td className="px-3 py-2 border-b">
-                                            <div className="h-4 bg-slate-200 rounded w-40"/>
+                                            <div className="h-4 bg-muted rounded w-40"/>
                                         </td>
                                         <td className="px-3 py-2 border-b">
-                                            <div className="h-4 bg-slate-200 rounded w-24"/>
+                                            <div className="h-4 bg-muted rounded w-24"/>
                                         </td>
                                         <td className="px-3 py-2 border-b">
-                                            <div className="h-4 bg-slate-200 rounded w-24"/>
+                                            <div className="h-4 bg-muted rounded w-24"/>
                                         </td>
                                         <td className="px-3 py-2 border-b">
-                                            <div className="h-4 bg-slate-200 rounded w-24"/>
+                                            <div className="h-4 bg-muted rounded w-24"/>
                                         </td>
                                         <td className="px-3 py-2 border-b">
-                                            <div className="h-4 bg-slate-200 rounded w-16"/>
+                                            <div className="h-4 bg-muted rounded w-16"/>
                                         </td>
                                         <td className="px-3 py-2 border-b">
-                                            <div className="h-4 bg-slate-200 rounded w-12"/>
+                                            <div className="h-4 bg-muted rounded w-12"/>
                                         </td>
                                         <td className="px-3 py-2 border-b">
-                                            <div className="h-4 bg-slate-200 rounded w-20"/>
+                                            <div className="h-4 bg-muted rounded w-20"/>
                                         </td>
                                     </tr>
                                 ))
@@ -557,10 +562,10 @@ export default function AdminEquipmentsPage() {
                                         <td className="px-3 py-2 border-b">
                                             {it.is_available ? (
                                                 <span
-                                                    className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-green-100 text-green-700">Yes</span>
+                                                    className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-green-100 text-green-700">{t('table.yes')}</span>
                                             ) : (
                                                 <span
-                                                    className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-slate-200 text-slate-700">No</span>
+                                                    className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-muted text-muted-foreground">{t('table.no')}</span>
                                             )}
                                         </td>
                                         <td className="px-3 py-2 border-b">
@@ -575,21 +580,24 @@ export default function AdminEquipmentsPage() {
                 )}
                 {/* Pagination */}
                 <div className="flex items-center justify-between p-3">
-                    <div className="text-sm text-slate-600">Page {pageIndex} of {totalPages}</div>
+                    <div className="text-sm text-muted-foreground">{t('pagination.pageOf', {
+                        page: pageIndex,
+                        total: totalPages
+                    })}</div>
                     <div className="flex items-center gap-2">
                         <button
-                            className="border rounded-md px-3 py-1.5 text-sm disabled:opacity-50"
+                            className="h-9 rounded-md border border-input bg-background px-3 text-sm hover:bg-accent hover:text-accent-foreground disabled:opacity-50"
                             disabled={pageIndex <= 1 || isFetching}
                             onClick={() => setPageIndex((p) => Math.max(1, p - 1))}
                         >
-                            Previous
+                            {t('pagination.previous')}
                         </button>
                         <button
-                            className="border rounded-md px-3 py-1.5 text-sm disabled:opacity-50"
+                            className="h-9 rounded-md border border-input bg-background px-3 text-sm hover:bg-accent hover:text-accent-foreground disabled:opacity-50"
                             disabled={pageIndex >= totalPages || isFetching}
                             onClick={() => setPageIndex((p) => Math.min(totalPages, p + 1))}
                         >
-                            Next
+                            {t('pagination.next')}
                         </button>
                     </div>
                 </div>

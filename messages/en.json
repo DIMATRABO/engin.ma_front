@@ -339,6 +339,13 @@
         "pageOf": "Page {page} of {total}",
         "previous": "Previous",
         "next": "Next"
+      },
+      "foa": {
+        "CONSTRUCTION": "Construction",
+        "TRANSPORT": "Transport",
+        "LIFTING": "Lifting",
+        "ROADWORKS": "Roadworks",
+        "AGRICULTURE": "Agriculture"
       }
     }
   }

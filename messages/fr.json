@@ -304,7 +304,10 @@
         "constructionYearRange": "Plage année de construction",
         "customsYearRange": "Plage année de dédouanement",
         "priceRange": "Plage de prix",
-        "ratingRange": "Plage de note"
+        "ratingRange": "Plage de note",
+        "all": "Tous",
+        "allOwners": "Tous les propriétaires",
+        "allPilots": "Tous les pilotes"
       },
       "buttons": {
         "apply": "Appliquer",
@@ -329,6 +332,13 @@
         "pageOf": "Page {page} sur {total}",
         "previous": "Précédent",
         "next": "Suivant"
+      },
+      "foa": {
+        "CONSTRUCTION": "Construction",
+        "TRANSPORT": "Transport",
+        "LIFTING": "Levage",
+        "ROADWORKS": "Travaux routiers",
+        "AGRICULTURE": "Agriculture"
       }
     }
   }
