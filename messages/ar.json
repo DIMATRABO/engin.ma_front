@@ -281,8 +281,78 @@
       "equipments": "المعدات",
       "brands": "العلامات التجارية",
       "cities": "المدن",
+      "categories": "الفئات",
       "models": "الطرازات",
       "bookings": "الحجوزات"
+    },
+    "bookings": {
+      "title": "الحجوزات",
+      "subtitle": "عرض وإدارة الحجوزات.",
+      "labels": {
+        "status": "الحالة",
+        "equipment": "المعدة",
+        "startFrom": "بدءاً من",
+        "endUntil": "حتى",
+        "client": "العميل",
+        "pilot": "الطيار",
+        "startDate": "تاريخ البدء",
+        "endDate": "تاريخ الانتهاء",
+        "all": "الكل"
+      },
+      "placeholders": {
+        "selectClient": "اختر العميل…",
+        "selectEquipment": "اختر المعدة…",
+        "selectPilot": "اختر الطيار…"
+      },
+      "buttons": {
+        "new": "حجز جديد",
+        "reset": "إعادة تعيين",
+        "retry": "إعادة المحاولة",
+        "cancel": "إلغاء",
+        "create": "إنشاء",
+        "update": "تحديث",
+        "saving": "جارٍ الحفظ…",
+        "view": "عرض",
+        "edit": "تعديل",
+        "confirm": "تأكيد",
+        "complete": "إكمال",
+        "close": "إغلاق"
+      },
+      "table": {
+        "client": "العميل",
+        "equipment": "المعدة",
+        "pilot": "الطيار",
+        "start": "البداية",
+        "end": "النهاية",
+        "status": "الحالة",
+        "actions": "الإجراءات"
+      },
+      "newTitle": "حجز جديد",
+      "newSubtitle": "املأ الحقول المطلوبة لإنشاء حجز جديد.",
+      "editTitle": "تعديل الحجز",
+      "editSubtitle": "حدّث التواريخ أو الحالة ثم احفظ.",
+      "detailsTitle": "تفاصيل الحجز",
+      "empty": "لا توجد حجوزات",
+      "error": "فشل تحميل الحجوزات",
+      "toasts": {
+        "created": "تم إنشاء الحجز",
+        "updated": "تم تحديث الحجز",
+        "statusUpdated": "تم تحديث الحالة"
+      },
+      "validation": {
+        "required": "مطلوب",
+        "endAfterStart": "يجب أن يكون تاريخ الانتهاء بعد تاريخ البدء"
+      },
+      "loading": "جارٍ التحميل…",
+      "errorCreate": "فشل إنشاء الحجز",
+      "errorUpdate": "فشل تحديث الحجز",
+      "errorUpdateStatus": "فشل تحديث الحالة",
+      "status": {
+        "PENDING": "قيد الانتظار",
+        "CONFIRMED": "مؤكد",
+        "CANCELED": "ملغى",
+        "COMPLETED": "مكتمل"
+      }
     },
     "topbar": {
       "admin": "الإدارة",
@@ -300,6 +370,11 @@
         "owner": "المالك",
         "pilot": "الطيار",
         "fieldsOfActivity": "مجالات النشاط",
+        "category": "الفئة",
+        "description": "الوصف",
+        "modelYear": "سنة الطراز",
+        "constructionYear": "سنة التصنيع",
+        "customsYear": "سنة التخليص الجمركي",
         "modelYearRange": "نطاق سنة الطراز",
         "constructionYearRange": "نطاق سنة التصنيع",
         "customsYearRange": "نطاق سنة التخليص الجمركي",
@@ -309,11 +384,24 @@
         "allOwners": "جميع المالكين",
         "allPilots": "جميع الطيارين"
       },
+      "helpers": {
+        "foaHint": "اختر النشاط الرئيسي الذي تُستخدم له هذه المعدة."
+      },
       "buttons": {
         "apply": "تطبيق",
         "reset": "إعادة تعيين",
         "retry": "إعادة المحاولة",
-        "clearFilters": "مسح المرشحات"
+        "clearFilters": "مسح المرشحات",
+        "new": "جديد",
+        "images": "الصور",
+        "delete": "حذف",
+        "confirmDelete": "هل أنت متأكد؟",
+        "upload": "رفع",
+        "saving": "جارٍ الحفظ...",
+        "create": "إنشاء",
+        "update": "تحديث",
+        "edit": "تعديل",
+        "cancel": "إلغاء"
       },
       "table": {
         "title": "العنوان",
@@ -339,6 +427,172 @@
         "LIFTING": "الرفع",
         "ROADWORKS": "أعمال الطرق",
         "AGRICULTURE": "الزراعة"
+      },
+      "created": "تم إنشاء المعدة",
+      "updated": "تم تحديث المعدة",
+      "newTitle": "إضافة معدة",
+      "newSubtitle": "أكمل الحقول المطلوبة لإنشاء معدة جديدة.",
+      "editTitle": "تعديل المعدة",
+      "editSubtitle": "قم بتحديث الحقول واحفظ التغييرات.",
+      "imagesTitle": "الصور",
+      "imagesSubtitle": "إدارة صور المعدة",
+      "imagesHint": "قم برفع صور JPG/PNG حتى 5MB.",
+      "noImages": "لا توجد صور",
+      "validation": {
+        "required": "مطلوب"
+      },
+      "dialogs": {
+        "typeToConfirmPlaceholder": "اكتب العنوان للتأكيد",
+        "typeToConfirmMessage": "يرجى كتابة عنوان المعدة تمامًا لتأكيد الحذف."
+      }
+    },
+    "users": {
+      "title": "المستخدمون",
+      "subtitle": "إدارة حسابات المستخدمين.",
+      "labels": {
+        "search": "بحث",
+        "searchPlaceholder": "ابحث بالاسم أو اسم المستخدم أو البريد الإلكتروني...",
+        "status": "الحالة",
+        "all": "الكل"
+      },
+      "buttons": {
+        "apply": "تطبيق",
+        "reset": "إعادة تعيين",
+        "delete": "حذف",
+        "activate": "تفعيل",
+        "deactivate": "تعطيل",
+        "cancel": "إلغاء"
+      },
+      "table": {
+        "name": "الاسم",
+        "username": "اسم المستخدم",
+        "email": "البريد الإلكتروني",
+        "status": "الحالة",
+        "actions": "إجراءات"
+      },
+      "pagination": {
+        "pageOf": "الصفحة {page} من {total}",
+        "previous": "السابق",
+        "next": "التالي"
+      },
+      "empty": "لا يوجد مستخدمون",
+      "error": "فشل تحميل المستخدمين",
+      "toasts": {
+        "statusChanged": "تم تحديث الحالة",
+        "userDeleted": "تم حذف المستخدم"
+      },
+      "status": {
+        "active": "نشط",
+        "inactive": "غير نشط"
+      },
+      "dialogs": {
+        "deleteTitle": "حذف المستخدم",
+        "deleteDescription": "لا يمكن التراجع عن هذه العملية."
+      }
+    },
+    "refs": {
+      "brands": {
+        "title": "العلامات التجارية",
+        "subtitle": "إدارة العلامات المرجعية المستخدمة في المعدات.",
+        "form": {
+          "nameLabel": "اسم العلامة",
+          "namePlaceholder": "اسم علامة جديد",
+          "add": "إضافة",
+          "adding": "جارٍ الإضافة…"
+        },
+        "list": {
+          "title": "كل العلامات",
+          "refresh": "تحديث",
+          "loading": "جارٍ التحميل…",
+          "error": "فشل التحميل",
+          "table": {
+            "name": "الاسم",
+            "created": "تاريخ الإنشاء"
+          },
+          "empty": "لا توجد علامات بعد"
+        },
+        "toasts": {
+          "created": "تم إنشاء العلامة"
+        }
+      },
+      "cities": {
+        "title": "المدن",
+        "subtitle": "إدارة المدن المرجعية. يرجى توفير الاسم بالإنجليزية والفرنسية على الأقل.",
+        "form": {
+          "nameEnLabel": "الاسم (EN)",
+          "nameFrLabel": "الاسم (FR)",
+          "nameArLabel": "الاسم (AR)",
+          "add": "إضافة",
+          "adding": "جارٍ الإضافة…"
+        },
+        "list": {
+          "title": "كل المدن",
+          "refresh": "تحديث",
+          "loading": "جارٍ التحميل…",
+          "error": "فشل التحميل",
+          "table": {
+            "name": "الاسم",
+            "created": "تاريخ الإنشاء"
+          },
+          "empty": "لا توجد مدن بعد"
+        },
+        "toasts": {
+          "created": "تم إنشاء المدينة"
+        }
+      },
+      "categories": {
+        "title": "الفئات",
+        "subtitle": "إدارة فئات المعدات.",
+        "form": {
+          "nameEnLabel": "الاسم (EN)",
+          "nameFrLabel": "الاسم (FR)",
+          "nameArLabel": "الاسم (AR)",
+          "foaLabel": "مجال النشاط",
+          "add": "إضافة",
+          "adding": "جارٍ الإضافة…"
+        },
+        "list": {
+          "title": "كل الفئات",
+          "refresh": "تحديث",
+          "loading": "جارٍ التحميل…",
+          "error": "فشل التحميل",
+          "table": {
+            "name": "الاسم",
+            "foa": "مجال النشاط"
+          },
+          "empty": "لا توجد فئات بعد"
+        },
+        "toasts": {
+          "created": "تم إنشاء الفئة"
+        }
+      },
+      "models": {
+        "title": "الطرازات",
+        "subtitle": "إدارة طرازات المعدات. ينتمي الطراز إلى علامة وفئة.",
+        "form": {
+          "nameLabel": "اسم الطراز",
+          "brandLabel": "العلامة",
+          "categoryLabel": "الفئة",
+          "selectBrand": "اختر علامة…",
+          "selectCategory": "اختر فئة…",
+          "add": "إضافة",
+          "adding": "جارٍ الإضافة…"
+        },
+        "list": {
+          "title": "كل الطرازات",
+          "refresh": "تحديث",
+          "loading": "جارٍ التحميل…",
+          "error": "فشل التحميل",
+          "table": {
+            "name": "الاسم",
+            "brand": "العلامة",
+            "category": "الفئة"
+          },
+          "empty": "لا توجد طرازات بعد"
+        },
+        "toasts": {
+          "created": "تم إنشاء الطراز"
+        }
       }
     }
   }

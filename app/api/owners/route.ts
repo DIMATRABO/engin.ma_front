@@ -8,10 +8,28 @@ export async function GET(req: NextRequest) {
     if (!token) return NextResponse.json({message: 'Unauthorized'}, {status: 401})
 
     try {
+        const getLocaleFromRequest = (rq: NextRequest): string | undefined => {
+            const cookieLoc = rq.cookies.get('NEXT_LOCALE')?.value
+            if (cookieLoc) return cookieLoc
+            const ref = rq.headers.get('referer')
+            try {
+                if (ref) {
+                    const u = new URL(ref)
+                    const seg = u.pathname.split('/').filter(Boolean)[0]
+                    if (seg) return seg
+                }
+            } catch {
+            }
+            const al = rq.headers.get('accept-language')
+            if (al) return al.split(',')[0]?.trim()
+            return undefined
+        }
+        const acceptLang = getLocaleFromRequest(req)
         const res = await fetch(`${base}/owners`, {
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${token}`,
+                ...(acceptLang ? {'Accept-Language': acceptLang} : {}),
             },
         })
         const contentType = res.headers.get('content-type') || ''

@@ -20,8 +20,8 @@ const DualRangeSlider = React.forwardRef<
     const [draggingIndex, setDraggingIndex] = React.useState<number | null>(null)
 
     // Add airspace above if we’re showing top labels
-    const rootSpaceClass = reserveTopSpace && label && labelPosition === 'top' ? 'pt-9' : undefined
-    const trackOffsetClass = reserveTopSpace && label && labelPosition === 'top' ? 'mt-2' : undefined
+    const rootSpaceClass = reserveTopSpace && label && labelPosition === 'top' ? 'pt-14' : undefined
+    const trackOffsetClass = reserveTopSpace && label && labelPosition === 'top' ? 'mt-3' : undefined
 
     return (
         <SliderPrimitive.Root
@@ -49,8 +49,8 @@ const DualRangeSlider = React.forwardRef<
                 <React.Fragment key={index}>
                     <SliderPrimitive.Thumb
                         className={cn(
-                            // Shadcn-like thumb: slightly larger, bordered, shadow, hover/focus states
-                            'relative block h-5 w-5 rounded-full border border-primary/70 bg-background shadow-sm',
+                            // Thumb made more visible: higher z-index, stronger contrast border and shadow
+                            'relative z-10 block h-5 w-5 rounded-full border border-foreground/40 bg-background shadow-md',
                             'transition-transform duration-150 ease-out will-change-transform hover:scale-105',
                             'ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                             'disabled:pointer-events-none disabled:opacity-50',
@@ -64,8 +64,8 @@ const DualRangeSlider = React.forwardRef<
                             <span
                                 className={cn(
                                     // Label bubble styles
-                                    'pointer-events-none absolute -translate-x-1/2 left-1/2 z-20',
-                                    labelPosition === 'top' && '-top-10',
+                                    'pointer-events-none absolute -translate-x-1/2 left-1/2 z-50',
+                                    labelPosition === 'top' && '-top-12',
                                     labelPosition === 'bottom' && 'top-7',
                                 )}
                             >

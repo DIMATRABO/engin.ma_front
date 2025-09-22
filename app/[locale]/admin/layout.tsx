@@ -9,7 +9,7 @@ function cx(...classes: Array<string | false | null | undefined>) {
     return classes.filter(Boolean).join(' ')
 }
 
-type NavKey = 'dashboard' | 'users' | 'equipments' | 'brands' | 'cities' | 'models' | 'bookings'
+type NavKey = 'dashboard' | 'users' | 'equipments' | 'brands' | 'cities' | 'categories' | 'models' | 'bookings'
 const navItems: Array<{ href: () => string; labelKey: NavKey; match: (p: string, loc: string) => boolean }> = [
     {
         href: () => `/admin`,
@@ -35,6 +35,11 @@ const navItems: Array<{ href: () => string; labelKey: NavKey; match: (p: string,
         href: () => `/admin/cities`,
         labelKey: 'cities',
         match: (p: string, loc: string) => p.startsWith(`/${loc}/admin/cities`)
+    },
+    {
+        href: () => `/admin/categories`,
+        labelKey: 'categories',
+        match: (p: string, loc: string) => p.startsWith(`/${loc}/admin/categories`)
     },
     {
         href: () => `/admin/models`,
@@ -69,12 +74,6 @@ export default function AdminLayout({children}: { children: React.ReactNode }) {
         }
     }
 
-    // Do not render admin shell on the login route
-    const normalize = (p: string) => p.replace(/\/+$/, '')
-    const isLogin = normalize(pathname) === `/${locale}/admin/login`
-    if (isLogin) {
-        return <>{children}</>
-    }
 
     return (
         <div className="min-h-screen bg-slate-50 flex">

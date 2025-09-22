@@ -4,48 +4,57 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="687d8bb4-2ff7-463e-b1d7-4c71a56e2b80" name="Changes" comment="hardcode endpoint base url">
+    <list default="true" id="687d8bb4-2ff7-463e-b1d7-4c71a56e2b80" name="Changes" comment="implement equipments fetching and filtering">
       <change afterPath="$PROJECT_DIR$/ADMIN_PHASES.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/[locale]/admin/login/page.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/[locale]/admin/page.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/api/auth/login/route.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/api/auth/logout/route.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/global-error.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/not-found.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/components/common/LanguageSwitcher.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/components/providers/AppProviders.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/env.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/seo.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/services/auth.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/services/bookings.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/services/equipments.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/services/http.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/services/images.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/services/refs.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/services/users.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/[locale]/admin/equipments/[equipment_id]/edit/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/[locale]/admin/equipments/[equipment_id]/images/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/[locale]/admin/equipments/new/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/api/equipment-images/[filename]/route.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/api/equipment-images/add/route.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/api/equipment-images/by-equipment/[equipment_id]/route.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/api/equipment-images/route.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/api/equipments/[equipment_id]/route.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/api/equipments/route.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/api/equipments/update/route.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/api/users/change_status/route.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/api/users/delete/route.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/components/ui/ConfirmDialog.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/components/ui/Portal.tsx" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/swagger.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/types/api.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/[locale]/landing/page.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/[locale]/admin/bookings/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/[locale]/admin/bookings/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/[locale]/admin/brands/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/[locale]/admin/brands/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/[locale]/admin/cities/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/[locale]/admin/cities/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/[locale]/admin/equipments/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/[locale]/admin/equipments/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/[locale]/admin/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/[locale]/admin/layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/[locale]/admin/models/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/[locale]/admin/models/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/[locale]/admin/users/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/[locale]/admin/users/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/[locale]/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/[locale]/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/[locale]/marketing/page.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/lead/route.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/machine/route.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/stats/route.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/ui/ContactLanding.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ui/ContactLanding.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/auth/login/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/auth/login/route.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/equipments/filter/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/equipments/filter/route.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/owners/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/owners/route.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/pilotes/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/pilotes/route.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/users/list/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/users/list/route.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/layout.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/ui/DualRangeSlider.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ui/DualRangeSlider.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/messages/ar.json" beforeDir="false" afterPath="$PROJECT_DIR$/messages/ar.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/messages/en.json" beforeDir="false" afterPath="$PROJECT_DIR$/messages/en.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/messages/fr.json" beforeDir="false" afterPath="$PROJECT_DIR$/messages/fr.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/middleware.ts" beforeDir="false" afterPath="$PROJECT_DIR$/middleware.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/bookings.ts" beforeDir="false" afterPath="$PROJECT_DIR$/services/bookings.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/http.ts" beforeDir="false" afterPath="$PROJECT_DIR$/services/http.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/images.ts" beforeDir="false" afterPath="$PROJECT_DIR$/services/images.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/refs.ts" beforeDir="false" afterPath="$PROJECT_DIR$/services/refs.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager">
+    <option name="groupingKeys">
+      <option value="directory" />
+      <option value="repository" />
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -100,12 +109,17 @@
     &quot;nodejs_interpreter_path&quot;: &quot;/home/adnan/.nvm/versions/node/v22.11.0/bin/node&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;npm.Next.js: server-side.executor&quot;: &quot;Run&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;settings.nodejs&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;junie.allowlist&quot;,
     &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
     &quot;ts.external.directory.path&quot;: &quot;/home/adnan/WebstormProjects/engin.ma_front/node_modules/typescript/lib&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
+  </component>
   <component name="RunManager" selected="npm.Next.js: server-side">
     <configuration name="Next.js: debug client-side" type="JavascriptDebugType" uri="http://localhost:3000/">
       <method v="2" />
@@ -125,7 +139,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-b598e85cdad2-JavaScript-WS-252.25557.126" />
+        <option value="bundled-js-predefined-d6986cc7102b-9c94529fcfe0-JavaScript-WS-252.26199.162" />
       </set>
     </attachedChunks>
   </component>
@@ -152,6 +166,22 @@
       <workItem from="1756655663220" duration="5176000" />
       <workItem from="1756661936344" duration="11804000" />
       <workItem from="1756756630914" duration="2462000" />
+      <workItem from="1757445318179" duration="5555000" />
+      <workItem from="1757452922159" duration="1492000" />
+      <workItem from="1757494455925" duration="40000" />
+      <workItem from="1757869581788" duration="635000" />
+      <workItem from="1757870246209" duration="370000" />
+      <workItem from="1757870643155" duration="4936000" />
+      <workItem from="1757877026732" duration="250000" />
+      <workItem from="1757958279682" duration="861000" />
+      <workItem from="1758046211677" duration="136000" />
+      <workItem from="1758046383101" duration="4760000" />
+      <workItem from="1758135627957" duration="7607000" />
+      <workItem from="1758216566038" duration="7529000" />
+      <workItem from="1758361169386" duration="701000" />
+      <workItem from="1758475704895" duration="149000" />
+      <workItem from="1758476988664" duration="6088000" />
+      <workItem from="1758531755938" duration="2167000" />
     </task>
     <task id="LOCAL-00001" summary="add webstorm stuff">
       <option name="closed" value="true" />
@@ -177,7 +207,15 @@
       <option name="project" value="LOCAL" />
       <updated>1755037414327</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="implement equipments fetching and filtering">
+      <option name="closed" value="true" />
+      <created>1757441998510</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1757441998510</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -200,7 +238,8 @@
     <MESSAGE value="add webstorm stuff" />
     <MESSAGE value="fix build error" />
     <MESSAGE value="hardcode endpoint base url" />
-    <option name="LAST_COMMIT_MESSAGE" value="hardcode endpoint base url" />
+    <MESSAGE value="implement equipments fetching and filtering" />
+    <option name="LAST_COMMIT_MESSAGE" value="implement equipments fetching and filtering" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="NON_MODAL_COMMIT_POSTPONE_SLOW_CHECKS" value="false" />

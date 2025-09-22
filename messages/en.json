@@ -288,8 +288,78 @@
       "equipments": "Equipments",
       "brands": "Brands",
       "cities": "Cities",
+      "categories": "Categories",
       "models": "Models",
       "bookings": "Bookings"
+    },
+    "bookings": {
+      "title": "Bookings",
+      "subtitle": "View and manage bookings.",
+      "labels": {
+        "status": "Status",
+        "equipment": "Equipment",
+        "startFrom": "Start from",
+        "endUntil": "End until",
+        "client": "Client",
+        "pilot": "Pilot",
+        "startDate": "Start date",
+        "endDate": "End date",
+        "all": "All"
+      },
+      "placeholders": {
+        "selectClient": "Select client…",
+        "selectEquipment": "Select equipment…",
+        "selectPilot": "Select pilot…"
+      },
+      "buttons": {
+        "new": "New Booking",
+        "reset": "Reset",
+        "retry": "Retry",
+        "cancel": "Cancel",
+        "create": "Create",
+        "update": "Update",
+        "saving": "Saving…",
+        "view": "View",
+        "edit": "Edit",
+        "confirm": "Confirm",
+        "complete": "Complete",
+        "close": "Close"
+      },
+      "table": {
+        "client": "Client",
+        "equipment": "Equipment",
+        "pilot": "Pilot",
+        "start": "Start",
+        "end": "End",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "newTitle": "New Booking",
+      "newSubtitle": "Fill the required fields to create a new booking.",
+      "editTitle": "Edit Booking",
+      "editSubtitle": "Update dates or status and save.",
+      "detailsTitle": "Booking details",
+      "empty": "No bookings found",
+      "error": "Failed to load bookings",
+      "toasts": {
+        "created": "Booking created",
+        "updated": "Booking updated",
+        "statusUpdated": "Status updated"
+      },
+      "validation": {
+        "required": "Required",
+        "endAfterStart": "End date must be after start date"
+      },
+      "loading": "Loading…",
+      "errorCreate": "Failed to create booking",
+      "errorUpdate": "Failed to update booking",
+      "errorUpdateStatus": "Failed to update status",
+      "status": {
+        "PENDING": "Pending",
+        "CONFIRMED": "Confirmed",
+        "CANCELED": "Canceled",
+        "COMPLETED": "Completed"
+      }
     },
     "topbar": {
       "admin": "Admin",
@@ -307,6 +377,11 @@
         "owner": "Owner",
         "pilot": "Pilot",
         "fieldsOfActivity": "Fields of activity",
+        "category": "Category",
+        "description": "Description",
+        "modelYear": "Model year",
+        "constructionYear": "Construction year",
+        "customsYear": "Customs clearance year",
         "modelYearRange": "Model year range",
         "constructionYearRange": "Construction year range",
         "customsYearRange": "Customs clearance year range",
@@ -316,11 +391,24 @@
         "allOwners": "All owners",
         "allPilots": "All pilots"
       },
+      "helpers": {
+        "foaHint": "Select the main activity this equipment is used for."
+      },
       "buttons": {
         "apply": "Apply",
         "reset": "Reset",
         "retry": "Retry",
-        "clearFilters": "Clear filters"
+        "clearFilters": "Clear filters",
+        "new": "New",
+        "images": "Images",
+        "delete": "Delete",
+        "confirmDelete": "Are you sure?",
+        "upload": "Upload",
+        "saving": "Saving...",
+        "create": "Create",
+        "update": "Update",
+        "edit": "Edit",
+        "cancel": "Cancel"
       },
       "table": {
         "title": "Title",
@@ -346,6 +434,172 @@
         "LIFTING": "Lifting",
         "ROADWORKS": "Roadworks",
         "AGRICULTURE": "Agriculture"
+      },
+      "created": "Equipment created",
+      "updated": "Equipment updated",
+      "newTitle": "New Equipment",
+      "newSubtitle": "Fill the required fields to create a new equipment.",
+      "editTitle": "Edit Equipment",
+      "editSubtitle": "Update the fields and save your changes.",
+      "imagesTitle": "Images",
+      "imagesSubtitle": "Manage equipment images",
+      "imagesHint": "Upload JPG/PNG up to 5MB.",
+      "noImages": "No images yet",
+      "validation": {
+        "required": "Required"
+      },
+      "dialogs": {
+        "typeToConfirmPlaceholder": "Type the title to confirm",
+        "typeToConfirmMessage": "Please type the equipment title exactly to confirm deletion."
+      }
+    },
+    "users": {
+      "title": "Users",
+      "subtitle": "Manage user accounts.",
+      "labels": {
+        "search": "Search",
+        "searchPlaceholder": "Search by name, username or email...",
+        "status": "Status",
+        "all": "All"
+      },
+      "buttons": {
+        "apply": "Apply",
+        "reset": "Reset",
+        "delete": "Delete",
+        "activate": "Activate",
+        "deactivate": "Deactivate",
+        "cancel": "Cancel"
+      },
+      "table": {
+        "name": "Name",
+        "username": "Username",
+        "email": "Email",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "pagination": {
+        "pageOf": "Page {page} of {total}",
+        "previous": "Previous",
+        "next": "Next"
+      },
+      "empty": "No users found",
+      "error": "Failed to load users",
+      "toasts": {
+        "statusChanged": "Status updated",
+        "userDeleted": "User deleted"
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "dialogs": {
+        "deleteTitle": "Delete user",
+        "deleteDescription": "This action cannot be undone."
+      }
+    },
+    "refs": {
+      "brands": {
+        "title": "Brands",
+        "subtitle": "Manage reference brands used in equipments.",
+        "form": {
+          "nameLabel": "Brand name",
+          "namePlaceholder": "New brand name",
+          "add": "Add",
+          "adding": "Adding…"
+        },
+        "list": {
+          "title": "All brands",
+          "refresh": "Refresh",
+          "loading": "Loading…",
+          "error": "Failed to load",
+          "table": {
+            "name": "Name",
+            "created": "Created"
+          },
+          "empty": "No brands yet"
+        },
+        "toasts": {
+          "created": "Brand created"
+        }
+      },
+      "cities": {
+        "title": "Cities",
+        "subtitle": "Manage reference cities. Provide at least English and French names.",
+        "form": {
+          "nameEnLabel": "Name (EN)",
+          "nameFrLabel": "Name (FR)",
+          "nameArLabel": "Name (AR)",
+          "add": "Add",
+          "adding": "Adding…"
+        },
+        "list": {
+          "title": "All cities",
+          "refresh": "Refresh",
+          "loading": "Loading…",
+          "error": "Failed to load",
+          "table": {
+            "name": "Name",
+            "created": "Created"
+          },
+          "empty": "No cities yet"
+        },
+        "toasts": {
+          "created": "City created"
+        }
+      },
+      "categories": {
+        "title": "Categories",
+        "subtitle": "Manage equipment categories.",
+        "form": {
+          "nameEnLabel": "Name (EN)",
+          "nameFrLabel": "Name (FR)",
+          "nameArLabel": "Name (AR)",
+          "foaLabel": "Field of activity",
+          "add": "Add",
+          "adding": "Adding…"
+        },
+        "list": {
+          "title": "All categories",
+          "refresh": "Refresh",
+          "loading": "Loading…",
+          "error": "Failed to load",
+          "table": {
+            "name": "Name",
+            "foa": "Field of activity"
+          },
+          "empty": "No categories yet"
+        },
+        "toasts": {
+          "created": "Category created"
+        }
+      },
+      "models": {
+        "title": "Models",
+        "subtitle": "Manage equipment models. A model belongs to a brand and a category.",
+        "form": {
+          "nameLabel": "Model name",
+          "brandLabel": "Brand",
+          "categoryLabel": "Category",
+          "selectBrand": "Select brand…",
+          "selectCategory": "Select category…",
+          "add": "Add",
+          "adding": "Adding…"
+        },
+        "list": {
+          "title": "All models",
+          "refresh": "Refresh",
+          "loading": "Loading…",
+          "error": "Failed to load",
+          "table": {
+            "name": "Name",
+            "brand": "Brand",
+            "category": "Category"
+          },
+          "empty": "No models yet"
+        },
+        "toasts": {
+          "created": "Model created"
+        }
       }
     }
   }
