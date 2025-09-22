@@ -281,8 +281,78 @@
       "equipments": "Équipements",
       "brands": "Marques",
       "cities": "Villes",
+      "categories": "Catégories",
       "models": "Modèles",
       "bookings": "Réservations"
+    },
+    "bookings": {
+      "title": "Réservations",
+      "subtitle": "Consulter et gérer le cycle des réservations.",
+      "labels": {
+        "status": "Statut",
+        "equipment": "Équipement",
+        "startFrom": "Début à partir du",
+        "endUntil": "Fin jusqu'au",
+        "client": "Client",
+        "pilot": "Pilote",
+        "startDate": "Date de début",
+        "endDate": "Date de fin",
+        "all": "Tous"
+      },
+      "placeholders": {
+        "selectClient": "Sélectionner un client…",
+        "selectEquipment": "Sélectionner un équipement…",
+        "selectPilot": "Sélectionner un pilote…"
+      },
+      "buttons": {
+        "new": "Nouvelle réservation",
+        "reset": "Réinitialiser",
+        "retry": "Réessayer",
+        "cancel": "Annuler",
+        "create": "Créer",
+        "update": "Mettre à jour",
+        "saving": "Enregistrement…",
+        "view": "Voir",
+        "edit": "Modifier",
+        "confirm": "Confirmer",
+        "complete": "Terminer",
+        "close": "Fermer"
+      },
+      "table": {
+        "client": "Client",
+        "equipment": "Équipement",
+        "pilot": "Pilote",
+        "start": "Début",
+        "end": "Fin",
+        "status": "Statut",
+        "actions": "Actions"
+      },
+      "newTitle": "Nouvelle réservation",
+      "newSubtitle": "Renseignez les champs obligatoires pour créer une réservation.",
+      "editTitle": "Modifier la réservation",
+      "editSubtitle": "Mettez à jour les dates ou le statut puis enregistrez.",
+      "detailsTitle": "Détails de la réservation",
+      "empty": "Aucune réservation trouvée",
+      "error": "Échec du chargement des réservations",
+      "toasts": {
+        "created": "Réservation créée",
+        "updated": "Réservation mise à jour",
+        "statusUpdated": "Statut mis à jour"
+      },
+      "validation": {
+        "required": "Obligatoire",
+        "endAfterStart": "La date de fin doit être postérieure à la date de début"
+      },
+      "loading": "Chargement…",
+      "errorCreate": "Échec de création de la réservation",
+      "errorUpdate": "Échec de mise à jour de la réservation",
+      "errorUpdateStatus": "Échec de mise à jour du statut",
+      "status": {
+        "PENDING": "En attente",
+        "CONFIRMED": "Confirmée",
+        "CANCELED": "Annulée",
+        "COMPLETED": "Terminée"
+      }
     },
     "topbar": {
       "admin": "Admin",
@@ -300,17 +370,38 @@
         "owner": "Propriétaire",
         "pilot": "Pilote",
         "fieldsOfActivity": "Domaines d'activité",
+        "category": "Catégorie",
+        "description": "Description",
+        "modelYear": "Année du modèle",
+        "constructionYear": "Année de construction",
+        "customsYear": "Année de dédouanement",
         "modelYearRange": "Plage année du modèle",
         "constructionYearRange": "Plage année de construction",
         "customsYearRange": "Plage année de dédouanement",
         "priceRange": "Plage de prix",
-        "ratingRange": "Plage de note"
+        "ratingRange": "Plage de note",
+        "all": "Tous",
+        "allOwners": "Tous les propriétaires",
+        "allPilots": "Tous les pilotes"
+      },
+      "helpers": {
+        "foaHint": "Sélectionnez l'activité principale pour laquelle cet équipement est utilisé."
       },
       "buttons": {
         "apply": "Appliquer",
         "reset": "Réinitialiser",
         "retry": "Réessayer",
-        "clearFilters": "Effacer les filtres"
+        "clearFilters": "Effacer les filtres",
+        "new": "Nouveau",
+        "images": "Images",
+        "delete": "Supprimer",
+        "confirmDelete": "Êtes-vous sûr ?",
+        "upload": "Téléverser",
+        "saving": "Enregistrement…",
+        "create": "Créer",
+        "update": "Mettre à jour",
+        "edit": "Modifier",
+        "cancel": "Annuler"
       },
       "table": {
         "title": "Titre",
@@ -329,6 +420,179 @@
         "pageOf": "Page {page} sur {total}",
         "previous": "Précédent",
         "next": "Suivant"
+      },
+      "foa": {
+        "CONSTRUCTION": "Construction",
+        "TRANSPORT": "Transport",
+        "LIFTING": "Levage",
+        "ROADWORKS": "Travaux routiers",
+        "AGRICULTURE": "Agriculture"
+      },
+      "created": "Équipement créé",
+      "updated": "Équipement mis à jour",
+      "newTitle": "Nouvel équipement",
+      "newSubtitle": "Remplissez les champs requis pour créer un nouvel équipement.",
+      "editTitle": "Modifier l'équipement",
+      "editSubtitle": "Mettez à jour les champs puis enregistrez vos changements.",
+      "imagesTitle": "Images",
+      "imagesSubtitle": "Gérer les images de l'équipement",
+      "imagesHint": "Téléversez des images JPG/PNG jusqu'à 5 Mo.",
+      "noImages": "Aucune image",
+      "validation": {
+        "required": "Requis"
+      },
+      "dialogs": {
+        "typeToConfirmPlaceholder": "Tapez le titre pour confirmer",
+        "typeToConfirmMessage": "Veuillez saisir exactement le titre de l'équipement pour confirmer la suppression."
+      }
+    },
+    "users": {
+      "title": "Utilisateurs",
+      "subtitle": "Gérer les comptes utilisateurs.",
+      "labels": {
+        "search": "Recherche",
+        "searchPlaceholder": "Rechercher par nom, nom d'utilisateur ou e-mail...",
+        "status": "Statut",
+        "all": "Tous"
+      },
+      "buttons": {
+        "apply": "Appliquer",
+        "reset": "Réinitialiser",
+        "delete": "Supprimer",
+        "activate": "Activer",
+        "deactivate": "Désactiver",
+        "cancel": "Annuler"
+      },
+      "table": {
+        "name": "Nom",
+        "username": "Nom d'utilisateur",
+        "email": "E-mail",
+        "status": "Statut",
+        "actions": "Actions"
+      },
+      "pagination": {
+        "pageOf": "Page {page} sur {total}",
+        "previous": "Précédent",
+        "next": "Suivant"
+      },
+      "empty": "Aucun utilisateur trouvé",
+      "error": "Échec du chargement des utilisateurs",
+      "toasts": {
+        "statusChanged": "Statut mis à jour",
+        "userDeleted": "Utilisateur supprimé"
+      },
+      "status": {
+        "active": "Actif",
+        "inactive": "Inactif"
+      },
+      "dialogs": {
+        "deleteTitle": "Supprimer l'utilisateur",
+        "deleteDescription": "Cette action est irréversible."
+      }
+    },
+    "refs": {
+      "brands": {
+        "title": "Marques",
+        "subtitle": "Gérer les marques de référence utilisées dans les équipements.",
+        "form": {
+          "nameLabel": "Nom de la marque",
+          "namePlaceholder": "Nouvelle marque",
+          "add": "Ajouter",
+          "adding": "Ajout…"
+        },
+        "list": {
+          "title": "Toutes les marques",
+          "refresh": "Rafraîchir",
+          "loading": "Chargement…",
+          "error": "Échec du chargement",
+          "table": {
+            "name": "Nom",
+            "created": "Créée"
+          },
+          "empty": "Aucune marque"
+        },
+        "toasts": {
+          "created": "Marque créée"
+        }
+      },
+      "cities": {
+        "title": "Villes",
+        "subtitle": "Gérer les villes de référence. Fournissez au moins les noms en anglais et en français.",
+        "form": {
+          "nameEnLabel": "Nom (EN)",
+          "nameFrLabel": "Nom (FR)",
+          "nameArLabel": "Nom (AR)",
+          "add": "Ajouter",
+          "adding": "Ajout…"
+        },
+        "list": {
+          "title": "Toutes les villes",
+          "refresh": "Rafraîchir",
+          "loading": "Chargement…",
+          "error": "Échec du chargement",
+          "table": {
+            "name": "Nom",
+            "created": "Créée"
+          },
+          "empty": "Aucune ville"
+        },
+        "toasts": {
+          "created": "Ville créée"
+        }
+      },
+      "categories": {
+        "title": "Catégories",
+        "subtitle": "Gérer les catégories d'équipement.",
+        "form": {
+          "nameEnLabel": "Nom (EN)",
+          "nameFrLabel": "Nom (FR)",
+          "nameArLabel": "Nom (AR)",
+          "foaLabel": "Domaine d'activité",
+          "add": "Ajouter",
+          "adding": "Ajout…"
+        },
+        "list": {
+          "title": "Toutes les catégories",
+          "refresh": "Rafraîchir",
+          "loading": "Chargement…",
+          "error": "Échec du chargement",
+          "table": {
+            "name": "Nom",
+            "foa": "Domaine d'activité"
+          },
+          "empty": "Aucune catégorie"
+        },
+        "toasts": {
+          "created": "Catégorie créée"
+        }
+      },
+      "models": {
+        "title": "Modèles",
+        "subtitle": "Gérer les modèles d'équipement. Un modèle appartient à une marque et une catégorie.",
+        "form": {
+          "nameLabel": "Nom du modèle",
+          "brandLabel": "Marque",
+          "categoryLabel": "Catégorie",
+          "selectBrand": "Sélectionnez une marque…",
+          "selectCategory": "Sélectionnez une catégorie…",
+          "add": "Ajouter",
+          "adding": "Ajout…"
+        },
+        "list": {
+          "title": "Tous les modèles",
+          "refresh": "Rafraîchir",
+          "loading": "Chargement…",
+          "error": "Échec du chargement",
+          "table": {
+            "name": "Nom",
+            "brand": "Marque",
+            "category": "Catégorie"
+          },
+          "empty": "Aucun modèle"
+        },
+        "toasts": {
+          "created": "Modèle créé"
+        }
       }
     }
   }

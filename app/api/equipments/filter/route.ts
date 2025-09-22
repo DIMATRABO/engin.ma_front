@@ -19,13 +19,44 @@ export async function POST(req: NextRequest) {
     }
 
     try {
+        const getLocaleFromRequest = (rq: NextRequest): string | undefined => {
+            const cookieLoc = rq.cookies.get('NEXT_LOCALE')?.value
+            if (cookieLoc) return cookieLoc
+            const ref = rq.headers.get('referer')
+            try {
+                if (ref) {
+                    const u = new URL(ref)
+                    const seg = u.pathname.split('/').filter(Boolean)[0]
+                    if (seg) return seg
+                }
+            } catch {
+            }
+            const al = rq.headers.get('accept-language')
+            if (al) return al.split(',')[0]?.trim()
+            return undefined
+        }
+        const acceptLang = getLocaleFromRequest(req)
+        const payload = (() => {
+            const obj = (body && typeof body === 'object') ? {...(body as Record<string, unknown>)} : {}
+            const s = (obj as any).sort
+            const valid = s && typeof s === 'object' && typeof s.key === 'string' && s.key && (s.order === 'asc' || s.order === 'desc')
+            if (!valid) {
+                ;(obj as any).sort = {key: 'title', order: 'asc'}
+            }
+            const q = (obj as any).query
+            if (typeof q !== 'string') {
+                ;(obj as any).query = ''
+            }
+            return obj
+        })()
         const res = await fetch(`${base}/equipments/filter`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`,
+                ...(acceptLang ? {'Accept-Language': acceptLang} : {}),
             },
-            body: body != null ? JSON.stringify(body) : undefined,
+            body: JSON.stringify(payload),
         })
 
         const contentType = res.headers.get('content-type') || ''
@@ -46,7 +77,7 @@ export async function POST(req: NextRequest) {
         // Normalize response to FE shape: { items, total, pageIndex, pageSize }
         try {
             type ReqBody = { pageIndex?: number; pageSize?: number; [k: string]: unknown }
-            const rb = (body && typeof body === 'object') ? (body as ReqBody) : undefined
+            const rb = (payload && typeof payload === 'object') ? (payload as ReqBody) : undefined
             const reqPageIndex = typeof rb?.pageIndex === 'number' ? rb?.pageIndex : undefined
             const reqPageSize = typeof rb?.pageSize === 'number' ? rb?.pageSize : undefined
 

@@ -20,11 +20,16 @@ function buildUrl(path: string, query?: RequestOptions['query'], baseOverride?: 
     const base = baseOverride ?? getApiBaseUrl();
 
     if (!isAbsolute) {
-        if (!base) {
-            throw new Error('API base URL is not configured. Set NEXT_PUBLIC_API_BASE_URL in your env.');
+        // Allow calls to our own Next.js API routes (same-origin) without prepending external API base
+        if (path.startsWith('/api/')) {
+            // leave path as-is so fetch will hit the Next.js route on the current origin
+        } else {
+            if (!base) {
+                throw new Error('API base URL is not configured. Set NEXT_PUBLIC_API_BASE_URL in your env.');
+            }
+            // Ensure single slash between base and path
+            path = `${base}${path.startsWith('/') ? '' : '/'}${path}`;
         }
-        // Ensure single slash between base and path
-        path = `${base}${path.startsWith('/') ? '' : '/'}${path}`;
     }
 
     if (!query) return path;
@@ -59,11 +64,34 @@ async function request<TResp = unknown, TBody = unknown>(opts: RequestOptions<TB
         }
     }
 
+    function getActiveLocale(): string | undefined {
+        try {
+            if (typeof document !== 'undefined') {
+                const lang = document.documentElement?.getAttribute('lang') || ''
+                if (lang) return lang
+                const m = document.cookie.match(/(?:^|; )NEXT_LOCALE=([^;]+)/)
+                if (m && m[1]) return decodeURIComponent(m[1])
+            }
+            // Fallback to navigator.language
+            if (typeof navigator !== 'undefined' && navigator.language) {
+                const first = navigator.language.split(',')[0]?.trim()
+                if (first) return first
+            }
+        } catch {
+            // ignore
+        }
+        return undefined
+    }
+
+    const activeLocale = getActiveLocale()
+
     const init: RequestInit = {
         method,
         headers: {
             // Only set JSON content-type when sending a JSON body
             ...(!usingFormData && body != null ? {'Content-Type': 'application/json'} : {}),
+            // Attach active locale if not explicitly provided
+            ...(activeLocale && !(headers && 'Accept-Language' in headers) ? {'Accept-Language': activeLocale} : {}),
             ...headers,
         },
         credentials,

@@ -1,11 +1,11 @@
-// app/layout.tsx
-import './globals.css';
-import {ReactNode} from 'react';
-import {defaultMetadata} from '@/lib/seo';
-
-export const metadata = defaultMetadata;
-
-export default function RootLayout({ children }: { children: ReactNode }) {
-  // Intentionally return only children to let locale layout wrap html/body via next-intl
-  return children;
+export default function RootLayout({
+                                       children,
+                                   }: {
+    children: React.ReactNode;
+}) {
+    return (
+        <html lang="en" suppressHydrationWarning>
+        <body>{children}</body>
+        </html>
+    );
 }

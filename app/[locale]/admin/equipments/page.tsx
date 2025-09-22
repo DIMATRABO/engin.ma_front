@@ -1,9 +1,16 @@
 'use client'
 
 import React from 'react'
-import {useQuery} from '@tanstack/react-query'
+import {useQuery, useQueryClient} from '@tanstack/react-query'
 import {refsService} from '@/services/refs'
-import {useTranslations} from 'next-intl'
+import {useLocale, useTranslations} from 'next-intl'
+import {DualRangeSlider} from '@/components/ui/DualRangeSlider'
+import {usePathname, useRouter} from '@/i18n/navigation'
+import ConfirmDialog from '@/components/ui/ConfirmDialog'
+import Portal from '@/components/ui/Portal'
+import {toast} from 'sonner'
+import {useSearchParams} from 'next/navigation'
+import {z} from 'zod'
 
 // Reference item minimal shape
 interface RefItem {
@@ -24,8 +31,8 @@ interface UserItem {
 type Equipment = {
     id?: string
     title?: string
-    brand?: { name?: string } | string | null
-    model?: { name?: string } | string | null
+    brand?: { name?: string; id?: string; _id?: string } | string | null
+    model?: { name?: string; id?: string; _id?: string; brand_id?: string } | string | null
     city?: { name?: string } | string | null
     brand_name?: string
     model_name?: string
@@ -34,6 +41,7 @@ type Equipment = {
     is_available?: boolean
     [k: string]: unknown
 }
+
 
 type Paged<T> = { items?: T[]; total?: number; pageIndex?: number; pageSize?: number }
 
@@ -163,6 +171,25 @@ function getUserLabel(u?: UserItem): string {
 
 export default function AdminEquipmentsPage() {
     const t = useTranslations('admin.equipments')
+    const tFoa = useTranslations('admin.equipments.foa')
+    const router = useRouter()
+    const locale = useLocale()
+    const getRefName = React.useCallback((it: any): string => {
+        if (typeof it === 'string') return it
+        if (!it || typeof it !== 'object') return '-'
+        const key = locale === 'ar' ? 'name_ar' : (locale === 'fr' ? 'name_fr' : 'name_en')
+        const val = (it as any)[key] ?? (it as any).name ?? (it as any).label ?? (it as any).title
+        return typeof val === 'string' && val.trim().length > 0 ? val : '-'
+    }, [locale])
+    const getLocalizedName = React.useCallback((val: unknown): string => {
+        if (typeof val === 'string') return val
+        if (!val || typeof val !== 'object') return '-'
+        const key = locale === 'ar' ? 'name_ar' : (locale === 'fr' ? 'name_fr' : 'name_en')
+        const obj = val as any
+        const name = obj[key] ?? obj.name ?? obj.label ?? obj.title
+        return typeof name === 'string' && name.trim().length > 0 ? name : '-'
+    }, [locale])
+    const qc = useQueryClient()
     const [pageIndex, setPageIndex] = React.useState(1)
     const [pageSize] = React.useState(10)
 
@@ -170,38 +197,107 @@ export default function AdminEquipmentsPage() {
         query: '',
     })
 
+    const [applied, setApplied] = React.useState(filters)
+
+    // URL <-> state sync for query and page
+    const pathname = usePathname()
+    const searchParams = useSearchParams()
+    const initialized = React.useRef(false)
+
+    React.useEffect(() => {
+        if (initialized.current) return
+        const q = searchParams.get('q')
+        const pageParam = searchParams.get('page')
+        if (q != null) {
+            setFilters((f) => ({...f, query: q}))
+            setApplied((a) => ({...a, query: q}))
+        }
+        if (pageParam) {
+            const p = parseInt(pageParam, 10)
+            if (Number.isFinite(p) && p >= 1) setPageIndex(p)
+        }
+        initialized.current = true
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    React.useEffect(() => {
+        const sp = new URLSearchParams()
+        if (applied.query) sp.set('q', applied.query)
+        if (pageIndex > 1) sp.set('page', String(pageIndex))
+        const qs = sp.toString()
+        const url = qs ? `${pathname}?${qs}` : pathname
+        try {
+            router.replace(url)
+        } catch {
+        }
+    }, [applied.query, pageIndex, pathname, router])
+
     const {data: citiesData} = useQuery({
         queryKey: ['refs', 'cities'],
         queryFn: () => refsService.getCities().then((r) => r.data).catch(() => [] as unknown[]),
         staleTime: 60_000,
     })
 
-    // Load users to populate Pilot dropdown
-    const {data: usersData} = useQuery<UserItem[]>({
-        queryKey: ['users', 'list', {pageIndex: 1, pageSize: 100}],
+    // Additional refs for quick create/edit
+    const {data: brandsData} = useQuery({
+        queryKey: ['refs', 'brands'],
+        queryFn: () => refsService.getBrands().then((r) => r.data).catch(() => [] as unknown[]),
+        staleTime: 60_000,
+    })
+    const {data: modelsData} = useQuery({
+        queryKey: ['refs', 'models'],
+        queryFn: () => refsService.getModels().then((r) => r.data).catch(() => [] as unknown[]),
+        staleTime: 60_000,
+    })
+    const {data: categoriesData} = useQuery({
+        queryKey: ['refs', 'categories', locale],
+        queryFn: () => refsService.getCategories().then((r) => r.data).catch(() => [] as unknown[]),
+        staleTime: 60_000,
+    })
+
+    // Load fields of activity list
+    const {data: foaData} = useQuery<string[]>({
+        queryKey: ['refs', 'foa'],
+        queryFn: () => refsService.getFoa().then((r) => r.data).catch(() => [] as string[]),
+        staleTime: 60_000,
+    })
+    const foaList: string[] = Array.isArray(foaData) ? foaData : []
+
+    // Load owners list (for Owner dropdown)
+    const {data: ownersData} = useQuery<UserItem[]>({
+        queryKey: ['owners', 'list'],
         queryFn: async () => {
-            const body = {
-                pageIndex: 1,
-                pageSize: 100,
-                sort: {key: 'created_at', order: 'desc' as const},
-                query: '',
-            }
-            const res = await fetch('/api/users/list', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(body),
-            })
+            const res = await fetch('/api/owners', {method: 'GET'})
             if (!res.ok) {
-                // Surface backend error yet keep UI resilient
                 const err = await res.text().catch(() => '')
-                throw new Error(err || 'Failed to load users')
+                throw new Error(err || 'Failed to load owners')
             }
             const raw = await res.json().catch(() => ({} as unknown)) as unknown
-            if (raw && typeof raw === 'object') {
-                const obj = raw as { items?: unknown[]; data?: unknown[] }
-                const arr = Array.isArray(obj.items) ? obj.items : Array.isArray(obj.data) ? obj.data : []
-                // Normalize unknown entries into UserItem shape
-                return (arr as Array<Record<string, unknown>>).map((u) => ({
+            if (Array.isArray(raw)) {
+                return (raw as Array<Record<string, unknown>>).map((u) => ({
+                    id: typeof u.id === 'string' ? u.id : undefined,
+                    name: typeof u.name === 'string' ? u.name : undefined,
+                    username: typeof u.username === 'string' ? u.username : undefined,
+                    email: typeof u.email === 'string' ? u.email : undefined,
+                }))
+            }
+            return [] as UserItem[]
+        },
+        staleTime: 60_000,
+    })
+
+    // Load pilots list (for Pilot dropdown)
+    const {data: pilotsData} = useQuery<UserItem[]>({
+        queryKey: ['pilotes', 'list'],
+        queryFn: async () => {
+            const res = await fetch('/api/pilotes', {method: 'GET'})
+            if (!res.ok) {
+                const err = await res.text().catch(() => '')
+                throw new Error(err || 'Failed to load pilots')
+            }
+            const raw = await res.json().catch(() => ({} as unknown)) as unknown
+            if (Array.isArray(raw)) {
+                return (raw as Array<Record<string, unknown>>).map((u) => ({
                     id: typeof u.id === 'string' ? u.id : undefined,
                     name: typeof u.name === 'string' ? u.name : undefined,
                     username: typeof u.username === 'string' ? u.username : undefined,
@@ -214,9 +310,6 @@ export default function AdminEquipmentsPage() {
     })
 
 
-    const cities: RefItem[] = Array.isArray(citiesData) ? (citiesData as RefItem[]) : []
-
-    const [applied, setApplied] = React.useState(filters)
     const defaultSort = React.useMemo(() => ({key: 'title', order: 'asc' as const}), [])
 
     const {data, isFetching, isError, error, refetch} = useQuery({
@@ -250,6 +343,237 @@ export default function AdminEquipmentsPage() {
     const total = data?.total ?? 0
     const totalPages = Math.max(1, Math.ceil(total / pageSize))
 
+    // Delete confirmation dialog state
+    const [confirmOpen, setConfirmOpen] = React.useState(false)
+    const [toDeleteId, setToDeleteId] = React.useState<string | undefined>(undefined)
+    const [toDeleteTitle, setToDeleteTitle] = React.useState<string | undefined>(undefined)
+
+    // Quick add dialog state
+    const [addOpen, setAddOpen] = React.useState(false)
+    const [addSaving, setAddSaving] = React.useState(false)
+    const [addForm, setAddForm] = React.useState({
+        title: '',
+        brand_id: '',
+        model_id: '',
+        category_id: '',
+        city_id: '',
+        owner_id: '',
+        pilot_id: '',
+        fields_of_activity: '',
+        description: '',
+        is_available: true,
+        model_year: '' as string | number,
+        construction_year: '' as string | number,
+        date_of_customs_clearance: '' as string | number,
+        price_per_day: '' as string | number,
+    })
+    const [addErrors, setAddErrors] = React.useState<Record<string, string>>({})
+
+    // Quick edit drawer state
+    const [editOpen, setEditOpen] = React.useState(false)
+    const [editSaving, setEditSaving] = React.useState(false)
+    const [editId, setEditId] = React.useState<string | undefined>(undefined)
+    const [editForm, setEditForm] = React.useState({
+        title: '',
+        brand_id: '',
+        model_id: '',
+        category_id: '',
+        city_id: '',
+        owner_id: '',
+        pilot_id: '',
+        fields_of_activity: '',
+        description: '',
+        is_available: true,
+        model_year: '' as string | number,
+        construction_year: '' as string | number,
+        date_of_customs_clearance: '' as string | number,
+        price_per_day: '' as string | number,
+    })
+    const [editErrors, setEditErrors] = React.useState<Record<string, string>>({})
+
+    function validateEdit(): boolean {
+        const reqMsg = t('validation.required')
+        const schema = z.object({
+            title: z.string().min(1, reqMsg),
+            brand_id: z.string().min(1, reqMsg),
+            model_id: z.string().min(1, reqMsg),
+            category_id: z.string().min(1, reqMsg),
+            city_id: z.string().min(1, reqMsg),
+            owner_id: z.string().min(1, reqMsg),
+            pilot_id: z.string().min(1, reqMsg),
+            fields_of_activity: z.string().min(1, reqMsg),
+            description: z.string().min(1, reqMsg),
+            model_year: z.union([z.number(), z.string().min(1, reqMsg)]),
+            construction_year: z.union([z.number(), z.string().min(1, reqMsg)]),
+            date_of_customs_clearance: z.union([z.number(), z.string().min(1, reqMsg)]),
+            price_per_day: z.union([z.number(), z.string().min(1, reqMsg)]),
+        })
+        const res = schema.safeParse(editForm)
+        if (res.success) {
+            setEditErrors({});
+            return true
+        }
+        const e: Record<string, string> = {}
+        for (const issue of res.error.issues) {
+            const path = issue.path[0] as string
+            e[path] = issue.message || reqMsg
+        }
+        setEditErrors(e)
+        return false
+    }
+
+    async function handleEditSubmit(e: React.FormEvent) {
+        e.preventDefault()
+        if (!editId) return
+        if (!validateEdit()) return
+        const payload = {
+            id: editId,
+            title: editForm.title,
+            brand_id: editForm.brand_id,
+            model_id: editForm.model_id,
+            category_id: editForm.category_id,
+            city_id: editForm.city_id,
+            owner_id: editForm.owner_id,
+            pilot_id: editForm.pilot_id,
+            fields_of_activity: editForm.fields_of_activity,
+            description: editForm.description,
+            is_available: !!editForm.is_available,
+            model_year: Number(editForm.model_year),
+            construction_year: Number(editForm.construction_year),
+            date_of_customs_clearance: Number(editForm.date_of_customs_clearance),
+            price_per_day: Number(editForm.price_per_day),
+        }
+        setEditSaving(true)
+        try {
+            const res = await fetch('/api/equipments/update', {
+                method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload)
+            })
+            if (!res.ok) {
+                const msg = await res.text().catch(() => '')
+                toast.error(msg || t('error'))
+                return
+            }
+            toast.success(t('updated'))
+            try {
+                await qc.invalidateQueries({queryKey: ['equipments', 'filter']})
+            } catch {
+            }
+            setEditOpen(false)
+        } catch {
+            toast.error('Unexpected error')
+        } finally {
+            setEditSaving(false)
+        }
+    }
+
+    const brands: RefItem[] = Array.isArray(brandsData) ? (brandsData as RefItem[]) : []
+    const models: RefItem[] = Array.isArray(modelsData) ? (modelsData as RefItem[]) : []
+    const cities: RefItem[] = Array.isArray(citiesData) ? (citiesData as RefItem[]) : []
+    const categories: RefItem[] = Array.isArray(categoriesData) ? (categoriesData as RefItem[]) : []
+
+    function validateAdd(): boolean {
+        const reqMsg = t('validation.required')
+        const schema = z.object({
+            title: z.string().min(1, reqMsg),
+            brand_id: z.string().min(1, reqMsg),
+            model_id: z.string().min(1, reqMsg),
+            category_id: z.string().min(1, reqMsg),
+            city_id: z.string().min(1, reqMsg),
+            owner_id: z.string().min(1, reqMsg),
+            pilot_id: z.string().min(1, reqMsg),
+            fields_of_activity: z.string().min(1, reqMsg),
+            description: z.string().min(1, reqMsg),
+            model_year: z.union([z.number(), z.string().min(1, reqMsg)]),
+            construction_year: z.union([z.number(), z.string().min(1, reqMsg)]),
+            date_of_customs_clearance: z.union([z.number(), z.string().min(1, reqMsg)]),
+            price_per_day: z.union([z.number(), z.string().min(1, reqMsg)]),
+        })
+        const res = schema.safeParse(addForm)
+        if (res.success) {
+            setAddErrors({})
+            return true
+        }
+        const e: Record<string, string> = {}
+        for (const issue of res.error.issues) {
+            const path = issue.path[0] as string
+            e[path] = issue.message || reqMsg
+        }
+        setAddErrors(e)
+        return false
+    }
+
+    async function handleAddSubmit(e: React.FormEvent) {
+        e.preventDefault()
+        if (!validateAdd()) return
+        const payload = {
+            title: addForm.title,
+            brand_id: addForm.brand_id,
+            model_id: addForm.model_id,
+            category_id: addForm.category_id,
+            city_id: addForm.city_id,
+            owner_id: addForm.owner_id,
+            pilot_id: addForm.pilot_id,
+            fields_of_activity: addForm.fields_of_activity,
+            description: addForm.description,
+            is_available: !!addForm.is_available,
+            model_year: Number(addForm.model_year),
+            construction_year: Number(addForm.construction_year),
+            date_of_customs_clearance: Number(addForm.date_of_customs_clearance),
+            price_per_day: Number(addForm.price_per_day),
+        }
+        setAddSaving(true)
+        try {
+            const res = await fetch('/api/equipments', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload),
+            })
+            if (!res.ok) {
+                const raw = await res.text().catch(() => '')
+                toast.error(raw || t('error'))
+                return
+            }
+            toast.success(t('created'))
+            try {
+                await qc.invalidateQueries({queryKey: ['equipments', 'filter']})
+            } catch {
+            }
+            setAddOpen(false)
+            setAddForm({
+                title: '', brand_id: '', model_id: '', category_id: '', city_id: '', owner_id: '', pilot_id: '',
+                fields_of_activity: '', description: '', is_available: true,
+                model_year: '', construction_year: '', date_of_customs_clearance: '', price_per_day: ''
+            })
+        } catch {
+            toast.error('Unexpected error')
+        } finally {
+            setAddSaving(false)
+        }
+    }
+
+    async function doDelete() {
+        const id = toDeleteId
+        if (!id) return
+        try {
+            const res = await fetch(`/api/equipments/${encodeURIComponent(id)}`, {method: 'DELETE'})
+            if (!res.ok) {
+                const msg = await res.text().catch(() => '')
+                toast?.error(msg || t('error'))
+                return
+            }
+            toast?.success(t('buttons.delete'))
+            try {
+                await qc.invalidateQueries({queryKey: ['equipments', 'filter']})
+            } catch {
+            }
+        } catch {
+            // ignore but keep UI responsive
+        } finally {
+            setToDeleteId(undefined)
+            setToDeleteTitle(undefined)
+        }
+    }
+
     function applyFilters() {
         setPageIndex(1)
         setApplied(filters)
@@ -264,46 +588,52 @@ export default function AdminEquipmentsPage() {
     return (
         <div className="space-y-4">
             <div>
-                <h1 className="text-xl font-semibold">Equipments</h1>
-                <p className="text-sm text-slate-600">Browse and manage equipment inventory.</p>
+                <h1 className="text-2xl font-semibold tracking-tight">{t('title')}</h1>
+                <p className="text-sm text-muted-foreground">{t('subtitle')}</p>
             </div>
 
             {/* Toolbar */}
-            <div className="rounded-lg border bg-white p-3 flex flex-wrap gap-2 items-end">
+            <div className="rounded-lg border bg-card p-4 flex flex-wrap gap-3 items-end">
                 <div className="flex-1 min-w-[200px]">
-                    <label className="block text-xs text-slate-600 mb-1">Search</label>
+                    <label className="block text-xs text-muted-foreground mb-1">{t('labels.search')}</label>
                     <input
                         type="search"
-                        className="w-full border rounded-md px-3 py-2 text-sm"
-                        placeholder="Search by title..."
+                        className="w-full h-9 border border-input bg-background rounded-md px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        placeholder={t('labels.searchPlaceholder')}
                         value={filters.query}
                         onChange={(e) => setFilters((f) => ({...f, query: e.target.value}))}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                e.preventDefault();
+                                applyFilters()
+                            }
+                        }}
                     />
                 </div>
                 <div>
-                    <label className="block text-xs text-slate-600 mb-1">City</label>
+                    <label className="block text-xs text-muted-foreground mb-1">{t('labels.city')}</label>
                     <select
-                        className="border rounded-md px-2 py-2 text-sm min-w-[160px]"
+                        className="h-9 border border-input bg-background rounded-md px-2 text-sm min-w-[160px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         value={filters.city_id ?? ''}
                         onChange={(e) => setFilters((f) => ({...f, city_id: e.target.value || undefined}))}
                     >
-                        <option value="">All</option>
+                        <option value="">{t('labels.all')}</option>
                         {cities.map((c, idx) => (
-                            <option key={`${c.id ?? c._id ?? c.name ?? idx}`}
-                                    value={c.id ?? c._id ?? ''}>{c.name ?? '-'}</option>
+                            <option key={`${c.id ?? c._id ?? (c as any).name ?? idx}`}
+                                    value={c.id ?? c._id ?? ''}>{getRefName(c)}</option>
                         ))}
                     </select>
                 </div>
                 {/* Supported filters */}
                 <div>
-                    <label className="block text-xs text-slate-600 mb-1">Owner</label>
+                    <label className="block text-xs text-muted-foreground mb-1">{t('labels.owner')}</label>
                     <select
-                        className="border rounded-md px-2 py-2 text-sm min-w-[220px]"
+                        className="h-9 border border-input bg-background rounded-md px-2 text-sm min-w-[220px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         value={filters.owner_id ?? ''}
                         onChange={(e) => setFilters((f) => ({...f, owner_id: e.target.value || undefined}))}
                     >
-                        <option value="">All owners</option>
-                        {(usersData ?? []).map((u, idx) => {
+                        <option value="">{t('labels.allOwners')}</option>
+                        {(ownersData ?? []).map((u, idx) => {
                             const id = u.id ?? ''
                             const label = getUserLabel(u)
                             return (
@@ -315,14 +645,14 @@ export default function AdminEquipmentsPage() {
                     </select>
                 </div>
                 <div>
-                    <label className="block text-xs text-slate-600 mb-1">Pilot</label>
+                    <label className="block text-xs text-muted-foreground mb-1">{t('labels.pilot')}</label>
                     <select
-                        className="border rounded-md px-2 py-2 text-sm min-w-[220px]"
+                        className="h-9 border border-input bg-background rounded-md px-2 text-sm min-w-[220px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         value={filters.pilot_id ?? ''}
                         onChange={(e) => setFilters((f) => ({...f, pilot_id: e.target.value || undefined}))}
                     >
-                        <option value="">All pilots</option>
-                        {(usersData ?? []).map((u, idx) => {
+                        <option value="">{t('labels.allPilots')}</option>
+                        {(pilotsData ?? []).map((u, idx) => {
                             const id = u.id ?? ''
                             const label = getUserLabel(u)
                             return (
@@ -334,189 +664,181 @@ export default function AdminEquipmentsPage() {
                     </select>
                 </div>
                 <div>
-                    <label className="block text-xs text-slate-600 mb-1">Fields of activity</label>
-                    <input
-                        type="text"
-                        className="border rounded-md px-2 py-2 text-sm min-w-[220px]"
-                        placeholder="e.g. TRANSPORT, CHANTIER"
+                    <label className="block text-xs text-muted-foreground mb-1">{t('labels.fieldsOfActivity')}</label>
+                    <select
+                        className="h-9 border border-input bg-background rounded-md px-2 text-sm min-w-[220px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         value={filters.fields_of_activity ?? ''}
                         onChange={(e) => setFilters((f) => ({...f, fields_of_activity: e.target.value || undefined}))}
+                    >
+                        <option value="">{t('labels.all')}</option>
+                        {(foaList).map((val) => (
+                            <option key={val} value={val}>{tFoa(val)}</option>
+                        ))}
+                    </select>
+                </div>
+                {/* Ranges (Dual sliders) */}
+                {/* Model year */}
+                <div className="flex flex-col min-w-[240px]">
+                    <label className="block text-xs text-muted-foreground mb-2">{t('labels.modelYearRange')}</label>
+                    <DualRangeSlider
+                        min={1970}
+                        max={new Date().getFullYear()}
+                        step={1}
+                        value={[
+                            (filters.model_year_min ?? 1970),
+                            (filters.model_year_max ?? new Date().getFullYear()),
+                        ]}
+                        onValueChange={(vals) =>
+                            setFilters((f) => ({
+                                ...f,
+                                model_year_min: Array.isArray(vals) ? (vals[0] as number) : undefined,
+                                model_year_max: Array.isArray(vals) ? (vals[1] as number) : undefined,
+                            }))
+                        }
+                        label={(v) => (v != null ? Math.round(v) : '')}
                     />
                 </div>
-                {/* Ranges */}
-                <div className="flex flex-col">
-                    <label className="block text-xs text-slate-600 mb-1">Model year range</label>
-                    <div className="flex gap-2">
-                        <input
-                            type="number"
-                            className="border rounded-md px-2 py-2 text-sm w-24"
-                            placeholder="min"
-                            value={filters.model_year_min ?? ''}
-                            onChange={(e) => setFilters((f) => ({
+                {/* Construction year */}
+                <div className="flex flex-col min-w-[240px]">
+                    <label
+                        className="block text-xs text-muted-foreground mb-2">{t('labels.constructionYearRange')}</label>
+                    <DualRangeSlider
+                        min={1970}
+                        max={new Date().getFullYear()}
+                        step={1}
+                        value={[
+                            (filters.construction_year_min ?? 1970),
+                            (filters.construction_year_max ?? new Date().getFullYear()),
+                        ]}
+                        onValueChange={(vals) =>
+                            setFilters((f) => ({
                                 ...f,
-                                model_year_min: e.target.value ? Number(e.target.value) : undefined
-                            }))}
-                        />
-                        <input
-                            type="number"
-                            className="border rounded-md px-2 py-2 text-sm w-24"
-                            placeholder="max"
-                            value={filters.model_year_max ?? ''}
-                            onChange={(e) => setFilters((f) => ({
-                                ...f,
-                                model_year_max: e.target.value ? Number(e.target.value) : undefined
-                            }))}
-                        />
-                    </div>
+                                construction_year_min: Array.isArray(vals) ? (vals[0] as number) : undefined,
+                                construction_year_max: Array.isArray(vals) ? (vals[1] as number) : undefined,
+                            }))
+                        }
+                        label={(v) => (v != null ? Math.round(v) : '')}
+                    />
                 </div>
-                <div className="flex flex-col">
-                    <label className="block text-xs text-slate-600 mb-1">Construction year range</label>
-                    <div className="flex gap-2">
-                        <input
-                            type="number"
-                            className="border rounded-md px-2 py-2 text-sm w-24"
-                            placeholder="min"
-                            value={filters.construction_year_min ?? ''}
-                            onChange={(e) => setFilters((f) => ({
+                {/* Customs clearance year */}
+                <div className="flex flex-col min-w-[260px]">
+                    <label className="block text-xs text-muted-foreground mb-2">{t('labels.customsYearRange')}</label>
+                    <DualRangeSlider
+                        min={1970}
+                        max={new Date().getFullYear()}
+                        step={1}
+                        value={[
+                            (filters.customs_clearance_year_min ?? 1970),
+                            (filters.customs_clearance_year_max ?? new Date().getFullYear()),
+                        ]}
+                        onValueChange={(vals) =>
+                            setFilters((f) => ({
                                 ...f,
-                                construction_year_min: e.target.value ? Number(e.target.value) : undefined
-                            }))}
-                        />
-                        <input
-                            type="number"
-                            className="border rounded-md px-2 py-2 text-sm w-24"
-                            placeholder="max"
-                            value={filters.construction_year_max ?? ''}
-                            onChange={(e) => setFilters((f) => ({
-                                ...f,
-                                construction_year_max: e.target.value ? Number(e.target.value) : undefined
-                            }))}
-                        />
-                    </div>
+                                customs_clearance_year_min: Array.isArray(vals) ? (vals[0] as number) : undefined,
+                                customs_clearance_year_max: Array.isArray(vals) ? (vals[1] as number) : undefined,
+                            }))
+                        }
+                        label={(v) => (v != null ? Math.round(v) : '')}
+                    />
                 </div>
-                <div className="flex flex-col">
-                    <label className="block text-xs text-slate-600 mb-1">Customs clearance year range</label>
-                    <div className="flex gap-2">
-                        <input
-                            type="number"
-                            className="border rounded-md px-2 py-2 text-sm w-24"
-                            placeholder="min"
-                            value={filters.customs_clearance_year_min ?? ''}
-                            onChange={(e) => setFilters((f) => ({
+                {/* Price */}
+                <div className="flex flex-col min-w-[260px]">
+                    <label className="block text-xs text-muted-foreground mb-2">{t('labels.priceRange')}</label>
+                    <DualRangeSlider
+                        min={0}
+                        max={100000}
+                        step={50}
+                        value={[
+                            (filters.price_min ?? 0),
+                            (filters.price_max ?? 100000),
+                        ]}
+                        onValueChange={(vals) =>
+                            setFilters((f) => ({
                                 ...f,
-                                customs_clearance_year_min: e.target.value ? Number(e.target.value) : undefined
-                            }))}
-                        />
-                        <input
-                            type="number"
-                            className="border rounded-md px-2 py-2 text-sm w-24"
-                            placeholder="max"
-                            value={filters.customs_clearance_year_max ?? ''}
-                            onChange={(e) => setFilters((f) => ({
-                                ...f,
-                                customs_clearance_year_max: e.target.value ? Number(e.target.value) : undefined
-                            }))}
-                        />
-                    </div>
+                                price_min: Array.isArray(vals) ? (vals[0] as number) : undefined,
+                                price_max: Array.isArray(vals) ? (vals[1] as number) : undefined,
+                            }))
+                        }
+                        label={(v) => (v != null ? `${Math.round(v)} MAD` : '')}
+                    />
                 </div>
-                <div className="flex flex-col">
-                    <label className="block text-xs text-slate-600 mb-1">Price range</label>
-                    <div className="flex gap-2">
-                        <input
-                            type="number"
-                            className="border rounded-md px-2 py-2 text-sm w-24"
-                            placeholder="min"
-                            value={filters.price_min ?? ''}
-                            onChange={(e) => setFilters((f) => ({
+                {/* Rating */}
+                <div className="flex flex-col min-w-[240px]">
+                    <label className="block text-xs text-slate-600 mb-2">{t('labels.ratingRange')}</label>
+                    <DualRangeSlider
+                        min={0}
+                        max={5}
+                        step={0.1}
+                        value={[
+                            (filters.rating_min ?? 0),
+                            (filters.rating_max ?? 5),
+                        ]}
+                        onValueChange={(vals) =>
+                            setFilters((f) => ({
                                 ...f,
-                                price_min: e.target.value ? Number(e.target.value) : undefined
-                            }))}
-                        />
-                        <input
-                            type="number"
-                            className="border rounded-md px-2 py-2 text-sm w-24"
-                            placeholder="max"
-                            value={filters.price_max ?? ''}
-                            onChange={(e) => setFilters((f) => ({
-                                ...f,
-                                price_max: e.target.value ? Number(e.target.value) : undefined
-                            }))}
-                        />
-                    </div>
-                </div>
-                <div className="flex flex-col">
-                    <label className="block text-xs text-slate-600 mb-1">Rating range</label>
-                    <div className="flex gap-2">
-                        <input
-                            type="number"
-                            step="0.1"
-                            className="border rounded-md px-2 py-2 text-sm w-24"
-                            placeholder="min"
-                            value={filters.rating_min ?? ''}
-                            onChange={(e) => setFilters((f) => ({
-                                ...f,
-                                rating_min: e.target.value ? Number(e.target.value) : undefined
-                            }))}
-                        />
-                        <input
-                            type="number"
-                            step="0.1"
-                            className="border rounded-md px-2 py-2 text-sm w-24"
-                            placeholder="max"
-                            value={filters.rating_max ?? ''}
-                            onChange={(e) => setFilters((f) => ({
-                                ...f,
-                                rating_max: e.target.value ? Number(e.target.value) : undefined
-                            }))}
-                        />
-                    </div>
+                                rating_min: Array.isArray(vals) ? Number((vals[0] as number).toFixed(1)) : undefined,
+                                rating_max: Array.isArray(vals) ? Number((vals[1] as number).toFixed(1)) : undefined,
+                            }))
+                        }
+                        label={(v) => (v != null ? v.toFixed(1) : '')}
+                    />
                 </div>
                 <div className="ms-auto flex items-center gap-3">
                     <button
+                        onClick={() => setAddOpen(true)}
+                        className="inline-flex items-center h-9 rounded-md border border-input bg-background px-3 text-sm hover:bg-accent hover:text-accent-foreground"
+                    >
+                        {t('buttons.new')}
+                    </button>
+                    <button
                         onClick={applyFilters}
-                        className="inline-flex items-center bg-slate-900 text-white text-sm px-3 py-2 rounded-md disabled:opacity-50"
+                        className="inline-flex items-center h-9 rounded-md bg-primary text-primary-foreground px-3 disabled:opacity-50"
                         disabled={isFetching}
                     >
-                        Apply
+                        {t('buttons.apply')}
                     </button>
                     <button
                         onClick={resetFilters}
-                        className="inline-flex items-center border text-sm px-3 py-2 rounded-md"
+                        className="inline-flex items-center h-9 rounded-md border border-input bg-background px-3 text-sm hover:bg-accent hover:text-accent-foreground"
                     >
-                        Reset
+                        {t('buttons.reset')}
                     </button>
                 </div>
             </div>
 
             {/* Table container */}
-            <div className="rounded-lg border bg-white">
+            <div className="rounded-lg border bg-card">
                 {isError ? (
                     <div className="p-4">
-                        <div
-                            className="text-sm text-red-600">{(error as Error)?.message || 'Failed to load equipments'}</div>
-                        <button onClick={() => refetch()}
-                                className="mt-2 inline-flex items-center border px-3 py-1.5 rounded-md text-sm">Retry
+                        <div className="text-sm text-red-600">{(error as Error)?.message || t('error')}</div>
+                        <button
+                            onClick={() => refetch()}
+                            className="mt-2 inline-flex items-center h-9 rounded-md border border-input bg-background px-3 text-sm hover:bg-accent hover:text-accent-foreground"
+                        >
+                            {t('buttons.retry')}
                         </button>
                     </div>
                 ) : items.length === 0 && !isFetching ? (
-                    <div className="p-8 text-center text-slate-600">
-                        <div className="mb-2">No equipments found</div>
-                        <button onClick={resetFilters}
-                                className="inline-flex items-center border px-3 py-1.5 rounded-md text-sm">Clear filters
+                    <div className="p-8 text-center text-muted-foreground">
+                        <div className="mb-2">{t('empty')}</div>
+                        <button
+                            onClick={resetFilters}
+                            className="inline-flex items-center h-9 rounded-md border border-input bg-background px-3 text-sm hover:bg-accent hover:text-accent-foreground"
+                        >{t('buttons.clearFilters')}
                         </button>
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
                         <table className="min-w-full text-sm">
-                            <thead className="bg-slate-50 text-slate-700">
+                            <thead className="bg-muted text-muted-foreground">
                             <tr>
-                                <th className="text-left font-medium px-3 py-2 border-b">Title</th>
-                                <th className="text-left font-medium px-3 py-2 border-b">Brand</th>
-                                <th className="text-left font-medium px-3 py-2 border-b">Model</th>
-                                <th className="text-left font-medium px-3 py-2 border-b">City</th>
-                                <th className="text-left font-medium px-3 py-2 border-b">Price/Day</th>
-                                <th className="text-left font-medium px-3 py-2 border-b">Available</th>
-                                <th className="text-left font-medium px-3 py-2 border-b">Actions</th>
+                                <th className="text-start font-medium px-3 py-2 border-b">{t('table.title')}</th>
+                                <th className="text-start font-medium px-3 py-2 border-b">{t('table.brand')}</th>
+                                <th className="text-start font-medium px-3 py-2 border-b">{t('table.model')}</th>
+                                <th className="text-start font-medium px-3 py-2 border-b">{t('table.city')}</th>
+                                <th className="text-start font-medium px-3 py-2 border-b">{t('table.pricePerDay')}</th>
+                                <th className="text-start font-medium px-3 py-2 border-b">{t('table.available')}</th>
+                                <th className="text-start font-medium px-3 py-2 border-b">{t('table.actions')}</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -524,25 +846,25 @@ export default function AdminEquipmentsPage() {
                                 [...Array(5)].map((_, i) => (
                                     <tr key={i} className="animate-pulse">
                                         <td className="px-3 py-2 border-b">
-                                            <div className="h-4 bg-slate-200 rounded w-40"/>
+                                            <div className="h-4 bg-muted rounded w-40"/>
                                         </td>
                                         <td className="px-3 py-2 border-b">
-                                            <div className="h-4 bg-slate-200 rounded w-24"/>
+                                            <div className="h-4 bg-muted rounded w-24"/>
                                         </td>
                                         <td className="px-3 py-2 border-b">
-                                            <div className="h-4 bg-slate-200 rounded w-24"/>
+                                            <div className="h-4 bg-muted rounded w-24"/>
                                         </td>
                                         <td className="px-3 py-2 border-b">
-                                            <div className="h-4 bg-slate-200 rounded w-24"/>
+                                            <div className="h-4 bg-muted rounded w-24"/>
                                         </td>
                                         <td className="px-3 py-2 border-b">
-                                            <div className="h-4 bg-slate-200 rounded w-16"/>
+                                            <div className="h-4 bg-muted rounded w-16"/>
                                         </td>
                                         <td className="px-3 py-2 border-b">
-                                            <div className="h-4 bg-slate-200 rounded w-12"/>
+                                            <div className="h-4 bg-muted rounded w-12"/>
                                         </td>
                                         <td className="px-3 py-2 border-b">
-                                            <div className="h-4 bg-slate-200 rounded w-20"/>
+                                            <div className="h-4 bg-muted rounded w-20"/>
                                         </td>
                                     </tr>
                                 ))
@@ -550,21 +872,82 @@ export default function AdminEquipmentsPage() {
                                 items.map((it, idx) => (
                                     <tr key={(it.id as string) ?? idx} className="hover:bg-slate-50">
                                         <td className="px-3 py-2 border-b">{it.title ?? '-'}</td>
-                                        <td className="px-3 py-2 border-b">{getName(it.brand) || it.brand_name || '-'}</td>
-                                        <td className="px-3 py-2 border-b">{getName(it.model) || it.model_name || '-'}</td>
-                                        <td className="px-3 py-2 border-b">{getName(it.city) || it.city_name || '-'}</td>
+                                        <td className="px-3 py-2 border-b">{getLocalizedName(it.brand) || it.brand_name || '-'}</td>
+                                        <td className="px-3 py-2 border-b">{getLocalizedName(it.model) || it.model_name || '-'}</td>
+                                        <td className="px-3 py-2 border-b">{getLocalizedName(it.city) || it.city_name || '-'}</td>
                                         <td className="px-3 py-2 border-b">{it.price_per_day != null ? `${it.price_per_day} MAD` : '-'}</td>
                                         <td className="px-3 py-2 border-b">
                                             {it.is_available ? (
                                                 <span
-                                                    className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-green-100 text-green-700">Yes</span>
+                                                    className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-green-100 text-green-700">{t('table.yes')}</span>
                                             ) : (
                                                 <span
-                                                    className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-slate-200 text-slate-700">No</span>
+                                                    className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-muted text-muted-foreground">{t('table.no')}</span>
                                             )}
                                         </td>
                                         <td className="px-3 py-2 border-b">
-                                            <button className="text-slate-600 hover:underline text-xs">Actions</button>
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    onClick={() => {
+                                                        const id = it.id as string | undefined
+                                                        if (!id) return
+                                                        try {
+                                                            qc.setQueryData(['equipments', 'byId', id], it)
+                                                        } catch {
+                                                        }
+                                                        setEditId(id)
+                                                        const brandObj: any = (it as any).brand
+                                                        const modelObj: any = (it as any).model
+                                                        const cityObj: any = (it as any).city
+                                                        const categoryObj: any = (it as any).category
+                                                        const ownerObj: any = (it as any).owner
+                                                        const pilotObj: any = (it as any).pilot
+                                                        setEditForm({
+                                                            title: typeof it.title === 'string' ? it.title : '',
+                                                            brand_id: typeof (it as any).brand_id === 'string' ? (it as any).brand_id : (brandObj && typeof brandObj === 'object' && (typeof brandObj.id === 'string' || typeof brandObj._id === 'string') ? String(brandObj.id ?? brandObj._id) : ''),
+                                                            model_id: typeof (it as any).model_id === 'string' ? (it as any).model_id : (modelObj && typeof modelObj === 'object' && (typeof modelObj.id === 'string' || typeof modelObj._id === 'string') ? String(modelObj.id ?? modelObj._id) : ''),
+                                                            category_id: typeof (it as any).category_id === 'string' ? (it as any).category_id : (categoryObj && typeof categoryObj === 'object' && (typeof categoryObj.id === 'string' || typeof categoryObj._id === 'string') ? String(categoryObj.id ?? categoryObj._id) : ''),
+                                                            city_id: typeof (it as any).city_id === 'string' ? (it as any).city_id : (cityObj && typeof cityObj === 'object' && (typeof cityObj.id === 'string' || typeof cityObj._id === 'string') ? String(cityObj.id ?? cityObj._id) : ''),
+                                                            owner_id: typeof (it as any).owner_id === 'string' ? (it as any).owner_id : (ownerObj && typeof ownerObj === 'object' && (typeof ownerObj.id === 'string' || typeof ownerObj._id === 'string') ? String(ownerObj.id ?? ownerObj._id) : ''),
+                                                            pilot_id: typeof (it as any).pilot_id === 'string' ? (it as any).pilot_id : (pilotObj && typeof pilotObj === 'object' && (typeof pilotObj.id === 'string' || typeof pilotObj._id === 'string') ? String(pilotObj.id ?? pilotObj._id) : ''),
+                                                            fields_of_activity: typeof (it as any).fields_of_activity === 'string' ? (it as any).fields_of_activity : '',
+                                                            description: typeof (it as any).description === 'string' ? (it as any).description : '',
+                                                            is_available: !!it.is_available,
+                                                            model_year: typeof (it as any).model_year === 'number' ? (it as any).model_year : '',
+                                                            construction_year: typeof (it as any).construction_year === 'number' ? (it as any).construction_year : '',
+                                                            date_of_customs_clearance: typeof (it as any).date_of_customs_clearance === 'number' ? (it as any).date_of_customs_clearance : '',
+                                                            price_per_day: typeof it.price_per_day === 'number' ? it.price_per_day : '',
+                                                        })
+                                                        setEditErrors({})
+                                                        setEditOpen(true)
+                                                    }}
+                                                    className="text-slate-600 hover:underline text-xs"
+                                                >
+                                                    {t('buttons.edit')}
+                                                </button>
+                                                <button
+                                                    onClick={() => {
+                                                        const id = it.id as string | undefined
+                                                        if (!id) return
+                                                        router.push(`/admin/equipments/${encodeURIComponent(id)}/images`)
+                                                    }}
+                                                    className="text-slate-600 hover:underline text-xs"
+                                                >
+                                                    {t('buttons.images')}
+                                                </button>
+                                                <button
+                                                    onClick={() => {
+                                                        const id = it.id as string | undefined
+                                                        if (!id) return
+                                                        setToDeleteId(id)
+                                                        setToDeleteTitle((it.title as string) ?? '-')
+                                                        setConfirmOpen(true)
+                                                    }}
+                                                    className="text-red-600 hover:underline text-xs"
+                                                >
+                                                    {t('buttons.delete')}
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))
@@ -575,25 +958,576 @@ export default function AdminEquipmentsPage() {
                 )}
                 {/* Pagination */}
                 <div className="flex items-center justify-between p-3">
-                    <div className="text-sm text-slate-600">Page {pageIndex} of {totalPages}</div>
+                    <div className="text-sm text-muted-foreground">{t('pagination.pageOf', {
+                        page: pageIndex,
+                        total: totalPages
+                    })}</div>
                     <div className="flex items-center gap-2">
                         <button
-                            className="border rounded-md px-3 py-1.5 text-sm disabled:opacity-50"
+                            className="h-9 rounded-md border border-input bg-background px-3 text-sm hover:bg-accent hover:text-accent-foreground disabled:opacity-50"
                             disabled={pageIndex <= 1 || isFetching}
                             onClick={() => setPageIndex((p) => Math.max(1, p - 1))}
                         >
-                            Previous
+                            {t('pagination.previous')}
                         </button>
                         <button
-                            className="border rounded-md px-3 py-1.5 text-sm disabled:opacity-50"
+                            className="h-9 rounded-md border border-input bg-background px-3 text-sm hover:bg-accent hover:text-accent-foreground disabled:opacity-50"
                             disabled={pageIndex >= totalPages || isFetching}
                             onClick={() => setPageIndex((p) => Math.min(totalPages, p + 1))}
                         >
-                            Next
+                            {t('pagination.next')}
                         </button>
                     </div>
                 </div>
             </div>
+            {/* Quick add dialog */}
+            {addOpen ? (
+                <Portal>
+                    <div role="dialog" aria-modal="true"
+                         className="fixed inset-0 z-[100] flex items-center justify-center">
+                        <div className="absolute inset-0 bg-black/40" onMouseDown={() => setAddOpen(false)}/>
+                        <div className="relative z-10 w-full max-w-3xl rounded-lg border bg-background p-4 shadow-xl">
+                            <div className="mb-2 text-base font-semibold">{t('newTitle')}</div>
+                            <p className="text-sm text-muted-foreground mb-4">{t('newSubtitle')}</p>
+                            <form onSubmit={handleAddSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="col-span-1 md:col-span-2">
+                                    <label
+                                        className="block text-xs text-muted-foreground mb-1">{t('table.title')}</label>
+                                    <input
+                                        className="h-9 border border-input bg-background rounded-md px-3 text-sm w-full"
+                                        value={addForm.title}
+                                        onChange={(e) => setAddForm((f) => ({...f, title: e.target.value}))}/>
+                                    {addErrors.title ?
+                                        <p className="text-xs text-red-600 mt-1">{addErrors.title}</p> : null}
+                                </div>
+                                <div>
+                                    <label
+                                        className="block text-xs text-muted-foreground mb-1">{t('table.brand')}</label>
+                                    <select
+                                        className="h-9 border border-input bg-background rounded-md px-2 text-sm w-full"
+                                        value={addForm.brand_id}
+                                        onChange={(e) => {
+                                            const v = e.target.value;
+                                            setAddForm((f) => ({...f, brand_id: v, model_id: ''}))
+                                        }}>
+                                        <option value="">—</option>
+                                        {brands.map((b, i) => (
+                                            <option key={b.id ?? b._id ?? i}
+                                                    value={b.id ?? b._id ?? ''}>{getRefName(b)}</option>
+                                        ))}
+                                    </select>
+                                    {addErrors.brand_id ?
+                                        <p className="text-xs text-red-600 mt-1">{addErrors.brand_id}</p> : null}
+                                </div>
+                                <div>
+                                    <label
+                                        className="block text-xs text-muted-foreground mb-1">{t('table.model')}</label>
+                                    <select
+                                        className="h-9 border border-input bg-background rounded-md px-2 text-sm w-full"
+                                        value={addForm.model_id}
+                                        onChange={(e) => setAddForm((f) => ({...f, model_id: e.target.value}))}
+                                        disabled={!addForm.brand_id}>
+                                        <option value="">—</option>
+                                        {models.filter((m: any) => {
+                                            const b = addForm.brand_id
+                                            if (!b) return true
+                                            const mid = typeof m?.brand_id === 'string' ? m.brand_id
+                                                : typeof m?.brandId === 'string' ? m.brandId
+                                                    : (m?.brand && typeof m.brand === 'object')
+                                                        ? (typeof m.brand.id === 'string' ? m.brand.id : (typeof m.brand._id === 'string' ? m.brand._id : ''))
+                                                        : ''
+                                            return String(mid) === String(b)
+                                        }).map((m, i) => (
+                                            <option key={m.id ?? m._id ?? i}
+                                                    value={m.id ?? m._id ?? ''}>{getRefName(m)}</option>
+                                        ))}
+                                    </select>
+                                    {addErrors.model_id ?
+                                        <p className="text-xs text-red-600 mt-1">{addErrors.model_id}</p> : null}
+                                </div>
+                                <div>
+                                    <label
+                                        className="block text-xs text-muted-foreground mb-1">{t('labels.category')}</label>
+                                    <select
+                                        className="h-9 border border-input bg-background rounded-md px-2 text-sm w-full"
+                                        value={addForm.category_id}
+                                        onChange={(e) => setAddForm((f) => ({...f, category_id: e.target.value}))}>
+                                        <option value="">—</option>
+                                        {categories.map((c, i) => (
+                                            <option key={c.id ?? c._id ?? i}
+                                                    value={c.id ?? c._id ?? ''}>{getRefName(c)}</option>
+                                        ))}
+                                    </select>
+                                    {addErrors.category_id ?
+                                        <p className="text-xs text-red-600 mt-1">{addErrors.category_id}</p> : null}
+                                </div>
+                                <div>
+                                    <label
+                                        className="block text-xs text-muted-foreground mb-1">{t('table.city')}</label>
+                                    <select
+                                        className="h-9 border border-input bg-background rounded-md px-2 text-sm w-full"
+                                        value={addForm.city_id}
+                                        onChange={(e) => setAddForm((f) => ({...f, city_id: e.target.value}))}>
+                                        <option value="">—</option>
+                                        {cities.map((c, i) => (
+                                            <option key={c.id ?? c._id ?? i}
+                                                    value={c.id ?? c._id ?? ''}>{getRefName(c)}</option>
+                                        ))}
+                                    </select>
+                                    {addErrors.city_id ?
+                                        <p className="text-xs text-red-600 mt-1">{addErrors.city_id}</p> : null}
+                                </div>
+                                <div>
+                                    <label
+                                        className="block text-xs text-muted-foreground mb-1">{t('labels.fieldsOfActivity')}</label>
+                                    <select
+                                        className="h-9 border border-input bg-background rounded-md px-2 text-sm w-full"
+                                        value={addForm.fields_of_activity}
+                                        onChange={(e) => setAddForm((f) => ({
+                                            ...f,
+                                            fields_of_activity: e.target.value
+                                        }))}>
+                                        <option value="">—</option>
+                                        {foaList.map((v) => (
+                                            <option key={v} value={v}>{tFoa(v)}</option>
+                                        ))}
+                                    </select>
+                                    {addErrors.fields_of_activity ?
+                                        <p className="text-xs text-red-600 mt-1">{addErrors.fields_of_activity}</p> : null}
+                                    <p className="text-xs text-muted-foreground mt-1">{t('helpers.foaHint')}</p>
+                                </div>
+                                <div>
+                                    <label
+                                        className="block text-xs text-muted-foreground mb-1">{t('labels.owner')}</label>
+                                    <select
+                                        className="h-9 border border-input bg-background rounded-md px-2 text-sm w-full"
+                                        value={addForm.owner_id}
+                                        onChange={(e) => setAddForm((f) => ({...f, owner_id: e.target.value}))}>
+                                        <option value="">—</option>
+                                        {(ownersData ?? []).map((u, idx) => {
+                                            const id = u.id ?? ''
+                                            const label = getUserLabel(u)
+                                            return (
+                                                <option key={id || idx} value={id}>{label}</option>
+                                            )
+                                        })}
+                                    </select>
+                                    {addErrors.owner_id ?
+                                        <p className="text-xs text-red-600 mt-1">{addErrors.owner_id}</p> : null}
+                                </div>
+                                <div>
+                                    <label
+                                        className="block text-xs text-muted-foreground mb-1">{t('labels.pilot')}</label>
+                                    <select
+                                        className="h-9 border border-input bg-background rounded-md px-2 text-sm w-full"
+                                        value={addForm.pilot_id}
+                                        onChange={(e) => setAddForm((f) => ({...f, pilot_id: e.target.value}))}>
+                                        <option value="">—</option>
+                                        {(pilotsData ?? []).map((u, idx) => {
+                                            const id = u.id ?? ''
+                                            const label = getUserLabel(u)
+                                            return (
+                                                <option key={id || idx} value={id}>{label}</option>
+                                            )
+                                        })}
+                                    </select>
+                                </div>
+                                <div className="md:col-span-2">
+                                    <label
+                                        className="block text-xs text-muted-foreground mb-1">{t('labels.description')}</label>
+                                    <textarea
+                                        className="border border-input bg-background rounded-md px-3 py-2 text-sm w-full min-h-24"
+                                        value={addForm.description}
+                                        onChange={(e) => setAddForm((f) => ({...f, description: e.target.value}))}/>
+                                </div>
+                                <div>
+                                    <label
+                                        className="block text-xs text-muted-foreground mb-1">{t('labels.constructionYear')}</label>
+                                    <select
+                                        className="h-9 border border-input bg-background rounded-md px-2 text-sm w-full"
+                                        value={String(addForm.construction_year || '')}
+                                        onChange={(e) => setAddForm((f) => ({
+                                            ...f,
+                                            construction_year: e.target.value ? Number(e.target.value) : ''
+                                        }))}
+                                    >
+                                        <option value="">—</option>
+                                        {Array.from({length: new Date().getFullYear() - 1969}, (_, i) => new Date().getFullYear() - i).map((y) => (
+                                            <option key={y} value={y}>{y}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label
+                                        className="block text-xs text-muted-foreground mb-1">{t('labels.customsYear')}</label>
+                                    <select
+                                        className="h-9 border border-input bg-background rounded-md px-2 text-sm w-full"
+                                        value={String(addForm.date_of_customs_clearance || '')}
+                                        onChange={(e) => setAddForm((f) => ({
+                                            ...f,
+                                            date_of_customs_clearance: e.target.value ? Number(e.target.value) : ''
+                                        }))}
+                                    >
+                                        <option value="">—</option>
+                                        {Array.from({length: new Date().getFullYear() - 1969}, (_, i) => new Date().getFullYear() - i).map((y) => (
+                                            <option key={y} value={y}>{y}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label
+                                        className="block text-xs text-muted-foreground mb-1">{t('labels.modelYear')}</label>
+                                    <select
+                                        className="h-9 border border-input bg-background rounded-md px-2 text-sm w-full"
+                                        value={String(addForm.model_year || '')}
+                                        onChange={(e) => setAddForm((f) => ({
+                                            ...f,
+                                            model_year: e.target.value ? Number(e.target.value) : ''
+                                        }))}
+                                    >
+                                        <option value="">—</option>
+                                        {Array.from({length: new Date().getFullYear() - 1969}, (_, i) => new Date().getFullYear() - i).map((y) => (
+                                            <option key={y} value={y}>{y}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label
+                                        className="block text-xs text-muted-foreground mb-1">{t('table.pricePerDay')}</label>
+                                    <div className="relative">
+                                        <input
+                                            type="number"
+                                            min={0}
+                                            step="1"
+                                            inputMode="decimal"
+                                            pattern="[0-9]*"
+                                            className="h-9 border border-input bg-background rounded-md px-3 pr-12 text-sm w-full"
+                                            value={addForm.price_per_day}
+                                            onChange={(e) => setAddForm((f) => ({...f, price_per_day: e.target.value}))}
+                                        />
+                                        <span
+                                            className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">MAD</span>
+                                    </div>
+                                    {addErrors.price_per_day ?
+                                        <p className="text-xs text-red-600 mt-1">{addErrors.price_per_day}</p> : null}
+                                </div>
+                                <div className="col-span-1 md:col-span-2 flex items-center gap-2">
+                                    <input id="add-available" type="checkbox" className="size-4"
+                                           checked={addForm.is_available}
+                                           onChange={(e) => setAddForm((f) => ({
+                                               ...f,
+                                               is_available: e.target.checked
+                                           }))}/>
+                                    <label htmlFor="add-available" className="text-sm">{t('table.available')}</label>
+                                </div>
+
+                                <div className="col-span-1 md:col-span-2 flex items-center gap-2 mt-2 justify-end">
+                                    <button type="button" onClick={() => setAddOpen(false)}
+                                            className="inline-flex items-center h-9 rounded-md border border-input bg-background px-3 text-sm hover:bg-accent hover:text-accent-foreground">
+                                        {t('buttons.cancel')}
+                                    </button>
+                                    <button type="submit" disabled={addSaving}
+                                            className="inline-flex items-center h-9 rounded-md bg-primary text-primary-foreground px-3 disabled:opacity-50">
+                                        {addSaving ? t('buttons.saving') : t('buttons.create')}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </Portal>
+            ) : null}
+
+            {/* Quick edit drawer */}
+            {editOpen ? (
+                <Portal>
+                    <div role="dialog" aria-modal="true" className="fixed inset-0 z-[100]">
+                        <div className="absolute inset-0 bg-black/40" onMouseDown={() => setEditOpen(false)}/>
+                        <div
+                            className="absolute right-0 top-0 h-full w-full max-w-lg bg-background border-l shadow-xl p-4 overflow-auto">
+                            <div className="flex items-center justify-between mb-2">
+                                <div className="text-base font-semibold">{t('editTitle')}</div>
+                                <button onClick={() => setEditOpen(false)}
+                                        className="text-sm text-muted-foreground hover:underline">{t('buttons.cancel')}</button>
+                            </div>
+                            <p className="text-sm text-muted-foreground mb-4">{t('editSubtitle')}</p>
+                            <form onSubmit={handleEditSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="col-span-1 md:col-span-2">
+                                    <label
+                                        className="block text-xs text-muted-foreground mb-1">{t('table.title')}</label>
+                                    <input
+                                        className="h-9 border border-input bg-background rounded-md px-3 text-sm w-full"
+                                        value={editForm.title}
+                                        onChange={(e) => setEditForm((f) => ({...f, title: e.target.value}))}/>
+                                    {editErrors.title ?
+                                        <p className="text-xs text-red-600 mt-1">{editErrors.title}</p> : null}
+                                </div>
+                                <div>
+                                    <label
+                                        className="block text-xs text-muted-foreground mb-1">{t('table.brand')}</label>
+                                    <select
+                                        className="h-9 border border-input bg-background rounded-md px-2 text-sm w-full"
+                                        value={editForm.brand_id}
+                                        onChange={(e) => {
+                                            const v = e.target.value;
+                                            setEditForm((f) => ({...f, brand_id: v, model_id: ''}));
+                                            setEditErrors((er) => ({...er, brand_id: ''}))
+                                        }}>
+                                        <option value="">—</option>
+                                        {brands.map((b, i) => (
+                                            <option key={b.id ?? b._id ?? i}
+                                                    value={b.id ?? b._id ?? ''}>{getRefName(b)}</option>
+                                        ))}
+                                    </select>
+                                    {editErrors.brand_id ?
+                                        <p className="text-xs text-red-600 mt-1">{editErrors.brand_id}</p> : null}
+                                </div>
+                                <div>
+                                    <label
+                                        className="block text-xs text-muted-foreground mb-1">{t('table.model')}</label>
+                                    <select
+                                        className="h-9 border border-input bg-background rounded-md px-2 text-sm w-full"
+                                        value={editForm.model_id}
+                                        onChange={(e) => {
+                                            setEditForm((f) => ({...f, model_id: e.target.value}));
+                                            setEditErrors((er) => ({...er, model_id: ''}))
+                                        }} disabled={!editForm.brand_id}>
+                                        <option value="">—</option>
+                                        {models.filter((m: any) => {
+                                            const b = editForm.brand_id
+                                            if (!b) return true
+                                            const mid = typeof m?.brand_id === 'string' ? m.brand_id
+                                                : typeof m?.brandId === 'string' ? m.brandId
+                                                    : (m?.brand && typeof m.brand === 'object')
+                                                        ? (typeof m.brand.id === 'string' ? m.brand.id : (typeof m.brand._id === 'string' ? m.brand._id : ''))
+                                                        : ''
+                                            return String(mid) === String(b)
+                                        }).map((m, i) => (
+                                            <option key={m.id ?? m._id ?? i}
+                                                    value={m.id ?? m._id ?? ''}>{getRefName(m)}</option>
+                                        ))}
+                                    </select>
+                                    {editErrors.model_id ?
+                                        <p className="text-xs text-red-600 mt-1">{editErrors.model_id}</p> : null}
+                                </div>
+                                <div>
+                                    <label
+                                        className="block text-xs text-muted-foreground mb-1">{t('labels.category')}</label>
+                                    <select
+                                        className="h-9 border border-input bg-background rounded-md px-2 text-sm w-full"
+                                        value={editForm.category_id}
+                                        onChange={(e) => {
+                                            setEditForm((f) => ({...f, category_id: e.target.value}));
+                                            setEditErrors((er) => ({...er, category_id: ''}))
+                                        }}>
+                                        <option value="">—</option>
+                                        {categories.map((c, i) => (
+                                            <option key={c.id ?? c._id ?? i}
+                                                    value={c.id ?? c._id ?? ''}>{getRefName(c)}</option>
+                                        ))}
+                                    </select>
+                                    {editErrors.category_id ?
+                                        <p className="text-xs text-red-600 mt-1">{editErrors.category_id}</p> : null}
+                                </div>
+                                <div>
+                                    <label
+                                        className="block text-xs text-muted-foreground mb-1">{t('table.city')}</label>
+                                    <select
+                                        className="h-9 border border-input bg-background rounded-md px-2 text-sm w-full"
+                                        value={editForm.city_id}
+                                        onChange={(e) => {
+                                            setEditForm((f) => ({...f, city_id: e.target.value}));
+                                            setEditErrors((er) => ({...er, city_id: ''}))
+                                        }}>
+                                        <option value="">—</option>
+                                        {cities.map((c, i) => (
+                                            <option key={c.id ?? c._id ?? i}
+                                                    value={c.id ?? c._id ?? ''}>{getRefName(c)}</option>
+                                        ))}
+                                    </select>
+                                    {editErrors.city_id ?
+                                        <p className="text-xs text-red-600 mt-1">{editErrors.city_id}</p> : null}
+                                </div>
+                                <div>
+                                    <label
+                                        className="block text-xs text-muted-foreground mb-1">{t('labels.fieldsOfActivity')}</label>
+                                    <select
+                                        className="h-9 border border-input bg-background rounded-md px-2 text-sm w-full"
+                                        value={editForm.fields_of_activity}
+                                        onChange={(e) => {
+                                            setEditForm((f) => ({...f, fields_of_activity: e.target.value}));
+                                            setEditErrors((er) => ({...er, fields_of_activity: ''}))
+                                        }}>
+                                        <option value="">—</option>
+                                        {foaList.map((v) => (
+                                            <option key={v} value={v}>{tFoa(v)}</option>
+                                        ))}
+                                    </select>
+                                    {editErrors.fields_of_activity ?
+                                        <p className="text-xs text-red-600 mt-1">{editErrors.fields_of_activity}</p> : null}
+                                    <p className="text-xs text-muted-foreground mt-1">{t('helpers.foaHint')}</p>
+                                </div>
+                                <div>
+                                    <label
+                                        className="block text-xs text-muted-foreground mb-1">{t('labels.owner')}</label>
+                                    <select
+                                        className="h-9 border border-input bg-background rounded-md px-2 text-sm w-full"
+                                        value={editForm.owner_id}
+                                        onChange={(e) => {
+                                            setEditForm((f) => ({...f, owner_id: e.target.value}));
+                                            setEditErrors((er) => ({...er, owner_id: ''}))
+                                        }}>
+                                        <option value="">—</option>
+                                        {(ownersData ?? []).map((u, idx) => {
+                                            const id = u.id ?? ''
+                                            const label = getUserLabel(u as any)
+                                            return (
+                                                <option key={id || idx} value={id}>{label}</option>
+                                            )
+                                        })}
+                                    </select>
+                                    {editErrors.owner_id ?
+                                        <p className="text-xs text-red-600 mt-1">{editErrors.owner_id}</p> : null}
+                                </div>
+                                <div>
+                                    <label
+                                        className="block text-xs text-muted-foreground mb-1">{t('labels.pilot')}</label>
+                                    <select
+                                        className="h-9 border border-input bg-background rounded-md px-2 text-sm w-full"
+                                        value={editForm.pilot_id}
+                                        onChange={(e) => setEditForm((f) => ({...f, pilot_id: e.target.value}))}>
+                                        <option value="">—</option>
+                                        {(pilotsData ?? []).map((u, idx) => {
+                                            const id = u.id ?? ''
+                                            const label = getUserLabel(u as any)
+                                            return (
+                                                <option key={id || idx} value={id}>{label}</option>
+                                            )
+                                        })}
+                                    </select>
+                                </div>
+                                <div className="md:col-span-2">
+                                    <label
+                                        className="block text-xs text-muted-foreground mb-1">{t('labels.description')}</label>
+                                    <textarea
+                                        className="border border-input bg-background rounded-md px-3 py-2 text-sm w-full min-h-24"
+                                        value={editForm.description}
+                                        onChange={(e) => setEditForm((f) => ({...f, description: e.target.value}))}/>
+                                </div>
+                                <div>
+                                    <label
+                                        className="block text-xs text-muted-foreground mb-1">{t('labels.constructionYear')}</label>
+                                    <select
+                                        className="h-9 border border-input bg-background rounded-md px-2 text-sm w-full"
+                                        value={String(editForm.construction_year || '')}
+                                        onChange={(e) => setEditForm((f) => ({
+                                            ...f,
+                                            construction_year: e.target.value ? Number(e.target.value) : ''
+                                        }))}
+                                    >
+                                        <option value="">—</option>
+                                        {Array.from({length: new Date().getFullYear() - 1969}, (_, i) => new Date().getFullYear() - i).map((y) => (
+                                            <option key={y} value={y}>{y}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label
+                                        className="block text-xs text-muted-foreground mb-1">{t('labels.customsYear')}</label>
+                                    <select
+                                        className="h-9 border border-input bg-background rounded-md px-2 text-sm w-full"
+                                        value={String(editForm.date_of_customs_clearance || '')}
+                                        onChange={(e) => setEditForm((f) => ({
+                                            ...f,
+                                            date_of_customs_clearance: e.target.value ? Number(e.target.value) : ''
+                                        }))}
+                                    >
+                                        <option value="">—</option>
+                                        {Array.from({length: new Date().getFullYear() - 1969}, (_, i) => new Date().getFullYear() - i).map((y) => (
+                                            <option key={y} value={y}>{y}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label
+                                        className="block text-xs text-muted-foreground mb-1">{t('labels.modelYear')}</label>
+                                    <select
+                                        className="h-9 border border-input bg-background rounded-md px-2 text-sm w-full"
+                                        value={String(editForm.model_year || '')}
+                                        onChange={(e) => setEditForm((f) => ({
+                                            ...f,
+                                            model_year: e.target.value ? Number(e.target.value) : ''
+                                        }))}
+                                    >
+                                        <option value="">—</option>
+                                        {Array.from({length: new Date().getFullYear() - 1969}, (_, i) => new Date().getFullYear() - i).map((y) => (
+                                            <option key={y} value={y}>{y}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label
+                                        className="block text-xs text-muted-foreground mb-1">{t('table.pricePerDay')}</label>
+                                    <div className="relative">
+                                        <input
+                                            type="number"
+                                            min={0}
+                                            step="1"
+                                            inputMode="decimal"
+                                            pattern="[0-9]*"
+                                            className="h-9 border border-input bg-background rounded-md px-3 pr-12 text-sm w-full"
+                                            value={editForm.price_per_day}
+                                            onChange={(e) => setEditForm((f) => ({
+                                                ...f,
+                                                price_per_day: e.target.value
+                                            }))}
+                                        />
+                                        <span
+                                            className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">MAD</span>
+                                    </div>
+                                    {editErrors.price_per_day ?
+                                        <p className="text-xs text-red-600 mt-1">{editErrors.price_per_day}</p> : null}
+                                </div>
+                                <div className="col-span-1 md:col-span-2 flex items-center gap-2">
+                                    <input id="edit-available" type="checkbox" className="size-4"
+                                           checked={editForm.is_available}
+                                           onChange={(e) => setEditForm((f) => ({
+                                               ...f,
+                                               is_available: e.target.checked
+                                           }))}/>
+                                    <label htmlFor="edit-available" className="text-sm">{t('table.available')}</label>
+                                </div>
+
+                                <div className="col-span-1 md:col-span-2 flex items-center justify-end gap-2 pt-2">
+                                    <div className="flex items-center gap-2">
+                                        <button type="button" onClick={() => setEditOpen(false)}
+                                                className="inline-flex items-center h-9 rounded-md border border-input bg-background px-3 text-sm hover:bg-accent hover:text-accent-foreground">
+                                            {t('buttons.cancel')}
+                                        </button>
+                                        <button type="submit" disabled={editSaving}
+                                                className="inline-flex items-center h-9 rounded-md bg-primary text-primary-foreground px-3 disabled:opacity-50">
+                                            {editSaving ? t('buttons.saving') : t('buttons.update')}
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </Portal>
+            ) : null}
+
+            {/* Confirm delete dialog */}
+            <ConfirmDialog
+                open={confirmOpen}
+                onOpenChange={setConfirmOpen}
+                title={t('buttons.confirmDelete') || 'Are you sure?'}
+                description={`This action cannot be undone. Deleting “${toDeleteTitle ?? ''}” will permanently remove this equipment.`}
+                confirmLabel={t('buttons.delete')}
+                cancelLabel={t('buttons.cancel')}
+                onConfirm={doDelete}
+                verifyText={toDeleteTitle ?? ''}
+                verifyPlaceholder={t('dialogs.typeToConfirmPlaceholder')}
+                verifyMessage={t('dialogs.typeToConfirmMessage')}
+            />
         </div>
     )
 }

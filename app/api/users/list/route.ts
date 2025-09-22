@@ -19,11 +19,29 @@ export async function POST(req: NextRequest) {
     }
 
     try {
+        const getLocaleFromRequest = (rq: NextRequest): string | undefined => {
+            const cookieLoc = rq.cookies.get('NEXT_LOCALE')?.value
+            if (cookieLoc) return cookieLoc
+            const ref = rq.headers.get('referer')
+            try {
+                if (ref) {
+                    const u = new URL(ref)
+                    const seg = u.pathname.split('/').filter(Boolean)[0]
+                    if (seg) return seg
+                }
+            } catch {
+            }
+            const al = rq.headers.get('accept-language')
+            if (al) return al.split(',')[0]?.trim()
+            return undefined
+        }
+        const acceptLang = getLocaleFromRequest(req)
         const res = await fetch(`${base}/users/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`,
+                ...(acceptLang ? {'Accept-Language': acceptLang} : {}),
             },
             body: body != null ? JSON.stringify(body) : undefined,
         })
