@@ -2,7 +2,7 @@
 
 import React from 'react'
 import {useTranslations} from 'next-intl'
-import {useQuery, useQueryClient} from '@tanstack/react-query'
+import {keepPreviousData, useQuery, useQueryClient} from '@tanstack/react-query'
 import {usePathname, useRouter} from '@/i18n/navigation'
 import {useSearchParams} from 'next/navigation'
 import ConfirmDialog from '@/components/ui/ConfirmDialog'
@@ -129,7 +129,7 @@ export default function AdminUsersPage() {
     const {data, isFetching, isError, error} = useQuery({
         queryKey: ['users', 'list', {pageIndex, pageSize, sort, applied}],
         queryFn: () => fetchUsers({pageIndex, pageSize, sort, query: applied.query, status: applied.status}),
-        keepPreviousData: true,
+        placeholderData: keepPreviousData,
     })
 
     const items = data?.items ?? []

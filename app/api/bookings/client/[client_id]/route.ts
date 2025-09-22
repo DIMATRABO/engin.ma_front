@@ -18,14 +18,15 @@ function getLocaleFromRequest(rq: NextRequest): string | undefined {
     return undefined
 }
 
-export async function GET(req: NextRequest, {params}: { params: { client_id: string } }) {
+export async function GET(req: NextRequest, {params}: { params: Promise<{ client_id: string }> }) {
     const base = getApiBaseUrl()
     if (!base) return NextResponse.json({message: 'API base URL is not configured'}, {status: 500})
     const token = req.cookies.get('accessToken')?.value
     if (!token) return NextResponse.json({message: 'Unauthorized'}, {status: 401})
     const acceptLang = getLocaleFromRequest(req)
+    const {client_id} = await params
     try {
-        const res = await fetch(`${base}/bookings/client/${encodeURIComponent(params.client_id)}`, {
+        const res = await fetch(`${base}/bookings/client/${encodeURIComponent(client_id)}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 ...(acceptLang ? {'Accept-Language': acceptLang} : {}),
