@@ -585,27 +585,84 @@ export default function AdminEquipmentsPage() {
         setPageIndex(1)
     }
 
-    return (
-        <div className="space-y-4">
-            <div>
-                <h1 className="text-2xl font-semibold tracking-tight">{t('title')}</h1>
-                <p className="text-sm text-muted-foreground">{t('subtitle')}</p>
-            </div>
+    const [filtersOpen, setFiltersOpen] = React.useState(false)
+    const filterSheetRef = React.useRef<HTMLDivElement | null>(null)
+    const filterToggleBtnRef = React.useRef<HTMLButtonElement | null>(null)
 
-            {/* Toolbar */}
-            <div className="rounded-lg border bg-card p-4 flex flex-wrap gap-3 items-end">
-                <div className="flex-1 min-w-[200px]">
+    const appliedCount = React.useMemo(() => {
+        const f = applied
+        let n = 0
+        if (f.city_id) n++
+        if (f.owner_id) n++
+        if (f.pilot_id) n++
+        if (f.fields_of_activity) n++
+        if (f.model_year_min != null && f.model_year_max != null) n++
+        if (f.construction_year_min != null && f.construction_year_max != null) n++
+        if (f.customs_clearance_year_min != null && f.customs_clearance_year_max != null) n++
+        if (f.price_min != null && f.price_max != null) n++
+        if (f.rating_min != null && f.rating_max != null) n++
+        return n
+    }, [applied])
+
+    React.useEffect(() => {
+        if (!filtersOpen) return
+        const root = filterSheetRef.current
+        const prevOverflow = document.body.style.overflow
+        document.body.style.overflow = 'hidden'
+        const sel = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])'
+        const getItems = () => (root ? Array.from(root.querySelectorAll<HTMLElement>(sel)) : [])
+        const items = getItems()
+        ;(items[0] || root || document.body)?.focus?.()
+
+        function onKeyDown(e: KeyboardEvent) {
+            if (e.key === 'Escape') {
+                e.preventDefault()
+                setFiltersOpen(false)
+                filterToggleBtnRef.current?.focus()
+                return
+            }
+            if (e.key !== 'Tab' || !root) return
+            const list = getItems()
+            if (list.length === 0) return
+            const first = list[0]
+            const last = list[list.length - 1]
+            const active = document.activeElement as HTMLElement | null
+            if (e.shiftKey) {
+                if (active === first || !(active && root.contains(active))) {
+                    e.preventDefault();
+                    last.focus()
+                }
+            } else {
+                if (active === last || !(active && root.contains(active))) {
+                    e.preventDefault();
+                    first.focus()
+                }
+            }
+        }
+
+        document.addEventListener('keydown', onKeyDown)
+        return () => {
+            document.removeEventListener('keydown', onKeyDown)
+            document.body.style.overflow = prevOverflow
+        }
+    }, [filtersOpen])
+
+    function FilterControls({onApplied}: { onApplied?: () => void }) {
+        return (
+            <div className="flex flex-col gap-3">
+                <div>
                     <label className="block text-xs text-muted-foreground mb-1">{t('labels.search')}</label>
                     <input
                         type="search"
-                        className="w-full h-9 border border-input bg-background rounded-md px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        className="w-full h-10 border border-input bg-background rounded-md px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         placeholder={t('labels.searchPlaceholder')}
                         value={filters.query}
                         onChange={(e) => setFilters((f) => ({...f, query: e.target.value}))}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') {
                                 e.preventDefault();
-                                applyFilters()
+                                applyFilters();
+                                onApplied?.()
                             }
                         }}
                     />
@@ -613,7 +670,7 @@ export default function AdminEquipmentsPage() {
                 <div>
                     <label className="block text-xs text-muted-foreground mb-1">{t('labels.city')}</label>
                     <select
-                        className="h-9 border border-input bg-background rounded-md px-2 text-sm min-w-[160px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        className="h-10 w-full border border-input bg-background rounded-md px-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         value={filters.city_id ?? ''}
                         onChange={(e) => setFilters((f) => ({...f, city_id: e.target.value || undefined}))}
                     >
@@ -624,11 +681,10 @@ export default function AdminEquipmentsPage() {
                         ))}
                     </select>
                 </div>
-                {/* Supported filters */}
                 <div>
                     <label className="block text-xs text-muted-foreground mb-1">{t('labels.owner')}</label>
                     <select
-                        className="h-9 border border-input bg-background rounded-md px-2 text-sm min-w-[220px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        className="h-10 w-full border border-input bg-background rounded-md px-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         value={filters.owner_id ?? ''}
                         onChange={(e) => setFilters((f) => ({...f, owner_id: e.target.value || undefined}))}
                     >
@@ -636,18 +692,14 @@ export default function AdminEquipmentsPage() {
                         {(ownersData ?? []).map((u, idx) => {
                             const id = u.id ?? ''
                             const label = getUserLabel(u)
-                            return (
-                                <option key={id || idx} value={id}>
-                                    {label}
-                                </option>
-                            )
+                            return <option key={id || idx} value={id}>{label}</option>
                         })}
                     </select>
                 </div>
                 <div>
                     <label className="block text-xs text-muted-foreground mb-1">{t('labels.pilot')}</label>
                     <select
-                        className="h-9 border border-input bg-background rounded-md px-2 text-sm min-w-[220px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        className="h-10 w-full border border-input bg-background rounded-md px-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         value={filters.pilot_id ?? ''}
                         onChange={(e) => setFilters((f) => ({...f, pilot_id: e.target.value || undefined}))}
                     >
@@ -655,156 +707,160 @@ export default function AdminEquipmentsPage() {
                         {(pilotsData ?? []).map((u, idx) => {
                             const id = u.id ?? ''
                             const label = getUserLabel(u)
-                            return (
-                                <option key={id || idx} value={id}>
-                                    {label}
-                                </option>
-                            )
+                            return <option key={id || idx} value={id}>{label}</option>
                         })}
                     </select>
                 </div>
                 <div>
                     <label className="block text-xs text-muted-foreground mb-1">{t('labels.fieldsOfActivity')}</label>
                     <select
-                        className="h-9 border border-input bg-background rounded-md px-2 text-sm min-w-[220px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        className="h-10 w-full border border-input bg-background rounded-md px-2 text-sm min-w-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         value={filters.fields_of_activity ?? ''}
                         onChange={(e) => setFilters((f) => ({...f, fields_of_activity: e.target.value || undefined}))}
                     >
                         <option value="">{t('labels.all')}</option>
-                        {(foaList).map((val) => (
-                            <option key={val} value={val}>{tFoa(val)}</option>
-                        ))}
+                        {foaList.map((val) => (<option key={val} value={val}>{tFoa(val)}</option>))}
                     </select>
                 </div>
-                {/* Ranges (Dual sliders) */}
-                {/* Model year */}
-                <div className="flex flex-col min-w-[240px]">
-                    <label className="block text-xs text-muted-foreground mb-2">{t('labels.modelYearRange')}</label>
-                    <DualRangeSlider
-                        min={1970}
-                        max={new Date().getFullYear()}
-                        step={1}
-                        value={[
-                            (filters.model_year_min ?? 1970),
-                            (filters.model_year_max ?? new Date().getFullYear()),
-                        ]}
-                        onValueChange={(vals) =>
-                            setFilters((f) => ({
+                <div className="flex flex-col gap-4">
+                    <div>
+                        <label className="block text-xs text-muted-foreground mb-2">{t('labels.modelYearRange')}</label>
+                        <DualRangeSlider
+                            min={1970}
+                            max={new Date().getFullYear()}
+                            step={1}
+                            value={[filters.model_year_min ?? 1970, filters.model_year_max ?? new Date().getFullYear()]}
+                            onValueChange={(vals) => setFilters((f) => ({
                                 ...f,
-                                model_year_min: Array.isArray(vals) ? (vals[0] as number) : undefined,
-                                model_year_max: Array.isArray(vals) ? (vals[1] as number) : undefined,
-                            }))
-                        }
-                        label={(v) => (v != null ? Math.round(v) : '')}
-                    />
-                </div>
-                {/* Construction year */}
-                <div className="flex flex-col min-w-[240px]">
-                    <label
-                        className="block text-xs text-muted-foreground mb-2">{t('labels.constructionYearRange')}</label>
-                    <DualRangeSlider
-                        min={1970}
-                        max={new Date().getFullYear()}
-                        step={1}
-                        value={[
-                            (filters.construction_year_min ?? 1970),
-                            (filters.construction_year_max ?? new Date().getFullYear()),
-                        ]}
-                        onValueChange={(vals) =>
-                            setFilters((f) => ({
+                                model_year_min: Number(vals[0] as number),
+                                model_year_max: Number(vals[1] as number)
+                            }))}
+                            label={(v) => (v != null ? Math.round(v) : '')}
+                        />
+                    </div>
+                    <div>
+                        <label
+                            className="block text-xs text-muted-foreground mb-2">{t('labels.constructionYearRange')}</label>
+                        <DualRangeSlider
+                            min={1970}
+                            max={new Date().getFullYear()}
+                            step={1}
+                            value={[filters.construction_year_min ?? 1970, filters.construction_year_max ?? new Date().getFullYear()]}
+                            onValueChange={(vals) => setFilters((f) => ({
                                 ...f,
-                                construction_year_min: Array.isArray(vals) ? (vals[0] as number) : undefined,
-                                construction_year_max: Array.isArray(vals) ? (vals[1] as number) : undefined,
-                            }))
-                        }
-                        label={(v) => (v != null ? Math.round(v) : '')}
-                    />
-                </div>
-                {/* Customs clearance year */}
-                <div className="flex flex-col min-w-[260px]">
-                    <label className="block text-xs text-muted-foreground mb-2">{t('labels.customsYearRange')}</label>
-                    <DualRangeSlider
-                        min={1970}
-                        max={new Date().getFullYear()}
-                        step={1}
-                        value={[
-                            (filters.customs_clearance_year_min ?? 1970),
-                            (filters.customs_clearance_year_max ?? new Date().getFullYear()),
-                        ]}
-                        onValueChange={(vals) =>
-                            setFilters((f) => ({
+                                construction_year_min: Number(vals[0] as number),
+                                construction_year_max: Number(vals[1] as number)
+                            }))}
+                            label={(v) => (v != null ? Math.round(v) : '')}
+                        />
+                    </div>
+                    <div>
+                        <label
+                            className="block text-xs text-muted-foreground mb-2">{t('labels.customsYearRange')}</label>
+                        <DualRangeSlider
+                            min={1970}
+                            max={new Date().getFullYear()}
+                            step={1}
+                            value={[filters.customs_clearance_year_min ?? 1970, filters.customs_clearance_year_max ?? new Date().getFullYear()]}
+                            onValueChange={(vals) => setFilters((f) => ({
                                 ...f,
-                                customs_clearance_year_min: Array.isArray(vals) ? (vals[0] as number) : undefined,
-                                customs_clearance_year_max: Array.isArray(vals) ? (vals[1] as number) : undefined,
-                            }))
-                        }
-                        label={(v) => (v != null ? Math.round(v) : '')}
-                    />
-                </div>
-                {/* Price */}
-                <div className="flex flex-col min-w-[260px]">
-                    <label className="block text-xs text-muted-foreground mb-2">{t('labels.priceRange')}</label>
-                    <DualRangeSlider
-                        min={0}
-                        max={100000}
-                        step={50}
-                        value={[
-                            (filters.price_min ?? 0),
-                            (filters.price_max ?? 100000),
-                        ]}
-                        onValueChange={(vals) =>
-                            setFilters((f) => ({
+                                customs_clearance_year_min: Number(vals[0] as number),
+                                customs_clearance_year_max: Number(vals[1] as number)
+                            }))}
+                            label={(v) => (v != null ? Math.round(v) : '')}
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-xs text-muted-foreground mb-2">{t('labels.priceRange')}</label>
+                        <DualRangeSlider
+                            min={0}
+                            max={100000}
+                            step={100}
+                            value={[filters.price_min ?? 0, filters.price_max ?? 100000]}
+                            onValueChange={(vals) => setFilters((f) => ({
                                 ...f,
-                                price_min: Array.isArray(vals) ? (vals[0] as number) : undefined,
-                                price_max: Array.isArray(vals) ? (vals[1] as number) : undefined,
-                            }))
-                        }
-                        label={(v) => (v != null ? `${Math.round(v)} MAD` : '')}
-                    />
-                </div>
-                {/* Rating */}
-                <div className="flex flex-col min-w-[240px]">
-                    <label className="block text-xs text-slate-600 mb-2">{t('labels.ratingRange')}</label>
-                    <DualRangeSlider
-                        min={0}
-                        max={5}
-                        step={0.1}
-                        value={[
-                            (filters.rating_min ?? 0),
-                            (filters.rating_max ?? 5),
-                        ]}
-                        onValueChange={(vals) =>
-                            setFilters((f) => ({
+                                price_min: Number(vals[0] as number),
+                                price_max: Number(vals[1] as number)
+                            }))}
+                            label={(v) => (v != null ? `${v} MAD` : '')}
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-xs text-muted-foreground mb-2">{t('labels.ratingRange')}</label>
+                        <DualRangeSlider
+                            min={0}
+                            max={5}
+                            step={0.1}
+                            value={[filters.rating_min ?? 0, filters.rating_max ?? 5]}
+                            onValueChange={(vals) => setFilters((f) => ({
                                 ...f,
-                                rating_min: Array.isArray(vals) ? Number((vals[0] as number).toFixed(1)) : undefined,
-                                rating_max: Array.isArray(vals) ? Number((vals[1] as number).toFixed(1)) : undefined,
-                            }))
-                        }
-                        label={(v) => (v != null ? v.toFixed(1) : '')}
-                    />
+                                rating_min: Number((vals[0] as number).toFixed(1)),
+                                rating_max: Number((vals[1] as number).toFixed(1))
+                            }))}
+                            label={(v) => (v != null ? (v as number).toFixed(1) : '')}
+                        />
+                    </div>
                 </div>
-                <div className="ms-auto flex items-center gap-3">
+                <div className="flex items-center gap-2 pt-2">
+                    <button onClick={() => {
+                        applyFilters();
+                        onApplied?.()
+                    }}
+                            className="inline-flex items-center h-10 rounded-md bg-primary text-primary-foreground px-3 disabled:opacity-50"
+                            disabled={isFetching}>{t('buttons.apply')}</button>
+                    <button onClick={() => {
+                        resetFilters();
+                        onApplied?.()
+                    }}
+                            className="inline-flex items-center h-10 rounded-md border border-input bg-background px-3 text-sm hover:bg-accent hover:text-accent-foreground">{t('buttons.reset')}</button>
+                </div>
+            </div>
+        )
+    }
+
+    return (
+        <div className="space-y-4">
+            {/* Header actions */}
+            <div className="flex items-center justify-between">
+                <div>
+                    <h1 className="text-2xl font-semibold tracking-tight">{t('title')}</h1>
+                    <p className="text-sm text-muted-foreground">{t('subtitle')}</p>
+                </div>
+                <div className="hidden md:flex items-center gap-2">
                     <button
-                        onClick={() => setAddOpen(true)}
-                        className="inline-flex items-center h-9 rounded-md border border-input bg-background px-3 text-sm hover:bg-accent hover:text-accent-foreground"
+                        onClick={() => router.push('/admin/equipments/new')}
+                        className="inline-flex items-center h-10 rounded-md border border-input bg-background px-3 text-sm hover:bg-accent hover:text-accent-foreground"
                     >
                         {t('buttons.new')}
                     </button>
+                </div>
+                <div className="md:hidden flex items-center gap-2">
                     <button
-                        onClick={applyFilters}
-                        className="inline-flex items-center h-9 rounded-md bg-primary text-primary-foreground px-3 disabled:opacity-50"
-                        disabled={isFetching}
+                        ref={filterToggleBtnRef}
+                        onClick={() => setFiltersOpen(true)}
+                        className="inline-flex items-center h-10 rounded-md border border-input bg-background px-3 text-sm"
+                        aria-expanded={filtersOpen}
+                        aria-controls="equipment-filters-sheet"
                     >
-                        {t('buttons.apply')}
+                        Filters{appliedCount > 0 ? <span
+                        className="ms-2 inline-flex items-center justify-center text-xs rounded-full bg-slate-900 text-white px-2 py-0.5">{appliedCount}</span> : null}
                     </button>
                     <button
-                        onClick={resetFilters}
-                        className="inline-flex items-center h-9 rounded-md border border-input bg-background px-3 text-sm hover:bg-accent hover:text-accent-foreground"
+                        onClick={() => router.push('/admin/equipments/new')}
+                        className="inline-flex items-center h-10 rounded-md border border-input bg-background px-3 text-sm"
                     >
-                        {t('buttons.reset')}
+                        {t('buttons.new')}
                     </button>
                 </div>
             </div>
+
+            {/* Main grid: sidebar + content */}
+            <div className="mt-4 grid grid-cols-1 lg:grid-cols-[18rem_1fr] gap-4 items-start">
+                <aside className="hidden lg:block sticky top-20 self-start rounded-lg border bg-card p-4"
+                       aria-label="Filters">
+                    <FilterControls/>
+                </aside>
+                <section>
 
             {/* Table container */}
             <div className="rounded-lg border bg-card">
@@ -813,7 +869,7 @@ export default function AdminEquipmentsPage() {
                         <div className="text-sm text-red-600">{(error as Error)?.message || t('error')}</div>
                         <button
                             onClick={() => refetch()}
-                            className="mt-2 inline-flex items-center h-9 rounded-md border border-input bg-background px-3 text-sm hover:bg-accent hover:text-accent-foreground"
+                            className="mt-2 inline-flex items-center h-10 rounded-md border border-input bg-background px-3 text-sm hover:bg-accent hover:text-accent-foreground"
                         >
                             {t('buttons.retry')}
                         </button>
@@ -823,60 +879,157 @@ export default function AdminEquipmentsPage() {
                         <div className="mb-2">{t('empty')}</div>
                         <button
                             onClick={resetFilters}
-                            className="inline-flex items-center h-9 rounded-md border border-input bg-background px-3 text-sm hover:bg-accent hover:text-accent-foreground"
+                            className="inline-flex items-center h-10 rounded-md border border-input bg-background px-3 text-sm hover:bg-accent hover:text-accent-foreground"
                         >{t('buttons.clearFilters')}
                         </button>
                     </div>
                 ) : (
-                    <div className="overflow-x-auto">
-                        <table className="min-w-full text-sm">
-                            <thead className="bg-muted text-muted-foreground">
-                            <tr>
-                                <th className="text-start font-medium px-3 py-2 border-b">{t('table.title')}</th>
-                                <th className="text-start font-medium px-3 py-2 border-b">{t('table.brand')}</th>
-                                <th className="text-start font-medium px-3 py-2 border-b">{t('table.model')}</th>
-                                <th className="text-start font-medium px-3 py-2 border-b">{t('table.city')}</th>
-                                <th className="text-start font-medium px-3 py-2 border-b">{t('table.pricePerDay')}</th>
-                                <th className="text-start font-medium px-3 py-2 border-b">{t('table.available')}</th>
-                                <th className="text-start font-medium px-3 py-2 border-b">{t('table.actions')}</th>
-                            </tr>
-                            </thead>
-                            <tbody>
+                    <>
+                        {/* Desktop Table - hidden on mobile */}
+                        <div className="hidden md:block overflow-x-auto">
+                            <table className="min-w-full text-sm">
+                                <thead className="bg-muted text-muted-foreground sticky top-0 z-10">
+                                <tr>
+                                    <th className="text-start font-medium px-3 py-2 border-b">{t('table.title')}</th>
+                                    <th className="text-start font-medium px-3 py-2 border-b">{t('table.brand')}</th>
+                                    <th className="text-start font-medium px-3 py-2 border-b">{t('table.model')}</th>
+                                    <th className="text-start font-medium px-3 py-2 border-b">{t('table.city')}</th>
+                                    <th className="text-start font-medium px-3 py-2 border-b">{t('table.pricePerDay')}</th>
+                                    <th className="text-start font-medium px-3 py-2 border-b">{t('table.available')}</th>
+                                    <th className="text-start font-medium px-3 py-2 border-b">{t('table.actions')}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {isFetching && items.length === 0 ? (
+                                    [...Array(5)].map((_, i) => (
+                                        <tr key={i} className="animate-pulse">
+                                            <td className="px-3 py-2 border-b">
+                                                <div className="h-4 bg-muted rounded w-40"/>
+                                            </td>
+                                            <td className="px-3 py-2 border-b">
+                                                <div className="h-4 bg-muted rounded w-24"/>
+                                            </td>
+                                            <td className="px-3 py-2 border-b">
+                                                <div className="h-4 bg-muted rounded w-24"/>
+                                            </td>
+                                            <td className="px-3 py-2 border-b">
+                                                <div className="h-4 bg-muted rounded w-24"/>
+                                            </td>
+                                            <td className="px-3 py-2 border-b">
+                                                <div className="h-4 bg-muted rounded w-16"/>
+                                            </td>
+                                            <td className="px-3 py-2 border-b">
+                                                <div className="h-4 bg-muted rounded w-12"/>
+                                            </td>
+                                            <td className="px-3 py-2 border-b">
+                                                <div className="h-4 bg-muted rounded w-20"/>
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    items.map((it, idx) => (
+                                        <tr key={(it.id as string) ?? idx} className="hover:bg-slate-50">
+                                            <td className="px-3 py-2 border-b">{it.title ?? '-'}</td>
+                                            <td className="px-3 py-2 border-b">{getLocalizedName(it.brand) || it.brand_name || '-'}</td>
+                                            <td className="px-3 py-2 border-b">{getLocalizedName(it.model) || it.model_name || '-'}</td>
+                                            <td className="px-3 py-2 border-b">{getLocalizedName(it.city) || it.city_name || '-'}</td>
+                                            <td className="px-3 py-2 border-b">{it.price_per_day != null ? `${it.price_per_day} MAD` : '-'}</td>
+                                            <td className="px-3 py-2 border-b">
+                                                {it.is_available ? (
+                                                    <span
+                                                        className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-green-100 text-green-700">{t('table.yes')}</span>
+                                                ) : (
+                                                    <span
+                                                        className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-muted text-muted-foreground">{t('table.no')}</span>
+                                                )}
+                                            </td>
+                                            <td className="px-3 py-2 border-b">
+                                                <div className="flex items-center gap-2">
+                                                    <button
+                                                    onClick={() => {
+                                                        const id = it.id as string | undefined
+                                                        if (!id) return
+                                                        try {
+                                                            qc.setQueryData(['equipments', 'byId', id], it)
+                                                        } catch {
+                                                        }
+                                                        router.push(`/admin/equipments/${encodeURIComponent(id)}/edit`)
+                                                    }}
+                                                    className="text-slate-600 hover:underline text-xs"
+                                                >
+                                                    {t('buttons.edit')}
+                                                </button>
+                                                    <button
+                                                        onClick={() => {
+                                                            const id = it.id as string | undefined
+                                                            if (!id) return
+                                                            router.push(`/admin/equipments/${encodeURIComponent(id)}/images`)
+                                                        }}
+                                                        className="text-slate-600 hover:underline text-xs"
+                                                    >
+                                                        {t('buttons.images')}
+                                                    </button>
+                                                    <button
+                                                        onClick={() => {
+                                                            const id = it.id as string | undefined
+                                                            if (!id) return
+                                                            setToDeleteId(id)
+                                                            setToDeleteTitle((it.title as string) ?? '-')
+                                                            setConfirmOpen(true)
+                                                        }}
+                                                        className="text-red-600 hover:underline text-xs"
+                                                    >
+                                                        {t('buttons.delete')}
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {/* Mobile Cards - hidden on desktop */}
+                        <div className="md:hidden space-y-3">
                             {isFetching && items.length === 0 ? (
-                                [...Array(5)].map((_, i) => (
-                                    <tr key={i} className="animate-pulse">
-                                        <td className="px-3 py-2 border-b">
-                                            <div className="h-4 bg-muted rounded w-40"/>
-                                        </td>
-                                        <td className="px-3 py-2 border-b">
-                                            <div className="h-4 bg-muted rounded w-24"/>
-                                        </td>
-                                        <td className="px-3 py-2 border-b">
-                                            <div className="h-4 bg-muted rounded w-24"/>
-                                        </td>
-                                        <td className="px-3 py-2 border-b">
-                                            <div className="h-4 bg-muted rounded w-24"/>
-                                        </td>
-                                        <td className="px-3 py-2 border-b">
-                                            <div className="h-4 bg-muted rounded w-16"/>
-                                        </td>
-                                        <td className="px-3 py-2 border-b">
-                                            <div className="h-4 bg-muted rounded w-12"/>
-                                        </td>
-                                        <td className="px-3 py-2 border-b">
-                                            <div className="h-4 bg-muted rounded w-20"/>
-                                        </td>
-                                    </tr>
+                                [...Array(3)].map((_, i) => (
+                                    <div key={i} className="border rounded-lg p-4 bg-white animate-pulse">
+                                        <div className="flex items-start justify-between mb-3">
+                                            <div>
+                                                <div className="h-5 w-40 bg-muted rounded mb-2"/>
+                                                <div className="h-3 w-32 bg-muted rounded mb-1"/>
+                                                <div className="h-3 w-28 bg-muted rounded"/>
+                                            </div>
+                                            <div className="h-6 w-16 bg-muted rounded"/>
+                                        </div>
+                                        <div className="space-y-1 mb-3">
+                                            <div className="h-3 w-24 bg-muted rounded"/>
+                                            <div className="h-3 w-20 bg-muted rounded"/>
+                                        </div>
+                                        <div className="flex items-center justify-between pt-2 border-t">
+                                            <div className="h-3 w-12 bg-muted rounded"/>
+                                            <div className="flex items-center gap-2">
+                                                <div className="h-6 w-12 bg-muted rounded"/>
+                                                <div className="h-6 w-16 bg-muted rounded"/>
+                                                <div className="h-6 w-16 bg-muted rounded"/>
+                                            </div>
+                                        </div>
+                                    </div>
                                 ))
+                            ) : items.length === 0 ? (
+                                <div className="p-8 text-center text-muted-foreground">{t('empty')}</div>
                             ) : (
                                 items.map((it, idx) => (
-                                    <tr key={(it.id as string) ?? idx} className="hover:bg-slate-50">
-                                        <td className="px-3 py-2 border-b">{it.title ?? '-'}</td>
-                                        <td className="px-3 py-2 border-b">{getLocalizedName(it.brand) || it.brand_name || '-'}</td>
-                                        <td className="px-3 py-2 border-b">{getLocalizedName(it.model) || it.model_name || '-'}</td>
-                                        <td className="px-3 py-2 border-b">{getLocalizedName(it.city) || it.city_name || '-'}</td>
-                                        <td className="px-3 py-2 border-b">{it.price_per_day != null ? `${it.price_per_day} MAD` : '-'}</td>
-                                        <td className="px-3 py-2 border-b">
+                                    <div key={(it.id as string) ?? idx} className="border rounded-lg p-4 bg-white">
+                                        <div className="flex items-start justify-between mb-3">
+                                            <div>
+                                                <div className="font-semibold text-base mb-2">{it.title ?? '-'}</div>
+                                                <div
+                                                    className="text-sm text-muted-foreground">{getLocalizedName(it.brand) || it.brand_name || '-'} • {getLocalizedName(it.model) || it.model_name || '-'}</div>
+                                                <div
+                                                    className="text-sm text-muted-foreground">{getLocalizedName(it.city) || it.city_name || '-'}</div>
+                                            </div>
                                             {it.is_available ? (
                                                 <span
                                                     className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-green-100 text-green-700">{t('table.yes')}</span>
@@ -884,8 +1037,14 @@ export default function AdminEquipmentsPage() {
                                                 <span
                                                     className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-muted text-muted-foreground">{t('table.no')}</span>
                                             )}
-                                        </td>
-                                        <td className="px-3 py-2 border-b">
+                                        </div>
+                                        <div className="mb-3 text-xs text-muted-foreground">
+                                            <div>Price: {it.price_per_day != null ? `${it.price_per_day} MAD/day` : '-'}</div>
+                                        </div>
+                                        <div className="flex items-center justify-between pt-2 border-t">
+                                            <div className="text-xs text-muted-foreground">
+                                                Actions:
+                                            </div>
                                             <div className="flex items-center gap-2">
                                                 <button
                                                     onClick={() => {
@@ -895,33 +1054,9 @@ export default function AdminEquipmentsPage() {
                                                             qc.setQueryData(['equipments', 'byId', id], it)
                                                         } catch {
                                                         }
-                                                        setEditId(id)
-                                                        const brandObj: any = (it as any).brand
-                                                        const modelObj: any = (it as any).model
-                                                        const cityObj: any = (it as any).city
-                                                        const categoryObj: any = (it as any).category
-                                                        const ownerObj: any = (it as any).owner
-                                                        const pilotObj: any = (it as any).pilot
-                                                        setEditForm({
-                                                            title: typeof it.title === 'string' ? it.title : '',
-                                                            brand_id: typeof (it as any).brand_id === 'string' ? (it as any).brand_id : (brandObj && typeof brandObj === 'object' && (typeof brandObj.id === 'string' || typeof brandObj._id === 'string') ? String(brandObj.id ?? brandObj._id) : ''),
-                                                            model_id: typeof (it as any).model_id === 'string' ? (it as any).model_id : (modelObj && typeof modelObj === 'object' && (typeof modelObj.id === 'string' || typeof modelObj._id === 'string') ? String(modelObj.id ?? modelObj._id) : ''),
-                                                            category_id: typeof (it as any).category_id === 'string' ? (it as any).category_id : (categoryObj && typeof categoryObj === 'object' && (typeof categoryObj.id === 'string' || typeof categoryObj._id === 'string') ? String(categoryObj.id ?? categoryObj._id) : ''),
-                                                            city_id: typeof (it as any).city_id === 'string' ? (it as any).city_id : (cityObj && typeof cityObj === 'object' && (typeof cityObj.id === 'string' || typeof cityObj._id === 'string') ? String(cityObj.id ?? cityObj._id) : ''),
-                                                            owner_id: typeof (it as any).owner_id === 'string' ? (it as any).owner_id : (ownerObj && typeof ownerObj === 'object' && (typeof ownerObj.id === 'string' || typeof ownerObj._id === 'string') ? String(ownerObj.id ?? ownerObj._id) : ''),
-                                                            pilot_id: typeof (it as any).pilot_id === 'string' ? (it as any).pilot_id : (pilotObj && typeof pilotObj === 'object' && (typeof pilotObj.id === 'string' || typeof pilotObj._id === 'string') ? String(pilotObj.id ?? pilotObj._id) : ''),
-                                                            fields_of_activity: typeof (it as any).fields_of_activity === 'string' ? (it as any).fields_of_activity : '',
-                                                            description: typeof (it as any).description === 'string' ? (it as any).description : '',
-                                                            is_available: !!it.is_available,
-                                                            model_year: typeof (it as any).model_year === 'number' ? (it as any).model_year : '',
-                                                            construction_year: typeof (it as any).construction_year === 'number' ? (it as any).construction_year : '',
-                                                            date_of_customs_clearance: typeof (it as any).date_of_customs_clearance === 'number' ? (it as any).date_of_customs_clearance : '',
-                                                            price_per_day: typeof it.price_per_day === 'number' ? it.price_per_day : '',
-                                                        })
-                                                        setEditErrors({})
-                                                        setEditOpen(true)
+                                                        router.push(`/admin/equipments/${encodeURIComponent(id)}/edit`)
                                                     }}
-                                                    className="text-slate-600 hover:underline text-xs"
+                                                    className="text-xs px-2 py-1 rounded border"
                                                 >
                                                     {t('buttons.edit')}
                                                 </button>
@@ -931,7 +1066,7 @@ export default function AdminEquipmentsPage() {
                                                         if (!id) return
                                                         router.push(`/admin/equipments/${encodeURIComponent(id)}/images`)
                                                     }}
-                                                    className="text-slate-600 hover:underline text-xs"
+                                                    className="text-xs px-2 py-1 rounded border"
                                                 >
                                                     {t('buttons.images')}
                                                 </button>
@@ -943,18 +1078,17 @@ export default function AdminEquipmentsPage() {
                                                         setToDeleteTitle((it.title as string) ?? '-')
                                                         setConfirmOpen(true)
                                                     }}
-                                                    className="text-red-600 hover:underline text-xs"
+                                                    className="text-xs px-2 py-1 rounded border text-red-600"
                                                 >
                                                     {t('buttons.delete')}
                                                 </button>
                                             </div>
-                                        </td>
-                                    </tr>
+                                        </div>
+                                    </div>
                                 ))
                             )}
-                            </tbody>
-                        </table>
-                    </div>
+                        </div>
+                    </>
                 )}
                 {/* Pagination */}
                 <div className="flex items-center justify-between p-3">
@@ -980,6 +1114,33 @@ export default function AdminEquipmentsPage() {
                     </div>
                 </div>
             </div>
+                </section>
+            </div>
+
+            {filtersOpen && (
+                <div className="lg:hidden" role="dialog" aria-modal="true">
+                    <div className="fixed inset-0 z-40 bg-black/40" onClick={() => setFiltersOpen(false)}/>
+                    <div
+                        id="equipment-filters-sheet"
+                        ref={filterSheetRef}
+                        className="fixed z-50 inset-y-0 start-0 w-[90vw] max-w-sm bg-white border-e shadow-lg transition-transform motion-reduce:transition-none translate-x-0"
+                        tabIndex={-1}
+                        aria-label="Filters"
+                    >
+                        <div className="h-12 px-4 border-b flex items-center justify-between">
+                            <div className="font-medium">Filters</div>
+                            <button onClick={() => setFiltersOpen(false)}
+                                    className="h-9 w-9 inline-flex items-center justify-center rounded-md border hover:bg-slate-50"
+                                    aria-label="Close filters">×
+                            </button>
+                        </div>
+                        <div className="p-4 overflow-y-auto h-[calc(100svh-3rem)]">
+                            <FilterControls onApplied={() => setFiltersOpen(false)}/>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Quick add dialog */}
             {addOpen ? (
                 <Portal>

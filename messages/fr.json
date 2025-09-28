@@ -283,7 +283,8 @@
       "cities": "Villes",
       "categories": "Catégories",
       "models": "Modèles",
-      "bookings": "Réservations"
+      "bookings": "Réservations",
+      "reviews": "Avis"
     },
     "bookings": {
       "title": "Réservations",
@@ -353,6 +354,10 @@
         "CANCELED": "Annulée",
         "COMPLETED": "Terminée"
       }
+    },
+    "reviews": {
+      "title": "Avis",
+      "subtitle": "Consulter et gérer les avis."
     },
     "topbar": {
       "admin": "Admin",

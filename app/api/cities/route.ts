@@ -1,96 +1,16 @@
-import {NextRequest, NextResponse} from 'next/server'
-import {getApiBaseUrl} from '@/lib/env'
-
-function getLocaleFromRequest(req: NextRequest): string | undefined {
-    const cookieLoc = req.cookies.get('NEXT_LOCALE')?.value
-    if (cookieLoc) return cookieLoc
-    const ref = req.headers.get('referer')
-    try {
-        if (ref) {
-            const u = new URL(ref)
-            const seg = u.pathname.split('/').filter(Boolean)[0]
-            if (seg) return seg
-        }
-    } catch {
-    }
-    const al = req.headers.get('accept-language')
-    if (al) return al.split(',')[0]?.trim()
-    return undefined
-}
+import {NextRequest} from 'next/server'
+import {forwardJson, forwardPassthrough} from '@/app/api/_lib/proxy'
 
 export async function GET(req: NextRequest) {
-    const base = getApiBaseUrl()
-    if (!base) return NextResponse.json({message: 'API base URL is not configured'}, {status: 500})
-    const token = req.cookies.get('accessToken')?.value
-    if (!token) return NextResponse.json({message: 'Unauthorized'}, {status: 401})
-
-    try {
-        const acceptLang = getLocaleFromRequest(req)
-        const res = await fetch(`${base}/cities`, {
-            method: 'GET',
-            headers: {
-                Authorization: `Bearer ${token}`,
-                ...(acceptLang ? {'Accept-Language': acceptLang} : {}),
-            },
-        })
-
-        const contentType = res.headers.get('content-type') || ''
-        const isJson = contentType.includes('application/json')
-        const data = isJson ? await res.json() : await res.text()
-
-        if (!res.ok) {
-            if (isJson) return NextResponse.json(data as unknown, {status: res.status})
-            return new NextResponse(String(data), {
-                status: res.status,
-                headers: {'content-type': contentType || 'text/plain'}
-            })
-        }
-
-        return isJson ? NextResponse.json(data) : new NextResponse(String(data), {headers: {'content-type': contentType || 'text/plain'}})
-    } catch {
-        return NextResponse.json({message: 'Unexpected error'}, {status: 500})
-    }
+    return forwardPassthrough(req, '/cities', {method: 'GET'})
 }
 
 export async function POST(req: NextRequest) {
-    const base = getApiBaseUrl()
-    if (!base) return NextResponse.json({message: 'API base URL is not configured'}, {status: 500})
-    const token = req.cookies.get('accessToken')?.value
-    if (!token) return NextResponse.json({message: 'Unauthorized'}, {status: 401})
-
     let body: unknown
     try {
         body = await req.json()
     } catch {
         body = undefined
     }
-
-    try {
-        const acceptLang = getLocaleFromRequest(req)
-        const res = await fetch(`${base}/cities`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
-                ...(acceptLang ? {'Accept-Language': acceptLang} : {}),
-            },
-            body: body != null ? JSON.stringify(body) : undefined,
-        })
-
-        const contentType = res.headers.get('content-type') || ''
-        const isJson = contentType.includes('application/json')
-        const data = isJson ? await res.json() : await res.text()
-
-        if (!res.ok) {
-            if (isJson) return NextResponse.json(data as unknown, {status: res.status})
-            return new NextResponse(String(data), {
-                status: res.status,
-                headers: {'content-type': contentType || 'text/plain'}
-            })
-        }
-
-        return isJson ? NextResponse.json(data) : new NextResponse(String(data), {headers: {'content-type': contentType || 'text/plain'}})
-    } catch {
-        return NextResponse.json({message: 'Unexpected error'}, {status: 500})
-    }
+    return forwardJson(req, '/cities', {method: 'POST', body, requireAuth: true})
 }

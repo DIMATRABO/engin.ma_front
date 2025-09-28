@@ -215,7 +215,7 @@ export default function AdminUsersPage() {
             </div>
 
             {/* Toolbar */}
-            <div className="flex flex-wrap items-end gap-3 rounded-lg border bg-card p-3">
+            <div className="flex flex-wrap items-center gap-2 rounded-lg border bg-card p-3">
                 <div>
                     <label className="block text-xs text-muted-foreground mb-1">{t('labels.search')}</label>
                     <input
@@ -225,13 +225,13 @@ export default function AdminUsersPage() {
                             if (e.key === 'Enter') applyFilters()
                         }}
                         placeholder={t('labels.searchPlaceholder')}
-                        className="h-9 w-[240px] border border-input bg-background rounded-md px-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        className="h-10 w-full sm:w-64 border border-input bg-background rounded-md px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     />
                 </div>
                 <div>
                     <label className="block text-xs text-muted-foreground mb-1">{t('labels.status')}</label>
                     <select
-                        className="h-9 border border-input bg-background rounded-md px-2 text-sm min-w-[160px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        className="h-10 w-full sm:w-64 border border-input bg-background rounded-md px-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         value={filters.status ?? ''}
                         onChange={(e) => setFilters((f) => ({...f, status: (e.target.value || undefined) as any}))}
                     >
@@ -243,14 +243,14 @@ export default function AdminUsersPage() {
                 <div className="ms-auto flex items-center gap-3">
                     <button
                         onClick={applyFilters}
-                        className="inline-flex items-center h-9 rounded-md bg-primary text-primary-foreground px-3 disabled:opacity-50"
+                        className="inline-flex items-center h-10 rounded-md bg-primary text-primary-foreground px-3 disabled:opacity-50"
                         disabled={isFetching}
                     >
                         {t('buttons.apply')}
                     </button>
                     <button
                         onClick={resetFilters}
-                        className="inline-flex items-center h-9 rounded-md border border-input bg-background px-3 text-sm hover:bg-accent hover:text-accent-foreground"
+                        className="inline-flex items-center h-10 rounded-md border border-input bg-background px-3 text-sm hover:bg-accent hover:text-accent-foreground"
                     >
                         {t('buttons.reset')}
                     </button>
@@ -262,52 +262,118 @@ export default function AdminUsersPage() {
                 {isError ? (
                     <div className="p-6 text-sm text-red-700">{t('error')}</div>
                 ) : (
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-sm">
-                            <thead className="bg-muted/50 sticky top-0 z-10">
-                            <tr className="text-start">
-                                <th className="px-3 py-2 font-medium cursor-pointer text-start"
-                                    onClick={() => toggleSort('name')}>
-                                    {t('table.name')}{' '}{sort.key === 'name' ? (sort.order === 'asc' ? '▲' : '▼') : ''}
-                                </th>
-                                <th className="px-3 py-2 font-medium cursor-pointer text-start"
-                                    onClick={() => toggleSort('username')}>
-                                    {t('table.username')}{' '}{sort.key === 'username' ? (sort.order === 'asc' ? '▲' : '▼') : ''}
-                                </th>
-                                <th className="px-3 py-2 font-medium cursor-pointer text-start"
-                                    onClick={() => toggleSort('email')}>
-                                    {t('table.email')}{' '}{sort.key === 'email' ? (sort.order === 'asc' ? '▲' : '▼') : ''}
-                                </th>
-                                <th className="px-3 py-2 font-medium text-start">{t('table.status')}</th>
-                                <th className="px-3 py-2 font-medium text-right">{t('table.actions')}</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {isFetching && items.length === 0 ? (
-                                Array.from({length: 5}).map((_, i) => (
-                                    <tr key={i} className="border-t">
-                                        <td className="px-3 py-2">
-                                            <div className="h-4 w-32 bg-muted animate-pulse rounded"/>
-                                        </td>
-                                        <td className="px-3 py-2">
-                                            <div className="h-4 w-28 bg-muted animate-pulse rounded"/>
-                                        </td>
-                                        <td className="px-3 py-2">
-                                            <div className="h-4 w-40 bg-muted animate-pulse rounded"/>
-                                        </td>
-                                        <td className="px-3 py-2">
-                                            <div className="h-6 w-20 bg-muted animate-pulse rounded"/>
-                                        </td>
-                                        <td className="px-3 py-2 text-right">
-                                            <div className="h-6 w-24 bg-muted animate-pulse rounded ms-auto"/>
-                                        </td>
+                    <>
+                        {/* Desktop Table - hidden on mobile */}
+                        <div className="hidden sm:block overflow-x-auto">
+                            <table className="min-w-full text-sm">
+                                <thead className="bg-muted/50 sticky top-0 z-10">
+                                <tr className="text-start">
+                                    <th className="px-3 py-2 font-medium cursor-pointer text-start"
+                                        onClick={() => toggleSort('name')}>
+                                        {t('table.name')}{' '}{sort.key === 'name' ? (sort.order === 'asc' ? '▲' : '▼') : ''}
+                                    </th>
+                                    <th className="px-3 py-2 font-medium cursor-pointer text-start"
+                                        onClick={() => toggleSort('username')}>
+                                        {t('table.username')}{' '}{sort.key === 'username' ? (sort.order === 'asc' ? '▲' : '▼') : ''}
+                                    </th>
+                                    <th className="px-3 py-2 font-medium cursor-pointer text-start"
+                                        onClick={() => toggleSort('email')}>
+                                        {t('table.email')}{' '}{sort.key === 'email' ? (sort.order === 'asc' ? '▲' : '▼') : ''}
+                                    </th>
+                                    <th className="px-3 py-2 font-medium text-start">{t('table.status')}</th>
+                                    <th className="px-3 py-2 font-medium text-end">{t('table.actions')}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {isFetching && items.length === 0 ? (
+                                    Array.from({length: 5}).map((_, i) => (
+                                        <tr key={i} className="border-t">
+                                            <td className="px-3 py-2">
+                                                <div className="h-4 w-32 bg-muted animate-pulse rounded"/>
+                                            </td>
+                                            <td className="px-3 py-2">
+                                                <div className="h-4 w-28 bg-muted animate-pulse rounded"/>
+                                            </td>
+                                            <td className="px-3 py-2">
+                                                <div className="h-4 w-40 bg-muted animate-pulse rounded"/>
+                                            </td>
+                                            <td className="px-3 py-2">
+                                                <div className="h-6 w-20 bg-muted animate-pulse rounded"/>
+                                            </td>
+                                            <td className="px-3 py-2 text-end">
+                                                <div className="h-6 w-24 bg-muted animate-pulse rounded ms-auto"/>
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : items.length === 0 ? (
+                                    <tr className="border-t">
+                                        <td className="px-3 py-8 text-center text-muted-foreground"
+                                            colSpan={5}>{t('empty')}</td>
                                     </tr>
+                                ) : (
+                                    items.map((u, idx) => {
+                                        const id = u.id || ''
+                                        const name = u.name || '-'
+                                        const username = u.username || '-'
+                                        const email = u.email || '-'
+                                        const status = (u.status || '').toUpperCase()
+                                        const nextStatus = status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE'
+                                        return (
+                                            <tr key={id || idx} className="border-t">
+                                                <td className="px-3 py-2 truncate" title={name}>{name}</td>
+                                                <td className="px-3 py-2 truncate" title={username}>{username}</td>
+                                                <td className="px-3 py-2 truncate" title={email}>{email}</td>
+                                                <td className="px-3 py-2"><StatusBadge status={status}/></td>
+                                                <td className="px-3 py-2 text-end whitespace-nowrap">
+                                                    <div className="inline-flex items-center gap-2">
+                                                        <button
+                                                            onClick={() => changeStatus(id, nextStatus as any)}
+                                                            className="h-8 rounded-md border border-input bg-background px-2 text-xs hover:bg-accent"
+                                                        >
+                                                            {status === 'ACTIVE' ? t('buttons.deactivate') : t('buttons.activate')}
+                                                        </button>
+                                                        <button
+                                                            onClick={() => {
+                                                                setDeleteId(id);
+                                                                setDeleteOpen(true)
+                                                            }}
+                                                            className="h-8 rounded-md border border-destructive text-destructive px-2 text-xs hover:bg-destructive/10"
+                                                        >
+                                                            {t('buttons.delete')}
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })
+                                )}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {/* Mobile Cards - hidden on desktop */}
+                        <div className="sm:hidden space-y-3">
+                            {isFetching && items.length === 0 ? (
+                                Array.from({length: 3}).map((_, i) => (
+                                    <div key={i} className="border rounded-lg p-4 bg-white animate-pulse">
+                                        <div className="flex items-start justify-between mb-2">
+                                            <div>
+                                                <div className="h-4 w-32 bg-muted rounded mb-1"/>
+                                                <div className="h-3 w-40 bg-muted rounded"/>
+                                            </div>
+                                            <div className="h-6 w-16 bg-muted rounded"/>
+                                        </div>
+                                        <div className="flex items-center justify-between pt-2 border-t">
+                                            <div className="h-3 w-12 bg-muted rounded"/>
+                                            <div className="flex items-center gap-2">
+                                                <div className="h-6 w-16 bg-muted rounded"/>
+                                                <div className="h-6 w-12 bg-muted rounded"/>
+                                            </div>
+                                        </div>
+                                    </div>
                                 ))
                             ) : items.length === 0 ? (
-                                <tr className="border-t">
-                                    <td className="px-3 py-8 text-center text-muted-foreground"
-                                        colSpan={5}>{t('empty')}</td>
-                                </tr>
+                                <div className="p-8 text-center text-muted-foreground">{t('empty')}</div>
                             ) : (
                                 items.map((u, idx) => {
                                     const id = u.id || ''
@@ -317,16 +383,23 @@ export default function AdminUsersPage() {
                                     const status = (u.status || '').toUpperCase()
                                     const nextStatus = status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE'
                                     return (
-                                        <tr key={id || idx} className="border-t">
-                                            <td className="px-3 py-2">{name}</td>
-                                            <td className="px-3 py-2">{username}</td>
-                                            <td className="px-3 py-2">{email}</td>
-                                            <td className="px-3 py-2"><StatusBadge status={status}/></td>
-                                            <td className="px-3 py-2 text-right">
-                                                <div className="inline-flex items-center gap-2">
+                                        <div key={id || idx} className="border rounded-lg p-4 bg-white">
+                                            <div className="flex items-start justify-between mb-2">
+                                                <div>
+                                                    <div className="font-medium">{name}</div>
+                                                    <div className="text-sm text-muted-foreground">{email}</div>
+                                                    <div className="text-sm text-muted-foreground">@{username}</div>
+                                                </div>
+                                                <StatusBadge status={status}/>
+                                            </div>
+                                            <div className="flex items-center justify-between pt-2 border-t">
+                                                <div className="text-xs text-muted-foreground">
+                                                    Actions:
+                                                </div>
+                                                <div className="flex items-center gap-2">
                                                     <button
                                                         onClick={() => changeStatus(id, nextStatus as any)}
-                                                        className="h-8 rounded-md border border-input bg-background px-2 text-xs hover:bg-accent"
+                                                        className="text-xs px-2 py-1 rounded border"
                                                     >
                                                         {status === 'ACTIVE' ? t('buttons.deactivate') : t('buttons.activate')}
                                                     </button>
@@ -335,19 +408,18 @@ export default function AdminUsersPage() {
                                                             setDeleteId(id);
                                                             setDeleteOpen(true)
                                                         }}
-                                                        className="h-8 rounded-md border border-destructive text-destructive px-2 text-xs hover:bg-destructive/10"
+                                                        className="text-xs px-2 py-1 rounded border text-red-600"
                                                     >
                                                         {t('buttons.delete')}
                                                     </button>
                                                 </div>
-                                            </td>
-                                        </tr>
+                                            </div>
+                                        </div>
                                     )
                                 })
                             )}
-                            </tbody>
-                        </table>
-                    </div>
+                        </div>
+                    </>
                 )}
 
                 {/* Pagination */}

@@ -47,7 +47,7 @@ export default function AdminBrandsPage() {
 
             {/* Create form */}
             <form
-                className="flex items-center gap-2"
+                className="flex flex-wrap items-center gap-2"
                 onSubmit={(e) => {
                     e.preventDefault()
                     const trimmed = name.trim()
@@ -57,7 +57,7 @@ export default function AdminBrandsPage() {
             >
                 <input
                     type="text"
-                    className="h-9 border rounded-md px-3 text-sm w-64"
+                    className="h-10 border rounded-md px-3 text-sm w-full sm:w-64 flex-1 min-w-0"
                     placeholder={t('form.namePlaceholder')}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -66,7 +66,7 @@ export default function AdminBrandsPage() {
                 />
                 <button
                     type="submit"
-                    className="inline-flex items-center h-9 rounded-md bg-primary text-primary-foreground px-3 text-sm disabled:opacity-50"
+                    className="inline-flex items-center h-10 rounded-md bg-primary text-primary-foreground px-3 text-sm disabled:opacity-50"
                     disabled={mutation.isPending || name.trim().length === 0}
                 >
                     {mutation.isPending ? t('form.adding') : t('form.add')}
@@ -85,29 +85,52 @@ export default function AdminBrandsPage() {
                 ) : isError ? (
                     <div className="p-4 text-sm text-red-600">{String((error as any)?.message ?? t('list.error'))}</div>
                 ) : (
-                    <table className="w-full text-sm">
-                        <thead>
-                        <tr className="text-start border-b">
-                            <th className="p-3 text-start">{t('list.table.name')}</th>
-                            <th className="p-3 text-start">{t('list.table.created')}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {data && data.length > 0 ? (
-                            data.map((b, idx) => (
-                                <tr key={(b.id || b._id || idx.toString()) as string}
-                                    className="border-b last:border-0">
-                                    <td className="p-3">{b.name ?? '-'}</td>
-                                    <td className="p-3">{b.created_at ? new Date(b.created_at).toLocaleString() : '-'}</td>
+                    <>
+                        {/* Desktop Table - hidden on mobile */}
+                        <div className="hidden sm:block overflow-x-auto">
+                            <table className="min-w-full text-sm">
+                                <thead>
+                                <tr className="border-b">
+                                    <th className="p-3 text-start sticky top-0 bg-white">{t('list.table.name')}</th>
+                                    <th className="p-3 text-start sticky top-0 bg-white">{t('list.table.created')}</th>
                                 </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td className="p-3 text-sm text-muted-foreground" colSpan={2}>{t('list.empty')}</td>
-                            </tr>
-                        )}
-                        </tbody>
-                    </table>
+                                </thead>
+                                <tbody>
+                                {data && data.length > 0 ? (
+                                    data.map((b, idx) => (
+                                        <tr key={(b.id || b._id || idx.toString()) as string}
+                                            className="border-b last:border-0">
+                                            <td className="p-3 truncate">{b.name ?? '-'}</td>
+                                            <td className="p-3 whitespace-nowrap">{b.created_at ? new Date(b.created_at).toLocaleString() : '-'}</td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td className="p-3 text-sm text-muted-foreground"
+                                            colSpan={2}>{t('list.empty')}</td>
+                                    </tr>
+                                )}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {/* Mobile Cards - hidden on desktop */}
+                        <div className="sm:hidden space-y-2">
+                            {data && data.length > 0 ? (
+                                data.map((b, idx) => (
+                                    <div key={(b.id || b._id || idx.toString()) as string}
+                                         className="border rounded-lg p-3 bg-white">
+                                        <div className="font-medium text-sm mb-1">{b.name ?? '-'}</div>
+                                        <div className="text-xs text-muted-foreground">
+                                            Created: {b.created_at ? new Date(b.created_at).toLocaleString() : '-'}
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="p-3 text-sm text-muted-foreground text-center">{t('list.empty')}</div>
+                            )}
+                        </div>
+                    </>
                 )}
             </div>
         </div>

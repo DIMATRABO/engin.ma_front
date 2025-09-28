@@ -290,7 +290,8 @@
       "cities": "Cities",
       "categories": "Categories",
       "models": "Models",
-      "bookings": "Bookings"
+      "bookings": "Bookings",
+      "reviews": "Reviews"
     },
     "bookings": {
       "title": "Bookings",
@@ -360,6 +361,10 @@
         "CANCELED": "Canceled",
         "COMPLETED": "Completed"
       }
+    },
+    "reviews": {
+      "title": "Reviews",
+      "subtitle": "View and manage reviews."
     },
     "topbar": {
       "admin": "Admin",
