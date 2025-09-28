@@ -283,7 +283,8 @@
       "cities": "المدن",
       "categories": "الفئات",
       "models": "الطرازات",
-      "bookings": "الحجوزات"
+      "bookings": "الحجوزات",
+      "reviews": "التقييمات"
     },
     "bookings": {
       "title": "الحجوزات",
@@ -294,7 +295,7 @@
         "startFrom": "بدءاً من",
         "endUntil": "حتى",
         "client": "العميل",
-        "pilot": "الطيار",
+        "pilot": "السائق",
         "startDate": "تاريخ البدء",
         "endDate": "تاريخ الانتهاء",
         "all": "الكل"
@@ -302,7 +303,7 @@
       "placeholders": {
         "selectClient": "اختر العميل…",
         "selectEquipment": "اختر المعدة…",
-        "selectPilot": "اختر الطيار…"
+        "selectPilot": "اختر السائق…"
       },
       "buttons": {
         "new": "حجز جديد",
@@ -321,7 +322,7 @@
       "table": {
         "client": "العميل",
         "equipment": "المعدة",
-        "pilot": "الطيار",
+        "pilot": "السائق",
         "start": "البداية",
         "end": "النهاية",
         "status": "الحالة",
@@ -354,6 +355,10 @@
         "COMPLETED": "مكتمل"
       }
     },
+    "reviews": {
+      "title": "التقييمات",
+      "subtitle": "عرض وإدارة التقييمات."
+    },
     "topbar": {
       "admin": "الإدارة",
       "searchPlaceholder": "بحث...",
@@ -368,7 +373,7 @@
         "searchPlaceholder": "ابحث حسب العنوان...",
         "city": "المدينة",
         "owner": "المالك",
-        "pilot": "الطيار",
+        "pilot": "السائق",
         "fieldsOfActivity": "مجالات النشاط",
         "category": "الفئة",
         "description": "الوصف",
@@ -382,7 +387,7 @@
         "ratingRange": "نطاق التقييم",
         "all": "الكل",
         "allOwners": "جميع المالكين",
-        "allPilots": "جميع الطيارين"
+        "allPilots": "جميع السائقين"
       },
       "helpers": {
         "foaHint": "اختر النشاط الرئيسي الذي تُستخدم له هذه المعدة."

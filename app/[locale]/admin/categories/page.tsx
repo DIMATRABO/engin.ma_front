@@ -87,7 +87,7 @@ export default function AdminCategoriesPage() {
                     <label className="block text-xs mb-1">{t('form.nameEnLabel')}</label>
                     <input
                         type="text"
-                        className="h-9 w-full border rounded-md px-3 text-sm"
+                        className="h-10 w-full border rounded-md px-3 text-sm"
                         placeholder="Backhoe Loader"
                         value={form.name_en}
                         onChange={(e) => setForm((f) => ({...f, name_en: e.target.value}))}
@@ -98,7 +98,7 @@ export default function AdminCategoriesPage() {
                     <label className="block text-xs mb-1">{t('form.nameFrLabel')}</label>
                     <input
                         type="text"
-                        className="h-9 w-full border rounded-md px-3 text-sm"
+                        className="h-10 w-full border rounded-md px-3 text-sm"
                         placeholder="Tractopelle"
                         value={form.name_fr}
                         onChange={(e) => setForm((f) => ({...f, name_fr: e.target.value}))}
@@ -109,7 +109,7 @@ export default function AdminCategoriesPage() {
                     <label className="block text-xs mb-1">{t('form.nameArLabel')}</label>
                     <input
                         type="text"
-                        className="h-9 w-full border rounded-md px-3 text-sm"
+                        className="h-10 w-full border rounded-md px-3 text-sm"
                         placeholder="حفار لودر"
                         value={form.name_ar}
                         onChange={(e) => setForm((f) => ({...f, name_ar: e.target.value}))}
@@ -119,7 +119,7 @@ export default function AdminCategoriesPage() {
                 <div>
                     <label className="block text-xs mb-1">{t('form.foaLabel')}</label>
                     <select
-                        className="h-9 w-full border rounded-md px-2 text-sm bg-background"
+                        className="h-10 w-full border rounded-md px-2 text-sm bg-background"
                         value={form.field_of_activity}
                         onChange={(e) => setForm((f) => ({...f, field_of_activity: e.target.value}))}
                         disabled={mutation.isPending || foaQ.isLoading}
@@ -133,7 +133,7 @@ export default function AdminCategoriesPage() {
                 <div>
                     <button
                         type="submit"
-                        className="inline-flex items-center h-9 rounded-md bg-primary text-primary-foreground px-3 text-sm disabled:opacity-50"
+                        className="inline-flex items-center h-10 rounded-md bg-primary text-primary-foreground px-3 text-sm disabled:opacity-50"
                         disabled={mutation.isPending || !canSubmit}
                     >
                         {mutation.isPending ? t('form.adding') : t('form.add')}
@@ -152,29 +152,54 @@ export default function AdminCategoriesPage() {
                 ) : isError ? (
                     <div className="p-4 text-sm text-red-600">{String((error as any)?.message ?? t('list.error'))}</div>
                 ) : (
-                    <table className="w-full text-sm">
-                        <thead>
-                        <tr className="text-start border-b">
-                            <th className="p-3 text-start">{t('list.table.name')}</th>
-                            <th className="p-3 text-start">{t('list.table.foa')}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {data && data.length > 0 ? (
-                            data.map((c, idx) => (
-                                <tr key={(c.id || (c as any)._id || idx.toString()) as string}
-                                    className="border-b last:border-0">
-                                    <td className="p-3">{getCategoryLabel(c, locale)}</td>
-                                    <td className="p-3">{c.field_of_activity ? tFoa(String(c.field_of_activity)) : '-'}</td>
+                    <>
+                        {/* Desktop Table - hidden on mobile */}
+                        <div className="hidden sm:block overflow-x-auto">
+                            <table className="min-w-full text-sm">
+                                <thead>
+                                <tr className="border-b">
+                                    <th className="p-3 text-start sticky top-0 bg-white">{t('list.table.name')}</th>
+                                    <th className="p-3 text-start sticky top-0 bg-white">{t('list.table.foa')}</th>
                                 </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td className="p-3 text-sm text-muted-foreground" colSpan={2}>{t('list.empty')}</td>
-                            </tr>
-                        )}
-                        </tbody>
-                    </table>
+                                </thead>
+                                <tbody>
+                                {data && data.length > 0 ? (
+                                    data.map((c, idx) => (
+                                        <tr key={(c.id || (c as any)._id || idx.toString()) as string}
+                                            className="border-b last:border-0">
+                                            <td className="p-3 truncate"
+                                                title={getCategoryLabel(c, locale)}>{getCategoryLabel(c, locale)}</td>
+                                            <td className="p-3 whitespace-nowrap">{c.field_of_activity ? tFoa(String(c.field_of_activity)) : '-'}</td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td className="p-3 text-sm text-muted-foreground"
+                                            colSpan={2}>{t('list.empty')}</td>
+                                    </tr>
+                                )}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {/* Mobile Cards - hidden on desktop */}
+                        <div className="sm:hidden space-y-2">
+                            {data && data.length > 0 ? (
+                                data.map((c, idx) => (
+                                    <div key={(c.id || (c as any)._id || idx.toString()) as string}
+                                         className="border rounded-lg p-3 bg-white">
+                                        <div className="font-medium text-sm mb-1">{getCategoryLabel(c, locale)}</div>
+                                        <div className="text-xs text-muted-foreground">
+                                            Field of
+                                            Activity: {c.field_of_activity ? tFoa(String(c.field_of_activity)) : '-'}
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="p-3 text-sm text-muted-foreground text-center">{t('list.empty')}</div>
+                            )}
+                        </div>
+                    </>
                 )}
             </div>
         </div>

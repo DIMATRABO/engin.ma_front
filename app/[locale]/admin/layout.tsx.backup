@@ -9,16 +9,7 @@ function cx(...classes: Array<string | false | null | undefined>) {
     return classes.filter(Boolean).join(' ')
 }
 
-type NavKey =
-    'dashboard'
-    | 'users'
-    | 'equipments'
-    | 'brands'
-    | 'cities'
-    | 'categories'
-    | 'models'
-    | 'bookings'
-    | 'reviews'
+type NavKey = 'dashboard' | 'users' | 'equipments' | 'brands' | 'cities' | 'categories' | 'models' | 'bookings' | 'reviews'
 const navItems: Array<{ href: () => string; labelKey: NavKey; match: (p: string) => boolean }> = [
     {
         href: () => `/admin`,
@@ -88,37 +79,25 @@ export default function AdminLayout({children}: { children: React.ReactNode }) {
                 toggleBtnRef.current?.focus()
             }
         }
-
         function onResize() {
             try {
                 if (window.innerWidth >= 1024) {
                     setSidebarOpen(false)
                     document.body.style.overflow = ''
                 }
-            } catch {
-            }
+            } catch {}
         }
-
         if (sidebarOpen) {
             document.addEventListener('keydown', onKeyDown)
             window.addEventListener('resize', onResize)
-            try {
-                document.body.style.overflow = 'hidden'
-            } catch {
-            }
+            try { document.body.style.overflow = 'hidden' } catch {}
         } else {
-            try {
-                document.body.style.overflow = ''
-            } catch {
-            }
+            try { document.body.style.overflow = '' } catch {}
         }
         return () => {
             document.removeEventListener('keydown', onKeyDown)
             window.removeEventListener('resize', onResize)
-            try {
-                document.body.style.overflow = ''
-            } catch {
-            }
+            try { document.body.style.overflow = '' } catch {}
         }
     }, [sidebarOpen])
 
@@ -131,10 +110,7 @@ export default function AdminLayout({children}: { children: React.ReactNode }) {
 
         const items = getItems()
         const toFocus = items[0] || (root as unknown as HTMLElement)
-        try {
-            toFocus.focus()
-        } catch {
-        }
+        try { toFocus.focus() } catch {}
 
         function onKeyDown(e: KeyboardEvent) {
             if (e.key !== 'Tab') return
@@ -144,12 +120,12 @@ export default function AdminLayout({children}: { children: React.ReactNode }) {
             const last = list[list.length - 1]
             const active = document.activeElement as HTMLElement | null
             if (e.shiftKey) {
-                if (active === first || !(active && root && root.contains(active))) {
+                if (active === first || !(active && root.contains(active))) {
                     e.preventDefault()
                     last.focus()
                 }
             } else {
-                if (active === last || !(active && root && root.contains(active))) {
+                if (active === last || !(active && root.contains(active))) {
                     e.preventDefault()
                     first.focus()
                 }
@@ -192,8 +168,8 @@ export default function AdminLayout({children}: { children: React.ReactNode }) {
             <aside
                 ref={sidebarRef}
                 className={cx(
-                    'fixed inset-y-0 start-0 w-64 bg-white border-e shadow-sm z-30 transition-transform motion-reduce:transition-none lg:relative lg:inset-auto lg:!translate-x-0',
-                    sidebarOpen ? 'translate-x-0 lg:!translate-x-0' : 'ltr:-translate-x-full rtl:translate-x-full lg:!translate-x-0',
+                    'w-64 bg-white border-e shadow-sm lg:relative lg:inset-auto fixed z-30 inset-y-0 start-0 transition-transform motion-reduce:transition-none lg:translate-x-0',
+                    sidebarOpen ? 'translate-x-0' : 'ltr:-translate-x-full rtl:translate-x-full lg:translate-x-0',
                 )}
                 aria-label="Sidebar"
                 role="dialog"
@@ -240,8 +216,7 @@ export default function AdminLayout({children}: { children: React.ReactNode }) {
                         >
                             ☰
                         </button>
-                        <div
-                            className="text-sm text-muted-foreground truncate max-w-[50vw] sm:max-w-xs md:max-w-sm lg:max-w-md">
+                        <div className="text-sm text-muted-foreground truncate max-w-[50vw] sm:max-w-xs md:max-w-sm lg:max-w-md">
                             <span className="me-1">{tTopbar('admin')}</span>
                             <span className="opacity-60">/</span>
                             <span className="ms-1 font-medium">{crumb}</span>

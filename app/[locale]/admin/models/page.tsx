@@ -125,7 +125,7 @@ export default function AdminModelsPage() {
                     <label className="block text-xs mb-1">{t('form.nameLabel')}</label>
                     <input
                         type="text"
-                        className="h-9 w-full border rounded-md px-3 text-sm"
+                        className="h-10 w-full border rounded-md px-3 text-sm"
                         placeholder="D6T"
                         value={form.name}
                         onChange={(e) => setForm((f) => ({...f, name: e.target.value}))}
@@ -135,7 +135,7 @@ export default function AdminModelsPage() {
                 <div>
                     <label className="block text-xs mb-1">{t('form.brandLabel')}</label>
                     <select
-                        className="h-9 w-full border rounded-md px-2 text-sm bg-background"
+                        className="h-10 w-full border rounded-md px-2 text-sm bg-background"
                         value={form.brand_id}
                         onChange={(e) => setForm((f) => ({...f, brand_id: e.target.value}))}
                         disabled={mutation.isPending || brandsQ.isLoading}
@@ -150,7 +150,7 @@ export default function AdminModelsPage() {
                 <div>
                     <label className="block text-xs mb-1">{t('form.categoryLabel')}</label>
                     <select
-                        className="h-9 w-full border rounded-md px-2 text-sm bg-background"
+                        className="h-10 w-full border rounded-md px-2 text-sm bg-background"
                         value={form.category_id}
                         onChange={(e) => setForm((f) => ({...f, category_id: e.target.value}))}
                         disabled={mutation.isPending || categoriesQ.isLoading}
@@ -165,7 +165,7 @@ export default function AdminModelsPage() {
                 <div>
                     <button
                         type="submit"
-                        className="inline-flex items-center h-9 rounded-md bg-primary text-primary-foreground px-3 text-sm disabled:opacity-50"
+                        className="inline-flex items-center h-10 rounded-md bg-primary text-primary-foreground px-3 text-sm disabled:opacity-50"
                         disabled={mutation.isPending || !canSubmit}
                     >
                         {mutation.isPending ? t('form.adding') : t('form.add')}
@@ -186,31 +186,59 @@ export default function AdminModelsPage() {
                     <div
                         className="p-4 text-sm text-red-600">{String((modelsQ.error as any)?.message ?? t('list.error'))}</div>
                 ) : (
-                    <table className="w-full text-sm">
-                        <thead>
-                        <tr className="text-start border-b">
-                            <th className="p-3 text-start">{t('list.table.name')}</th>
-                            <th className="p-3 text-start">{t('list.table.brand')}</th>
-                            <th className="p-3 text-start">{t('list.table.category')}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {modelsQ.data && modelsQ.data.length > 0 ? (
-                            modelsQ.data.map((m, idx) => (
-                                <tr key={(m.id || m._id || idx.toString()) as string}
-                                    className="border-b last:border-0">
-                                    <td className="p-3">{m.name ?? '-'}</td>
-                                    <td className="p-3">{brandName(m)}</td>
-                                    <td className="p-3">{categoryName(m)}</td>
+                    <>
+                        {/* Desktop Table - hidden on mobile */}
+                        <div className="hidden sm:block overflow-x-auto">
+                            <table className="min-w-full text-sm">
+                                <thead>
+                                <tr className="border-b">
+                                    <th className="p-3 text-start sticky top-0 bg-white">{t('list.table.name')}</th>
+                                    <th className="p-3 text-start sticky top-0 bg-white">{t('list.table.brand')}</th>
+                                    <th className="p-3 text-start sticky top-0 bg-white">{t('list.table.category')}</th>
                                 </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td className="p-3 text-sm text-muted-foreground" colSpan={3}>{t('list.empty')}</td>
-                            </tr>
-                        )}
-                        </tbody>
-                    </table>
+                                </thead>
+                                <tbody>
+                                {modelsQ.data && modelsQ.data.length > 0 ? (
+                                    modelsQ.data.map((m, idx) => (
+                                        <tr key={(m.id || m._id || idx.toString()) as string}
+                                            className="border-b last:border-0">
+                                            <td className="p-3 truncate" title={m.name ?? '-'}>{m.name ?? '-'}</td>
+                                            <td className="p-3 whitespace-nowrap">{brandName(m)}</td>
+                                            <td className="p-3 whitespace-nowrap">{categoryName(m)}</td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td className="p-3 text-sm text-muted-foreground"
+                                            colSpan={3}>{t('list.empty')}</td>
+                                    </tr>
+                                )}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {/* Mobile Cards - hidden on desktop */}
+                        <div className="sm:hidden space-y-2">
+                            {modelsQ.data && modelsQ.data.length > 0 ? (
+                                modelsQ.data.map((m, idx) => (
+                                    <div key={(m.id || m._id || idx.toString()) as string}
+                                         className="border rounded-lg p-3 bg-white">
+                                        <div className="font-medium text-sm mb-2">{m.name ?? '-'}</div>
+                                        <div className="space-y-1">
+                                            <div className="text-xs text-muted-foreground">
+                                                Brand: {brandName(m)}
+                                            </div>
+                                            <div className="text-xs text-muted-foreground">
+                                                Category: {categoryName(m)}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="p-3 text-sm text-muted-foreground text-center">{t('list.empty')}</div>
+                            )}
+                        </div>
+                    </>
                 )}
             </div>
         </div>

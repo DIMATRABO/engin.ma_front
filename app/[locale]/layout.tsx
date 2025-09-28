@@ -31,8 +31,10 @@ export default async function LocaleLayout({
       <body>
         <NextIntlClientProvider locale={locale} messages={messages}>
             <AppProviders>
-                <LanguageSwitcherWrapper/>
-                {children}
+                <div className="min-h-screen overflow-x-hidden">
+                    <LanguageSwitcherWrapper/>
+                    {children}
+                </div>
             </AppProviders>
         </NextIntlClientProvider>
       </body>

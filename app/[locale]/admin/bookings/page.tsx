@@ -2,6 +2,7 @@
 
 import React from 'react'
 import {useQuery, useQueryClient} from '@tanstack/react-query'
+import {useRouter} from '@/i18n/navigation'
 import {toast} from 'sonner'
 import {bookingsService, type CreateBookingForm, type UpdateBookingForm} from '@/services/bookings'
 import Portal from '@/components/ui/Portal'
@@ -92,6 +93,7 @@ function getFriendlyBookingError(err: unknown): string {
 
 export default function AdminBookingsPage() {
     const qc = useQueryClient()
+    const router = useRouter()
     const t = useTranslations('admin.bookings')
 
     const [statusFilter, setStatusFilter] = React.useState<string>('')
@@ -347,11 +349,11 @@ export default function AdminBookingsPage() {
             </div>
 
             {/* Toolbar */}
-            <div className="rounded-lg border bg-card p-4 flex flex-wrap gap-3 items-end">
+            <div className="rounded-lg border bg-card p-4 flex flex-wrap items-center gap-2">
                 <div>
                     <label className="block text-xs text-muted-foreground mb-1">{t('labels.status')}</label>
                     <select
-                        className="h-9 border border-input bg-background rounded-md px-2 text-sm min-w-[160px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        className="h-10 w-full sm:w-64 border border-input bg-background rounded-md px-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
                     >
@@ -365,7 +367,7 @@ export default function AdminBookingsPage() {
                 <div>
                     <label className="block text-xs text-muted-foreground mb-1">{t('labels.equipment')}</label>
                     <select
-                        className="h-9 border border-input bg-background rounded-md px-2 text-sm min-w-[220px]"
+                        className="h-10 w-full sm:w-64 border border-input bg-background rounded-md px-2 text-sm"
                         value={equipmentIdFilter}
                         onChange={(e) => setEquipmentIdFilter(e.target.value)}
                     >
@@ -381,18 +383,20 @@ export default function AdminBookingsPage() {
                 </div>
                 <div>
                     <label className="block text-xs text-muted-foreground mb-1">{t('labels.startFrom')}</label>
-                    <input type="date" className="h-9 border border-input bg-background rounded-md px-2 text-sm"
+                    <input type="date"
+                           className="h-10 w-full sm:w-64 border border-input bg-background rounded-md px-2 text-sm"
                            value={fromDate} onChange={(e) => setFromDate(e.target.value)}/>
                 </div>
                 <div>
                     <label className="block text-xs text-muted-foreground mb-1">{t('labels.endUntil')}</label>
-                    <input type="date" className="h-9 border border-input bg-background rounded-md px-2 text-sm"
+                    <input type="date"
+                           className="h-10 w-full sm:w-64 border border-input bg-background rounded-md px-2 text-sm"
                            value={toDate} onChange={(e) => setToDate(e.target.value)}/>
                 </div>
                 <div className="ms-auto flex items-center gap-2">
                     <button
-                        onClick={() => setCreateOpen(true)}
-                        className="inline-flex items-center h-9 rounded-md border border-input bg-background px-3 text-sm hover:bg-accent hover:text-accent-foreground"
+                        onClick={() => router.push('/admin/bookings/new')}
+                        className="inline-flex items-center h-10 rounded-md border border-input bg-background px-3 text-sm hover:bg-accent hover:text-accent-foreground"
                     >
                         {t('buttons.new')}
                     </button>
@@ -403,7 +407,7 @@ export default function AdminBookingsPage() {
                             setFromDate('');
                             setToDate('')
                         }}
-                        className="inline-flex items-center h-9 rounded-md border border-input bg-background px-3 text-sm hover:bg-accent hover:text-accent-foreground"
+                        className="inline-flex items-center h-10 rounded-md border border-input bg-background px-3 text-sm hover:bg-accent hover:text-accent-foreground"
                     >
                         {t('buttons.reset')}
                     </button>
@@ -425,71 +429,153 @@ export default function AdminBookingsPage() {
                 ) : filteredRows.length === 0 && !isFetching ? (
                     <div className="p-8 text-center text-muted-foreground">{t('empty')}</div>
                 ) : (
-                    <div className="overflow-x-auto">
-                        <table className="min-w-full text-sm">
-                            <thead className="bg-muted text-muted-foreground">
-                            <tr>
-                                <th className="text-start font-medium px-3 py-2 border-b">{t('table.client')}</th>
-                                <th className="text-start font-medium px-3 py-2 border-b">{t('table.equipment')}</th>
-                                <th className="text-start font-medium px-3 py-2 border-b">{t('table.pilot')}</th>
-                                <th className="text-start font-medium px-3 py-2 border-b">{t('table.start')}</th>
-                                <th className="text-start font-medium px-3 py-2 border-b">{t('table.end')}</th>
-                                <th className="text-start font-medium px-3 py-2 border-b">{t('table.status')}</th>
-                                <th className="text-start font-medium px-3 py-2 border-b">{t('table.actions')}</th>
-                            </tr>
-                            </thead>
-                            <tbody>
+                    <>
+                        {/* Desktop Table - hidden on mobile */}
+                        <div className="hidden md:block overflow-x-auto">
+                            <table className="min-w-full text-sm">
+                                <thead className="sticky top-0 bg-white z-10">
+                                <tr>
+                                    <th className="text-start font-medium px-3 py-2 border-b">{t('table.client')}</th>
+                                    <th className="text-start font-medium px-3 py-2 border-b">{t('table.equipment')}</th>
+                                    <th className="text-start font-medium px-3 py-2 border-b">{t('table.pilot')}</th>
+                                    <th className="text-start font-medium px-3 py-2 border-b">{t('table.start')}</th>
+                                    <th className="text-start font-medium px-3 py-2 border-b">{t('table.end')}</th>
+                                    <th className="text-start font-medium px-3 py-2 border-b">{t('table.status')}</th>
+                                    <th className="text-start font-medium px-3 py-2 border-b">{t('table.actions')}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {isFetching && rows.length === 0 ? (
+                                    [...Array(5)].map((_, i) => (
+                                        <tr key={i} className="animate-pulse">
+                                            <td className="px-3 py-2 border-b">
+                                                <div className="h-4 bg-muted rounded w-32"/>
+                                            </td>
+                                            <td className="px-3 py-2 border-b">
+                                                <div className="h-4 bg-muted rounded w-40"/>
+                                            </td>
+                                            <td className="px-3 py-2 border-b">
+                                                <div className="h-4 bg-muted rounded w-28"/>
+                                            </td>
+                                            <td className="px-3 py-2 border-b">
+                                                <div className="h-4 bg-muted rounded w-24"/>
+                                            </td>
+                                            <td className="px-3 py-2 border-b">
+                                                <div className="h-4 bg-muted rounded w-24"/>
+                                            </td>
+                                            <td className="px-3 py-2 border-b">
+                                                <div className="h-4 bg-muted rounded w-20"/>
+                                            </td>
+                                            <td className="px-3 py-2 border-b">
+                                                <div className="h-4 bg-muted rounded w-16"/>
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    filteredRows.map((r, idx) => (
+                                        <tr key={r.id ?? idx} className="hover:bg-slate-50">
+                                            <td className="px-3 py-2 border-b truncate"
+                                                title={r.client_label ?? '-'}>{r.client_label ?? '-'}</td>
+                                            <td className="px-3 py-2 border-b truncate"
+                                                title={r.equipment_label ?? '-'}>{r.equipment_label ?? '-'}</td>
+                                            <td className="px-3 py-2 border-b truncate"
+                                                title={r.pilot_label ?? '-'}>{r.pilot_label ?? '-'}</td>
+                                            <td className="px-3 py-2 border-b whitespace-nowrap">{r.start_date ?? '-'}</td>
+                                            <td className="px-3 py-2 border-b whitespace-nowrap">{r.end_date ?? '-'}</td>
+                                            <td className="px-3 py-2 border-b">
+                                                {r.status ? (
+                                                    <span className={
+                                                        `inline-flex items-center px-2 py-0.5 rounded-full text-xs ${r.status === 'CONFIRMED' ? 'bg-green-100 text-green-700' : r.status === 'CANCELED' ? 'bg-red-100 text-red-700' : r.status === 'COMPLETED' ? 'bg-blue-100 text-blue-700' : 'bg-muted text-muted-foreground'}`
+                                                    }>{t(`status.${r.status}`)}</span>
+                                                ) : '-'}
+                                            </td>
+                                            <td className="px-3 py-2 border-b">
+                                                <div className="flex items-center gap-2">
+                                                    <button
+                                                        className="text-slate-600 hover:underline text-xs"
+                                                        onClick={() => openDetail(r)}
+                                                    >
+                                                        {t('buttons.view')}
+                                                    </button>
+                                                    <button
+                                                        className="text-slate-600 hover:underline text-xs"
+                                                        onClick={() => {
+                                                            const raw = r._raw || {}
+                                                            const id = typeof raw.id === 'string' ? raw.id : (typeof raw._id === 'string' ? raw._id : undefined)
+                                                            if (!id) return
+                                                            router.push(`/admin/bookings/${encodeURIComponent(id)}/edit`)
+                                                        }}
+                                                    >
+                                                        {t('buttons.edit')}
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {/* Mobile Cards - hidden on desktop */}
+                        <div className="md:hidden space-y-3">
                             {isFetching && rows.length === 0 ? (
-                                [...Array(5)].map((_, i) => (
-                                    <tr key={i} className="animate-pulse">
-                                        <td className="px-3 py-2 border-b">
-                                            <div className="h-4 bg-muted rounded w-32"/>
-                                        </td>
-                                        <td className="px-3 py-2 border-b">
-                                            <div className="h-4 bg-muted rounded w-40"/>
-                                        </td>
-                                        <td className="px-3 py-2 border-b">
-                                            <div className="h-4 bg-muted rounded w-28"/>
-                                        </td>
-                                        <td className="px-3 py-2 border-b">
-                                            <div className="h-4 bg-muted rounded w-24"/>
-                                        </td>
-                                        <td className="px-3 py-2 border-b">
-                                            <div className="h-4 bg-muted rounded w-24"/>
-                                        </td>
-                                        <td className="px-3 py-2 border-b">
-                                            <div className="h-4 bg-muted rounded w-20"/>
-                                        </td>
-                                        <td className="px-3 py-2 border-b">
-                                            <div className="h-4 bg-muted rounded w-16"/>
-                                        </td>
-                                    </tr>
+                                [...Array(3)].map((_, i) => (
+                                    <div key={i} className="border rounded-lg p-4 bg-white animate-pulse">
+                                        <div className="flex items-start justify-between mb-3">
+                                            <div>
+                                                <div className="h-4 w-32 bg-muted rounded mb-1"/>
+                                                <div className="h-3 w-40 bg-muted rounded"/>
+                                            </div>
+                                            <div className="h-6 w-16 bg-muted rounded"/>
+                                        </div>
+                                        <div className="space-y-2 mb-3">
+                                            <div className="h-3 w-28 bg-muted rounded"/>
+                                            <div className="h-3 w-24 bg-muted rounded"/>
+                                        </div>
+                                        <div className="flex items-center justify-between pt-2 border-t">
+                                            <div className="h-3 w-12 bg-muted rounded"/>
+                                            <div className="flex items-center gap-2">
+                                                <div className="h-6 w-12 bg-muted rounded"/>
+                                                <div className="h-6 w-12 bg-muted rounded"/>
+                                            </div>
+                                        </div>
+                                    </div>
                                 ))
+                            ) : filteredRows.length === 0 ? (
+                                <div className="p-8 text-center text-muted-foreground">{t('empty')}</div>
                             ) : (
                                 filteredRows.map((r, idx) => (
-                                    <tr key={r.id ?? idx} className="hover:bg-slate-50">
-                                        <td className="px-3 py-2 border-b">{r.client_label ?? '-'}</td>
-                                        <td className="px-3 py-2 border-b">{r.equipment_label ?? '-'}</td>
-                                        <td className="px-3 py-2 border-b">{r.pilot_label ?? '-'}</td>
-                                        <td className="px-3 py-2 border-b">{r.start_date ?? '-'}</td>
-                                        <td className="px-3 py-2 border-b">{r.end_date ?? '-'}</td>
-                                        <td className="px-3 py-2 border-b">
-                                            {r.status ? (
+                                    <div key={r.id ?? idx} className="border rounded-lg p-4 bg-white">
+                                        <div className="flex items-start justify-between mb-3">
+                                            <div>
+                                                <div className="font-medium text-sm mb-1">{r.client_label ?? '-'}</div>
+                                                <div
+                                                    className="text-sm text-muted-foreground">{r.equipment_label ?? '-'}</div>
+                                            </div>
+                                            {r.status && (
                                                 <span className={
                                                     `inline-flex items-center px-2 py-0.5 rounded-full text-xs ${r.status === 'CONFIRMED' ? 'bg-green-100 text-green-700' : r.status === 'CANCELED' ? 'bg-red-100 text-red-700' : r.status === 'COMPLETED' ? 'bg-blue-100 text-blue-700' : 'bg-muted text-muted-foreground'}`
                                                 }>{t(`status.${r.status}`)}</span>
-                                            ) : '-'}
-                                        </td>
-                                        <td className="px-3 py-2 border-b">
+                                            )}
+                                        </div>
+                                        <div className="space-y-1 mb-3 text-xs text-muted-foreground">
+                                            <div>Pilot: {r.pilot_label ?? '-'}</div>
+                                            <div>Period: {r.start_date ?? '-'} to {r.end_date ?? '-'}</div>
+                                        </div>
+                                        <div className="flex items-center justify-between pt-2 border-t">
+                                            <div className="text-xs text-muted-foreground">
+                                                Actions:
+                                            </div>
                                             <div className="flex items-center gap-2">
                                                 <button
-                                                    className="text-slate-600 hover:underline text-xs"
+                                                    className="text-xs px-2 py-1 rounded border"
                                                     onClick={() => openDetail(r)}
                                                 >
                                                     {t('buttons.view')}
                                                 </button>
                                                 <button
-                                                    className="text-slate-600 hover:underline text-xs"
+                                                    className="text-xs px-2 py-1 rounded border"
                                                     onClick={() => {
                                                         const raw = r._raw || {}
                                                         const id = typeof raw.id === 'string' ? raw.id : (typeof raw._id === 'string' ? raw._id : undefined)
@@ -511,13 +597,12 @@ export default function AdminBookingsPage() {
                                                     {t('buttons.edit')}
                                                 </button>
                                             </div>
-                                        </td>
-                                    </tr>
+                                        </div>
+                                    </div>
                                 ))
                             )}
-                            </tbody>
-                        </table>
-                    </div>
+                        </div>
+                    </>
                 )}
             </div>
 
