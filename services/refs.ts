@@ -1,4 +1,5 @@
 import {http} from '@/services/http'
+import type {City} from '@/types/project-entities.types'
 
 export type CreateName = { name: string }
 export type CreateCity = { name_en: string; name_fr: string; name_ar?: string }
@@ -24,7 +25,7 @@ export const refsService = {
     createBrand: (payload: CreateName) => http.post<unknown, CreateName>('/api/brands', payload),
 
     // Cities (via Next.js API to ensure Authorization header is attached)
-    getCities: () => http.get<unknown[]>('/api/cities'),
+    getCities: () => http.get<City[]>('/api/cities'),
     createCity: (payload: CreateCity) => http.post<unknown, CreateCity>('/api/cities', payload),
 
     // Models (via Next.js API to ensure Authorization header is attached)

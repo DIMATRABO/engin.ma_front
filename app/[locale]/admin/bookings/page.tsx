@@ -4,7 +4,7 @@ import React from 'react'
 import {useQuery, useQueryClient} from '@tanstack/react-query'
 import {useRouter} from '@/i18n/navigation'
 import {toast} from 'sonner'
-import {bookingsService, type CreateBookingForm, type UpdateBookingForm} from '@/services/bookings'
+import {bookingsService, type CreateBookingForm} from '@/services/bookings'
 import Portal from '@/components/ui/Portal'
 import {useTranslations} from 'next-intl'
 
@@ -118,7 +118,13 @@ export default function AdminBookingsPage() {
             const res = await fetch('/api/users/list', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({pageIndex: 1, pageSize: 100, sort: {key: 'username', order: 'asc'}, query: ''})
+                body: JSON.stringify({
+                    pageIndex: 1,
+                    pageSize: 100,
+                    sort: {key: 'username', order: 'asc'},
+                    query: '',
+                    filterData: {status: 'ACTIVE'}
+                })
             })
             const contentType = res.headers.get('content-type') || ''
             const isJson = contentType.includes('application/json')
@@ -141,7 +147,7 @@ export default function AdminBookingsPage() {
             const res = await fetch('/api/equipments/filter', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({pageIndex: 1, pageSize: 100})
+                body: JSON.stringify({pageIndex: 1, pageSize: 100, sort: {key: 'created_at', order: 'desc'}, query: ''})
             })
             const contentType = res.headers.get('content-type') || ''
             const isJson = contentType.includes('application/json')
@@ -180,7 +186,16 @@ export default function AdminBookingsPage() {
 
     const userOptions = React.useMemo(() => {
         const arr = Array.isArray(usersData) ? usersData : []
-        return arr.map((u: any) => ({
+        const clients = arr.filter((u: any) => {
+            const roles: any[] = Array.isArray(u?.roles)
+                ? u.roles
+                : (Array.isArray(u?.user_roles) ? u.user_roles : (Array.isArray(u?.roles_list) ? u.roles_list : []))
+            return roles.some((r: any) => {
+                const val = typeof r === 'string' ? r : (typeof r?.role === 'string' ? r.role : undefined)
+                return typeof val === 'string' && val.toUpperCase() === 'CLIENT'
+            })
+        })
+        return clients.map((u: any) => ({
             id: getId(u) || '',
             label: getName(u) || (u.username || u.email || u.name || 'Unnamed')
         }))
@@ -261,58 +276,6 @@ export default function AdminBookingsPage() {
         }
     }
 
-    // Edit dialog state
-    const [editOpen, setEditOpen] = React.useState(false)
-    const [editSaving, setEditSaving] = React.useState(false)
-    const [editId, setEditId] = React.useState<string | undefined>(undefined)
-    const [editForm, setEditForm] = React.useState<UpdateBookingForm>({
-        id: '',
-        client_id: undefined,
-        equipment_id: undefined,
-        pilot_id: undefined,
-        start_date: undefined,
-        end_date: undefined,
-        status: undefined
-    })
-    const [editErrors, setEditErrors] = React.useState<Record<string, string>>({})
-
-    function validateEdit(): boolean {
-        const e: Record<string, string> = {}
-        if (!editId) e.id = 'Missing id'
-        if (editForm.start_date && editForm.end_date && editForm.start_date > editForm.end_date) {
-            e.end_date = t('validation.endAfterStart')
-        }
-        setEditErrors(e)
-        return Object.keys(e).length === 0
-    }
-
-    async function handleEditSubmit(ev: React.FormEvent) {
-        ev.preventDefault()
-        if (!validateEdit() || !editId) return
-        setEditSaving(true)
-        try {
-            const payload: UpdateBookingForm = {id: editId}
-            if (editForm.client_id) payload.client_id = editForm.client_id
-            if (editForm.equipment_id) payload.equipment_id = editForm.equipment_id
-            if (editForm.pilot_id) payload.pilot_id = editForm.pilot_id
-            if (editForm.start_date) payload.start_date = editForm.start_date
-            if (editForm.end_date) payload.end_date = editForm.end_date
-            if (editForm.status) payload.status = editForm.status
-            await bookingsService.update(payload)
-            toast.success(t('toasts.updated'))
-            try {
-                await qc.invalidateQueries({queryKey: ['bookings', 'list']})
-            } catch {
-            }
-            setEditOpen(false)
-        } catch (err: any) {
-            const msg = getFriendlyBookingError(err) || t('errorUpdate')
-            toast.error(msg)
-            setEditErrors((prev) => ({...prev, end_date: msg}))
-        } finally {
-            setEditSaving(false)
-        }
-    }
 
     const [detailOpen, setDetailOpen] = React.useState(false)
     const [detailRow, setDetailRow] = React.useState<BookingRow | null>(null)
@@ -503,6 +466,10 @@ export default function AdminBookingsPage() {
                                                             const raw = r._raw || {}
                                                             const id = typeof raw.id === 'string' ? raw.id : (typeof raw._id === 'string' ? raw._id : undefined)
                                                             if (!id) return
+                                                            try {
+                                                                qc.setQueryData(['bookings', 'byId', id], raw)
+                                                            } catch {
+                                                            }
                                                             router.push(`/admin/bookings/${encodeURIComponent(id)}/edit`)
                                                         }}
                                                     >
@@ -580,18 +547,11 @@ export default function AdminBookingsPage() {
                                                         const raw = r._raw || {}
                                                         const id = typeof raw.id === 'string' ? raw.id : (typeof raw._id === 'string' ? raw._id : undefined)
                                                         if (!id) return
-                                                        setEditId(id)
-                                                        setEditForm({
-                                                            id,
-                                                            client_id: (typeof raw.client_id === 'string' ? raw.client_id : (getId(raw.client))),
-                                                            equipment_id: (typeof raw.equipment_id === 'string' ? raw.equipment_id : (getId(raw.equipment))),
-                                                            pilot_id: (typeof raw.pilot_id === 'string' ? raw.pilot_id : (getId(raw.pilot))),
-                                                            start_date: (typeof raw.start_date === 'string' ? raw.start_date : undefined),
-                                                            end_date: (typeof raw.end_date === 'string' ? raw.end_date : undefined),
-                                                            status: (typeof raw.status === 'string' ? raw.status : undefined)
-                                                        })
-                                                        setEditErrors({})
-                                                        setEditOpen(true)
+                                                        try {
+                                                            qc.setQueryData(['bookings', 'byId', id], raw)
+                                                        } catch {
+                                                        }
+                                                        router.push(`/admin/bookings/${encodeURIComponent(id)}/edit`)
                                                     }}
                                                 >
                                                     {t('buttons.edit')}
@@ -715,137 +675,6 @@ export default function AdminBookingsPage() {
                 </Portal>
             ) : null}
 
-            {/* Edit dialog */}
-            {editOpen ? (
-                <Portal>
-                    <div role="dialog" aria-modal="true"
-                         className="fixed inset-0 z-[100] flex items-center justify-center">
-                        <div className="absolute inset-0 bg-black/40" onMouseDown={() => setEditOpen(false)}/>
-                        <div className="relative z-10 w-full max-w-xl rounded-lg border bg-background p-4 shadow-xl">
-                            <div className="mb-2 text-base font-semibold">{t('editTitle')}</div>
-                            <p className="text-sm text-muted-foreground mb-4">{t('editSubtitle')}</p>
-                            <form onSubmit={handleEditSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label
-                                        className="block text-xs text-muted-foreground mb-1">{t('labels.client')}</label>
-                                    <select
-                                        className="h-9 border border-input bg-background rounded-md px-2 text-sm w-full"
-                                        value={editForm.client_id ?? ''}
-                                        onChange={(e) => setEditForm((f) => ({
-                                            ...f,
-                                            client_id: e.target.value || undefined
-                                        }))}
-                                    >
-                                        <option value="">—</option>
-                                        {usersLoading ? (
-                                            <option value="" disabled>Loading…</option>
-                                        ) : (
-                                            userOptions.map((o: any) => (
-                                                <option key={o.id} value={o.id}>{o.label}</option>
-                                            ))
-                                        )}
-                                    </select>
-                                </div>
-                                <div>
-                                    <label
-                                        className="block text-xs text-muted-foreground mb-1">{t('labels.equipment')}</label>
-                                    <select
-                                        className="h-9 border border-input bg-background rounded-md px-2 text-sm w-full"
-                                        value={editForm.equipment_id ?? ''}
-                                        onChange={(e) => setEditForm((f) => ({
-                                            ...f,
-                                            equipment_id: e.target.value || undefined
-                                        }))}
-                                    >
-                                        <option value="">—</option>
-                                        {equipmentsLoading ? (
-                                            <option value="" disabled>Loading…</option>
-                                        ) : (
-                                            equipmentOptions.map((o: any) => (
-                                                <option key={o.id} value={o.id}>{o.label}</option>
-                                            ))
-                                        )}
-                                    </select>
-                                </div>
-                                <div className="md:col-span-2">
-                                    <label
-                                        className="block text-xs text-muted-foreground mb-1">{t('labels.pilot')}</label>
-                                    <select
-                                        className="h-9 border border-input bg-background rounded-md px-2 text-sm w-full"
-                                        value={editForm.pilot_id ?? ''}
-                                        onChange={(e) => setEditForm((f) => ({
-                                            ...f,
-                                            pilot_id: e.target.value || undefined
-                                        }))}
-                                    >
-                                        <option value="">—</option>
-                                        {pilotsLoading ? (
-                                            <option value="" disabled>Loading…</option>
-                                        ) : (
-                                            pilotOptions.map((o: any) => (
-                                                <option key={o.id} value={o.id}>{o.label}</option>
-                                            ))
-                                        )}
-                                    </select>
-                                </div>
-                                <div>
-                                    <label
-                                        className="block text-xs text-muted-foreground mb-1">{t('labels.startDate')}</label>
-                                    <input type="date"
-                                           className="h-9 border border-input bg-background rounded-md px-2 text-sm w-full"
-                                           value={editForm.start_date ?? ''}
-                                           onChange={(e) => setEditForm((f) => ({
-                                               ...f,
-                                               start_date: e.target.value || undefined
-                                           }))}/>
-                                </div>
-                                <div>
-                                    <label
-                                        className="block text-xs text-muted-foreground mb-1">{t('labels.endDate')}</label>
-                                    <input type="date"
-                                           className="h-9 border border-input bg-background rounded-md px-2 text-sm w-full"
-                                           value={editForm.end_date ?? ''}
-                                           onChange={(e) => setEditForm((f) => ({
-                                               ...f,
-                                               end_date: e.target.value || undefined
-                                           }))}/>
-                                    {editErrors.end_date ?
-                                        <p className="text-xs text-red-600 mt-1">{editErrors.end_date}</p> : null}
-                                </div>
-                                <div className="md:col-span-2">
-                                    <label
-                                        className="block text-xs text-muted-foreground mb-1">{t('table.status')}</label>
-                                    <select
-                                        className="h-9 border border-input bg-background rounded-md px-2 text-sm w-full"
-                                        value={editForm.status ?? ''}
-                                        onChange={(e) => setEditForm((f) => ({
-                                            ...f,
-                                            status: e.target.value || undefined
-                                        }))}
-                                    >
-                                        <option value="">—</option>
-                                        <option value="PENDING">{t('status.PENDING')}</option>
-                                        <option value="CONFIRMED">{t('status.CONFIRMED')}</option>
-                                        <option value="CANCELED">{t('status.CANCELED')}</option>
-                                        <option value="COMPLETED">{t('status.COMPLETED')}</option>
-                                    </select>
-                                </div>
-                                <div className="col-span-1 md:col-span-2 flex items-center gap-2 mt-2 justify-end">
-                                    <button type="button" onClick={() => setEditOpen(false)}
-                                            className="inline-flex items-center h-9 rounded-md border border-input bg-background px-3 text-sm hover:bg-accent hover:text-accent-foreground">
-                                        {t('buttons.cancel')}
-                                    </button>
-                                    <button type="submit" disabled={editSaving}
-                                            className="inline-flex items-center h-9 rounded-md bg-primary text-primary-foreground px-3 disabled:opacity-50">
-                                        {editSaving ? t('buttons.saving') : t('buttons.update')}
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </Portal>
-            ) : null}
-
             {detailOpen ? (
                 <Portal>
                     <div role="dialog" aria-modal="true" className="fixed inset-0 z-[100]">
@@ -892,19 +721,12 @@ export default function AdminBookingsPage() {
                                             const raw = detailRow?._raw || {}
                                             const id = typeof raw.id === 'string' ? raw.id : (typeof raw._id === 'string' ? raw._id : undefined)
                                             if (!id) return
-                                            setEditId(id)
-                                            setEditForm({
-                                                id,
-                                                client_id: (typeof raw.client_id === 'string' ? raw.client_id : (getId(raw.client))),
-                                                equipment_id: (typeof raw.equipment_id === 'string' ? raw.equipment_id : (getId(raw.equipment))),
-                                                pilot_id: (typeof raw.pilot_id === 'string' ? raw.pilot_id : (getId(raw.pilot))),
-                                                start_date: (typeof raw.start_date === 'string' ? raw.start_date : undefined),
-                                                end_date: (typeof raw.end_date === 'string' ? raw.end_date : undefined),
-                                                status: (typeof raw.status === 'string' ? raw.status : undefined)
-                                            })
-                                            setEditErrors({})
+                                            try {
+                                                qc.setQueryData(['bookings', 'byId', id], raw)
+                                            } catch {
+                                            }
                                             setDetailOpen(false)
-                                            setEditOpen(true)
+                                            router.push(`/admin/bookings/${encodeURIComponent(id)}/edit`)
                                         }}
                                     >
                                         {t('buttons.edit')}

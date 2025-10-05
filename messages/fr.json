@@ -406,7 +406,9 @@
         "create": "Créer",
         "update": "Mettre à jour",
         "edit": "Modifier",
-        "cancel": "Annuler"
+        "cancel": "Annuler",
+        "wizard": "Assistant",
+        "filters": "Filtres"
       },
       "table": {
         "title": "Titre",
@@ -449,6 +451,56 @@
       "dialogs": {
         "typeToConfirmPlaceholder": "Tapez le titre pour confirmer",
         "typeToConfirmMessage": "Veuillez saisir exactement le titre de l'équipement pour confirmer la suppression."
+      },
+      "wizard": {
+        "title": "Assistant d’équipement",
+        "back": "Retour",
+        "next": "Suivant",
+        "backToListAria": "Retour à la liste",
+        "stepperAria": "Étapes de l’assistant",
+        "stepAria": "Étape {step}",
+        "stepHeader": "Étape {current} sur {total} — {label}",
+        "loadingOwners": "Chargement des propriétaires…",
+        "loadingPilots": "Chargement des pilotes…",
+        "noOwners": "Aucun propriétaire trouvé. Créez-en un pour continuer.",
+        "noPilots": "Aucun pilote trouvé. Créez-en un pour continuer.",
+        "selectOwnerPlaceholder": "Sélectionner un propriétaire…",
+        "selectPilotPlaceholder": "Sélectionner un pilote…",
+        "toggleClose": "Fermer",
+        "createOwnerToggleOpen": "Créer un nouveau propriétaire",
+        "createPilotToggleOpen": "Créer un nouveau pilote",
+        "user": {
+          "fullname": "Nom complet",
+          "email": "E-mail",
+          "username": "Nom d’utilisateur",
+          "password": "Mot de passe"
+        },
+        "createOwner": "Créer le propriétaire",
+        "createPilot": "Créer le pilote",
+        "creating": "Création…",
+        "labels": {
+          "equipment": "Équipement",
+          "images": "Images",
+          "pricePerDayMad": "Prix par jour (MAD)"
+        },
+        "placeholders": {
+          "titleEg": "ex : Excavatrice CAT 320",
+          "yearExample": "ex : {year}",
+          "description": "Décrivez l’équipement",
+          "priceEg": "ex : 1500",
+          "select": "Sélectionner…",
+          "selectBrand": "Sélectionner une marque…",
+          "selectBrandFirst": "Sélectionner d’abord la marque",
+          "selectModel": "Sélectionner un modèle…",
+          "selectCategory": "Sélectionner une catégorie…",
+          "selectCity": "Sélectionner une ville…"
+        },
+        "images": {
+          "instructions": "Téléversez des images pour l’équipement. Cela ouvre la page Images où vous pouvez ajouter, prévisualiser et supprimer des images.",
+          "openPage": "Ouvrir la page des images",
+          "finish": "Terminer",
+          "missingId": "Identifiant de l’équipement manquant. Revenez à l’étape 3 et créez l’équipement."
+        }
       }
     },
     "users": {
