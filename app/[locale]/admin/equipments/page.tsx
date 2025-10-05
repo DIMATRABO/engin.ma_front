@@ -774,9 +774,9 @@ export default function AdminEquipmentsPage() {
                         <label className="block text-xs text-muted-foreground mb-2">{t('labels.priceRange')}</label>
                         <DualRangeSlider
                             min={0}
-                            max={100000}
+                            max={5000}
                             step={100}
-                            value={[filters.price_min ?? 0, filters.price_max ?? 100000]}
+                            value={[filters.price_min ?? 0, filters.price_max ?? 5000]}
                             onValueChange={(vals) => setFilters((f) => ({
                                 ...f,
                                 price_min: Number(vals[0] as number),
@@ -790,7 +790,7 @@ export default function AdminEquipmentsPage() {
                         <DualRangeSlider
                             min={0}
                             max={5}
-                            step={0.1}
+                            step={1}
                             value={[filters.rating_min ?? 0, filters.rating_max ?? 5]}
                             onValueChange={(vals) => setFilters((f) => ({
                                 ...f,
@@ -828,6 +828,12 @@ export default function AdminEquipmentsPage() {
                 </div>
                 <div className="hidden md:flex items-center gap-2">
                     <button
+                        onClick={() => router.push('/admin/equipments/wizard')}
+                        className="inline-flex items-center h-10 rounded-md border border-input bg-background px-3 text-sm hover:bg-accent hover:text-accent-foreground"
+                    >
+                        {t('buttons.wizard')}
+                    </button>
+                    <button
                         onClick={() => router.push('/admin/equipments/new')}
                         className="inline-flex items-center h-10 rounded-md border border-input bg-background px-3 text-sm hover:bg-accent hover:text-accent-foreground"
                     >
@@ -842,8 +848,14 @@ export default function AdminEquipmentsPage() {
                         aria-expanded={filtersOpen}
                         aria-controls="equipment-filters-sheet"
                     >
-                        Filters{appliedCount > 0 ? <span
+                        {t('buttons.filters')}{appliedCount > 0 ? <span
                         className="ms-2 inline-flex items-center justify-center text-xs rounded-full bg-slate-900 text-white px-2 py-0.5">{appliedCount}</span> : null}
+                    </button>
+                    <button
+                        onClick={() => router.push('/admin/equipments/wizard')}
+                        className="inline-flex items-center h-10 rounded-md border border-input bg-background px-3 text-sm"
+                    >
+                        {t('buttons.wizard')}
                     </button>
                     <button
                         onClick={() => router.push('/admin/equipments/new')}
@@ -857,7 +869,7 @@ export default function AdminEquipmentsPage() {
             {/* Main grid: sidebar + content */}
             <div className="mt-4 grid grid-cols-1 lg:grid-cols-[18rem_1fr] gap-4 items-start">
                 <aside className="hidden lg:block sticky top-20 self-start rounded-lg border bg-card p-4"
-                       aria-label="Filters">
+                       aria-label={t('buttons.filters')}>
                     <FilterControls/>
                 </aside>
                 <section>
@@ -1125,10 +1137,10 @@ export default function AdminEquipmentsPage() {
                         ref={filterSheetRef}
                         className="fixed z-50 inset-y-0 start-0 w-[90vw] max-w-sm bg-white border-e shadow-lg transition-transform motion-reduce:transition-none translate-x-0"
                         tabIndex={-1}
-                        aria-label="Filters"
+                        aria-label={t('buttons.filters')}
                     >
                         <div className="h-12 px-4 border-b flex items-center justify-between">
-                            <div className="font-medium">Filters</div>
+                            <div className="font-medium">{t('buttons.filters')}</div>
                             <button onClick={() => setFiltersOpen(false)}
                                     className="h-9 w-9 inline-flex items-center justify-center rounded-md border hover:bg-slate-50"
                                     aria-label="Close filters">×

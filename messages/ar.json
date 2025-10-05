@@ -406,7 +406,9 @@
         "create": "إنشاء",
         "update": "تحديث",
         "edit": "تعديل",
-        "cancel": "إلغاء"
+        "cancel": "إلغاء",
+        "wizard": "المعالج",
+        "filters": "المرشحات"
       },
       "table": {
         "title": "العنوان",
@@ -449,6 +451,56 @@
       "dialogs": {
         "typeToConfirmPlaceholder": "اكتب العنوان للتأكيد",
         "typeToConfirmMessage": "يرجى كتابة عنوان المعدة تمامًا لتأكيد الحذف."
+      },
+      "wizard": {
+        "title": "معالج المعدات",
+        "back": "رجوع",
+        "next": "التالي",
+        "backToListAria": "الرجوع إلى القائمة",
+        "stepperAria": "خطوات المعالج",
+        "stepAria": "الخطوة {step}",
+        "stepHeader": "الخطوة {current} من {total} — {label}",
+        "loadingOwners": "تحميل المالكين…",
+        "loadingPilots": "تحميل السائقين…",
+        "noOwners": "لا يوجد ملاك. أنشئ واحداً للمتابعة.",
+        "noPilots": "لا يوجد سائقون. أنشئ واحداً للمتابعة.",
+        "selectOwnerPlaceholder": "حدد مالكاً…",
+        "selectPilotPlaceholder": "حدد سائقاً…",
+        "toggleClose": "إغلاق",
+        "createOwnerToggleOpen": "إنشاء مالك جديد",
+        "createPilotToggleOpen": "إنشاء سائق جديد",
+        "user": {
+          "fullname": "الاسم الكامل",
+          "email": "البريد الإلكتروني",
+          "username": "اسم المستخدم",
+          "password": "كلمة المرور"
+        },
+        "createOwner": "إنشاء المالك",
+        "createPilot": "إنشاء السائق",
+        "creating": "جاري الإنشاء…",
+        "labels": {
+          "equipment": "المعدة",
+          "images": "الصور",
+          "pricePerDayMad": "السعر في اليوم (درهم)"
+        },
+        "placeholders": {
+          "titleEg": "مثال: حفارة CAT 320",
+          "yearExample": "مثال: {year}",
+          "description": "صف المعدة",
+          "priceEg": "مثال: 1500",
+          "select": "اختر…",
+          "selectBrand": "اختر علامة…",
+          "selectBrandFirst": "اختر العلامة أولاً",
+          "selectModel": "اختر طرازاً…",
+          "selectCategory": "اختر فئة…",
+          "selectCity": "اختر مدينة…"
+        },
+        "images": {
+          "instructions": "قم برفع الصور للمعدة. سيتم فتح صفحة الصور حيث يمكنك الإضافة والمعاينة والحذف.",
+          "openPage": "افتح صفحة الصور",
+          "finish": "إنهاء",
+          "missingId": "معرّف المعدة مفقود. ارجع إلى الخطوة 3 وأنشئ المعدة."
+        }
       }
     },
     "users": {

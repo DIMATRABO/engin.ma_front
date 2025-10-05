@@ -1,7 +1,7 @@
 "use client"
 
 import React from 'react'
-import {useTranslations, useLocale} from 'next-intl'
+import {useLocale, useTranslations} from 'next-intl'
 import {useRouter} from '@/i18n/navigation'
 import {useQuery} from '@tanstack/react-query'
 import {refsService} from '@/services/refs'
@@ -107,7 +107,6 @@ export default function EquipmentNewPage() {
         e.preventDefault()
         if (!canSubmit) return
         const payload: Record<string, any> = {
-            id: crypto.randomUUID(),
             title: form.title.trim(),
             brand_id: form.brand_id,
             model_id: form.model_id,

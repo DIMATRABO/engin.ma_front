@@ -413,7 +413,9 @@
         "create": "Create",
         "update": "Update",
         "edit": "Edit",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "wizard": "Wizard",
+        "filters": "Filters"
       },
       "table": {
         "title": "Title",
@@ -456,6 +458,56 @@
       "dialogs": {
         "typeToConfirmPlaceholder": "Type the title to confirm",
         "typeToConfirmMessage": "Please type the equipment title exactly to confirm deletion."
+      },
+      "wizard": {
+        "title": "Equipment Wizard",
+        "back": "Back",
+        "next": "Next",
+        "backToListAria": "Back to list",
+        "stepperAria": "Wizard steps",
+        "stepAria": "Step {step}",
+        "stepHeader": "Step {current} of {total} — {label}",
+        "loadingOwners": "Loading owners…",
+        "loadingPilots": "Loading pilots…",
+        "noOwners": "No owners found. Create one to continue.",
+        "noPilots": "No pilots found. Create one to continue.",
+        "selectOwnerPlaceholder": "Select an owner…",
+        "selectPilotPlaceholder": "Select a pilot…",
+        "toggleClose": "Close",
+        "createOwnerToggleOpen": "Create new owner",
+        "createPilotToggleOpen": "Create new pilot",
+        "user": {
+          "fullname": "Full name",
+          "email": "Email",
+          "username": "Username",
+          "password": "Password"
+        },
+        "createOwner": "Create owner",
+        "createPilot": "Create pilot",
+        "creating": "Creating…",
+        "labels": {
+          "equipment": "Equipment",
+          "images": "Images",
+          "pricePerDayMad": "Price per day (MAD)"
+        },
+        "placeholders": {
+          "titleEg": "e.g., Excavator CAT 320",
+          "yearExample": "e.g., {year}",
+          "description": "Describe the equipment",
+          "priceEg": "e.g., 1500",
+          "select": "Select…",
+          "selectBrand": "Select a brand…",
+          "selectBrandFirst": "Select brand first",
+          "selectModel": "Select a model…",
+          "selectCategory": "Select a category…",
+          "selectCity": "Select a city…"
+        },
+        "images": {
+          "instructions": "Upload images for the equipment. This opens the Images page where you can add, preview and delete images.",
+          "openPage": "Open Images page",
+          "finish": "Finish",
+          "missingId": "Missing equipmentId. Go back to step 3 and create the equipment."
+        }
       }
     },
     "users": {

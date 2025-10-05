@@ -39,10 +39,9 @@ async function fetchUsers(input: {
         pageSize: input.pageSize,
         sort: input.sort,
         query: input.query ?? '',
+        // Backend expects status inside filterData; default to ACTIVE if not provided
+        filterData: {status: input.status ?? 'ACTIVE'},
     }
-    const filterData: Record<string, unknown> = {}
-    if (input.status) filterData.status = input.status
-    if (Object.keys(filterData).length > 0) payload.filterData = filterData
 
     const res = await fetch('/api/users/list', {
         method: 'POST',
