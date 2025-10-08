@@ -83,7 +83,10 @@ export default function EquipmentWizardPage() {
         password: string
         fullname: string
         email: string
-    }>({username: '', password: '', fullname: '', email: ''})
+        phoneNumber?: string
+    }>({username: '', password: '', fullname: '', email: '', phoneNumber: ''})
+    // If creating an Owner, optionally mark them also as Pilot
+    const [ownerAlsoPilot, setOwnerAlsoPilot] = React.useState(false)
     const [submittingUser, setSubmittingUser] = React.useState(false)
     const [userError, setUserError] = React.useState<string | null>(null)
 
@@ -161,6 +164,14 @@ export default function EquipmentWizardPage() {
         reloadOwners()
         reloadPilots()
     }, [reloadOwners, reloadPilots])
+
+    // Ensure pilots list is fresh when entering the Pilot step
+    React.useEffect(() => {
+        if (step === 2) {
+            // Don't await here; let the state update handle loading flags.
+            reloadPilots()
+        }
+    }, [step, reloadPilots])
 
     // Load reference lists for Step 3 (brands, models, cities, fields of activity)
     React.useEffect(() => {
@@ -243,12 +254,16 @@ export default function EquipmentWizardPage() {
         setUserError(null)
         setSubmittingUser(true)
         try {
+            const roles: Array<'ADMIN' | 'CLIENT' | 'OWNER' | 'PILOT'> =
+                role === 'OWNER' ? (ownerAlsoPilot ? ['OWNER', 'PILOT'] : ['OWNER']) : ['PILOT']
+
             const payload: SignUp = {
                 username: newUser.username,
                 password: newUser.password,
                 fullname: newUser.fullname,
                 email: newUser.email,
-                role,
+                phoneNumber: newUser.phoneNumber,
+                roles,
             }
             await usersService.create(payload)
 
@@ -268,6 +283,7 @@ export default function EquipmentWizardPage() {
                     setOwnerId(match.id)
                 }
                 setShowOwnerCreate(false)
+                setOwnerAlsoPilot(false)
                 setStep(2) // Auto-advance to Pilot step
             } else {
                 const list = await reloadPilots()
@@ -279,7 +295,7 @@ export default function EquipmentWizardPage() {
                 setStep(3) // Auto-advance to Equipment step
             }
             // Reset form
-            setNewUser({username: '', password: '', fullname: '', email: ''})
+            setNewUser({username: '', password: '', fullname: '', email: '', phoneNumber: ''})
         } catch (e: any) {
             setUserError(e?.message ?? 'Failed to create user')
         } finally {
@@ -397,7 +413,12 @@ export default function EquipmentWizardPage() {
 
                             <div className="pt-2">
                                 <button onClick={() => {
-                                    setShowOwnerCreate((v) => !v);
+                                    setShowOwnerCreate((v) => {
+                                        const next = !v
+                                        // If we're closing the form, reset the "also pilot" checkbox
+                                        if (!next) setOwnerAlsoPilot(false)
+                                        return next
+                                    })
                                     setUserError(null);
                                 }}
                                         className="inline-flex items-center h-9 rounded-md border border-input bg-background px-3 text-sm">
@@ -422,6 +443,22 @@ export default function EquipmentWizardPage() {
                                             type="email"
                                             value={newUser.email}
                                             onChange={(e) => setNewUser((u) => ({...u, email: e.target.value}))}/>
+                                    </div>
+                                    <div>
+                                        <label
+                                            className="block text-sm mb-1">{t('wizard.user.phone') || 'Phone'}</label>
+                                        <input
+                                            className="w-full h-9 border border-input bg-background rounded-md px-2 text-sm"
+                                            type="tel"
+                                            value={newUser.phoneNumber}
+                                            onChange={(e) => setNewUser((u) => ({...u, phoneNumber: e.target.value}))}/>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <input id="also_pilot" type="checkbox" className="h-4 w-4"
+                                               checked={ownerAlsoPilot}
+                                               onChange={(e) => setOwnerAlsoPilot(e.target.checked)}/>
+                                        <label htmlFor="also_pilot"
+                                               className="text-sm">{t('wizard.user.alsoPilot')}</label>
                                     </div>
                                     <div className="grid grid-cols-2 gap-2">
                                         <div>
@@ -518,6 +555,15 @@ export default function EquipmentWizardPage() {
                                             type="email"
                                             value={newUser.email}
                                             onChange={(e) => setNewUser((u) => ({...u, email: e.target.value}))}/>
+                                    </div>
+                                    <div>
+                                        <label
+                                            className="block text-sm mb-1">{t('wizard.user.phone') || 'Phone'}</label>
+                                        <input
+                                            className="w-full h-9 border border-input bg-background rounded-md px-2 text-sm"
+                                            type="tel"
+                                            value={newUser.phoneNumber}
+                                            onChange={(e) => setNewUser((u) => ({...u, phoneNumber: e.target.value}))}/>
                                     </div>
                                     <div className="grid grid-cols-2 gap-2">
                                         <div>
