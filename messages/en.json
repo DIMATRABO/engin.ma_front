@@ -480,6 +480,7 @@
           "fullname": "Full name",
           "email": "Email",
           "phone": "Phone",
+          "alsoPilot": "Also create as pilot",
           "username": "Username",
           "password": "Password"
         },
