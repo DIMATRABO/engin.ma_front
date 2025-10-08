@@ -83,7 +83,8 @@ export default function EquipmentWizardPage() {
         password: string
         fullname: string
         email: string
-    }>({username: '', password: '', fullname: '', email: ''})
+        phoneNumber?: string
+    }>({username: '', password: '', fullname: '', email: '', phoneNumber: ''})
     const [submittingUser, setSubmittingUser] = React.useState(false)
     const [userError, setUserError] = React.useState<string | null>(null)
 
@@ -248,6 +249,7 @@ export default function EquipmentWizardPage() {
                 password: newUser.password,
                 fullname: newUser.fullname,
                 email: newUser.email,
+                phoneNumber: newUser.phoneNumber,
                 role,
             }
             await usersService.create(payload)
@@ -279,7 +281,7 @@ export default function EquipmentWizardPage() {
                 setStep(3) // Auto-advance to Equipment step
             }
             // Reset form
-            setNewUser({username: '', password: '', fullname: '', email: ''})
+            setNewUser({username: '', password: '', fullname: '', email: '', phoneNumber: ''})
         } catch (e: any) {
             setUserError(e?.message ?? 'Failed to create user')
         } finally {
@@ -423,6 +425,15 @@ export default function EquipmentWizardPage() {
                                             value={newUser.email}
                                             onChange={(e) => setNewUser((u) => ({...u, email: e.target.value}))}/>
                                     </div>
+                                    <div>
+                                        <label
+                                            className="block text-sm mb-1">{t('wizard.user.phone') || 'Phone'}</label>
+                                        <input
+                                            className="w-full h-9 border border-input bg-background rounded-md px-2 text-sm"
+                                            type="tel"
+                                            value={newUser.phoneNumber}
+                                            onChange={(e) => setNewUser((u) => ({...u, phoneNumber: e.target.value}))}/>
+                                    </div>
                                     <div className="grid grid-cols-2 gap-2">
                                         <div>
                                             <label className="block text-sm mb-1">{t('wizard.user.username')}</label>
@@ -518,6 +529,15 @@ export default function EquipmentWizardPage() {
                                             type="email"
                                             value={newUser.email}
                                             onChange={(e) => setNewUser((u) => ({...u, email: e.target.value}))}/>
+                                    </div>
+                                    <div>
+                                        <label
+                                            className="block text-sm mb-1">{t('wizard.user.phone') || 'Phone'}</label>
+                                        <input
+                                            className="w-full h-9 border border-input bg-background rounded-md px-2 text-sm"
+                                            type="tel"
+                                            value={newUser.phoneNumber}
+                                            onChange={(e) => setNewUser((u) => ({...u, phoneNumber: e.target.value}))}/>
                                     </div>
                                     <div className="grid grid-cols-2 gap-2">
                                         <div>

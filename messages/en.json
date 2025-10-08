@@ -479,6 +479,7 @@
         "user": {
           "fullname": "Full name",
           "email": "Email",
+          "phone": "Phone",
           "username": "Username",
           "password": "Password"
         },

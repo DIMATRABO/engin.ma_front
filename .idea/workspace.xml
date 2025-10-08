@@ -5,28 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="687d8bb4-2ff7-463e-b1d7-4c71a56e2b80" name="Changes" comment="implement responsiveness">
-      <change afterPath="$PROJECT_DIR$/ADMIN_PHASES.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/services/owners.ts" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/swagger.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/types/project-entities.types.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/[locale]/admin/bookings/[id]/edit/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/[locale]/admin/bookings/[id]/edit/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/[locale]/admin/bookings/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/[locale]/admin/bookings/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/[locale]/admin/equipments/new/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/[locale]/admin/equipments/new/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/[locale]/admin/equipments/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/[locale]/admin/equipments/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/[locale]/admin/users/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/[locale]/admin/users/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/brands/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/brands/route.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/cities/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/cities/route.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/foa/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/foa/route.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/models/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/models/route.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/[locale]/admin/equipments/wizard/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/[locale]/admin/equipments/wizard/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/messages/ar.json" beforeDir="false" afterPath="$PROJECT_DIR$/messages/ar.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/messages/en.json" beforeDir="false" afterPath="$PROJECT_DIR$/messages/en.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/messages/fr.json" beforeDir="false" afterPath="$PROJECT_DIR$/messages/fr.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/bookings.ts" beforeDir="false" afterPath="$PROJECT_DIR$/services/bookings.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/equipments.ts" beforeDir="false" afterPath="$PROJECT_DIR$/services/equipments.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/refs.ts" beforeDir="false" afterPath="$PROJECT_DIR$/services/refs.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/users.ts" beforeDir="false" afterPath="$PROJECT_DIR$/services/users.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/api.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,7 +48,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/DIMATRABO/engin.ma_front.git&quot;,
-    &quot;accountId&quot;: &quot;12fec51c-276a-47b7-8bfb-7670e8533513&quot;
+    &quot;accountId&quot;: &quot;5252a760-b7e6-468c-8ab6-602844ec98b3&quot;
   }
 }</component>
   <component name="ProjectColorInfo">{
@@ -79,33 +64,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;admin-panel&quot;,
-    &quot;js.debugger.nextJs.config.created.client&quot;: &quot;true&quot;,
-    &quot;js.debugger.nextJs.config.created.server&quot;: &quot;true&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/adnan/WebstormProjects/engin.ma_front&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_interpreter_path&quot;: &quot;/home/adnan/.nvm/versions/node/v22.11.0/bin/node&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;npm.Next.js: server-side.executor&quot;: &quot;Run&quot;,
-    &quot;npm.build.executor&quot;: &quot;Run&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;junie.application.models&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/home/adnan/WebstormProjects/engin.ma_front/node_modules/typescript/lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "main",
+    "js.debugger.nextJs.config.created.client": "true",
+    "js.debugger.nextJs.config.created.server": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "/home/adnan/WebstormProjects/engin.ma_front",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_interpreter_path": "node",
+    "nodejs_package_manager_path": "npm",
+    "npm.Next.js: server-side.executor": "Run",
+    "npm.build.executor": "Run",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "to.speed.mode.migration.done": "true",
+    "ts.external.directory.path": "C:\\development\\engin.ma_front\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
@@ -121,7 +106,7 @@
       <scripts>
         <script value="dev" />
       </scripts>
-      <node-interpreter value="$USER_HOME$/.nvm/versions/node/v22.11.0/bin/node" />
+      <node-interpreter value="node" />
       <package-manager value="npm" />
       <envs />
       <method v="2" />
@@ -136,6 +121,11 @@
       <envs />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="JavaScript Debug.Next.js: debug client-side" />
+      <item itemvalue="npm.Next.js: server-side" />
+      <item itemvalue="npm.build" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="npm.build" />
@@ -199,6 +189,8 @@
       <workItem from="1759598912730" duration="167000" />
       <workItem from="1759599096495" duration="2795000" />
       <workItem from="1759661262433" duration="18166000" />
+      <workItem from="1759901247997" duration="699000" />
+      <workItem from="1759901975143" duration="1304000" />
     </task>
     <task id="LOCAL-00001" summary="add webstorm stuff">
       <option name="closed" value="true" />
