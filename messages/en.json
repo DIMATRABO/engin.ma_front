@@ -243,6 +243,46 @@
         "question": "How long does it take to start renting my equipment?",
         "answer": "After verification is complete (typically 2-3 business days), you can list immediately. Most owners see their first booking within a week."
       }
+    },
+    "benefits": {
+      "title": "Benefits of Enginchantier.ma",
+      "subtitle": "Lower costs, higher utilization, and secure transactions for the heavy equipment market",
+      "lowerCosts": {
+        "title": "Lower Costs",
+        "description": "Cut middlemen fees and get transparent pricing directly from owners"
+      },
+      "higherUtilization": {
+        "title": "Higher Utilization",
+        "description": "Owners keep machines working more days with better demand matching"
+      },
+      "secureEscrow": {
+        "title": "Secure Escrow",
+        "description": "Payments are protected in escrow until equipment is delivered and accepted"
+      }
+    },
+    "testimonials": {
+      "title": "What our early users say",
+      "subtitle": "Real stories from owners and renters using our beta",
+      "testimonial1": {
+        "quote": "Listed my fleet in minutes and got my first booking the same week.",
+        "author": "Youssef B.",
+        "role": "Equipment owner, Casablanca"
+      },
+      "testimonial2": {
+        "quote": "Prices are clear and I can message owners directly—no surprises.",
+        "author": "Salma K.",
+        "role": "Project manager, Rabat"
+      },
+      "testimonial3": {
+        "quote": "Escrow gave both sides confidence to proceed on a tight timeline.",
+        "author": "Omar A.",
+        "role": "Site supervisor, Tangier"
+      }
+    },
+    "stats": {
+      "machines": "Verified machines",
+      "cities": "Cities covered",
+      "users": "Professionals joined"
     }
   },
   "contactLanding": {
@@ -394,7 +434,8 @@
         "ratingRange": "Rating range",
         "all": "All",
         "allOwners": "All owners",
-        "allPilots": "All pilots"
+        "allPilots": "All pilots",
+        "multiSelectHint": "Hold Ctrl/Cmd to select multiple"
       },
       "helpers": {
         "foaHint": "Select the main activity this equipment is used for."
@@ -440,7 +481,8 @@
         "TRANSPORT": "Transport",
         "LIFTING": "Lifting",
         "ROADWORKS": "Roadworks",
-        "AGRICULTURE": "Agriculture"
+        "AGRICULTURE": "Agriculture",
+        "CHANTIER": "Construction"
       },
       "created": "Equipment created",
       "updated": "Equipment updated",

@@ -4,29 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="687d8bb4-2ff7-463e-b1d7-4c71a56e2b80" name="Changes" comment="implement responsiveness">
+    <list default="true" id="687d8bb4-2ff7-463e-b1d7-4c71a56e2b80" name="Changes" comment="implement wizard">
       <change afterPath="$PROJECT_DIR$/ADMIN_PHASES.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/services/owners.ts" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/swagger.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/types/project-entities.types.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/[locale]/admin/bookings/[id]/edit/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/[locale]/admin/bookings/[id]/edit/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/[locale]/admin/bookings/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/[locale]/admin/bookings/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/[locale]/admin/equipments/new/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/[locale]/admin/equipments/new/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/[locale]/admin/equipments/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/[locale]/admin/equipments/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/[locale]/admin/users/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/[locale]/admin/users/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/brands/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/brands/route.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/api/cities/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/cities/route.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/foa/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/foa/route.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/models/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/models/route.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/messages/ar.json" beforeDir="false" afterPath="$PROJECT_DIR$/messages/ar.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/messages/en.json" beforeDir="false" afterPath="$PROJECT_DIR$/messages/en.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/messages/fr.json" beforeDir="false" afterPath="$PROJECT_DIR$/messages/fr.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/bookings.ts" beforeDir="false" afterPath="$PROJECT_DIR$/services/bookings.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/equipments.ts" beforeDir="false" afterPath="$PROJECT_DIR$/services/equipments.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/refs.ts" beforeDir="false" afterPath="$PROJECT_DIR$/services/refs.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/users.ts" beforeDir="false" afterPath="$PROJECT_DIR$/services/users.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/api.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -198,7 +184,8 @@
       <workItem from="1759598556900" duration="66000" />
       <workItem from="1759598912730" duration="167000" />
       <workItem from="1759599096495" duration="2795000" />
-      <workItem from="1759661262433" duration="18166000" />
+      <workItem from="1759661262433" duration="18268000" />
+      <workItem from="1759999878854" duration="5569000" />
     </task>
     <task id="LOCAL-00001" summary="add webstorm stuff">
       <option name="closed" value="true" />
@@ -256,7 +243,15 @@
       <option name="project" value="LOCAL" />
       <updated>1759090388855</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="implement wizard">
+      <option name="closed" value="true" />
+      <created>1759688341546</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1759688341546</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -283,7 +278,8 @@
     <MESSAGE value="implement admin" />
     <MESSAGE value="fix build" />
     <MESSAGE value="implement responsiveness" />
-    <option name="LAST_COMMIT_MESSAGE" value="implement responsiveness" />
+    <MESSAGE value="implement wizard" />
+    <option name="LAST_COMMIT_MESSAGE" value="implement wizard" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="NON_MODAL_COMMIT_POSTPONE_SLOW_CHECKS" value="false" />
