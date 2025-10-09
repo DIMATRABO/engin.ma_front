@@ -236,6 +236,46 @@
       "successMessage": "Merci de rejoindre notre liste d'attente bêta. Nous vous préviendrons dès que nous lancerons.",
       "closeButton": "Fermer",
       "errorMessage": "Quelque chose s'est mal passé. Veuillez réessayer."
+    },
+    "benefits": {
+      "title": "Avantages d'Enginchantier.ma",
+      "subtitle": "Réduisez les coûts, améliorez l'utilisation et sécurisez les transactions sur le marché des engins",
+      "lowerCosts": {
+        "title": "Coûts réduits",
+        "description": "Diminuez les frais d'intermédiaire et profitez de prix transparents directement auprès des propriétaires"
+      },
+      "higherUtilization": {
+        "title": "Meilleure utilisation",
+        "description": "Les propriétaires font travailler les machines plus de jours grâce à une meilleure mise en relation de la demande"
+      },
+      "secureEscrow": {
+        "title": "Séquestre sécurisé",
+        "description": "Les paiements sont protégés en séquestre jusqu'à la livraison et l'acceptation de l'équipement"
+      }
+    },
+    "testimonials": {
+      "title": "Ce que disent nos premiers utilisateurs",
+      "subtitle": "Témoignages réels de propriétaires et de locataires utilisant notre bêta",
+      "testimonial1": {
+        "quote": "J'ai listé mon parc en quelques minutes et obtenu ma première réservation la même semaine.",
+        "author": "Youssef B.",
+        "role": "Propriétaire d'équipement, Casablanca"
+      },
+      "testimonial2": {
+        "quote": "Les prix sont clairs et je peux échanger directement avec les propriétaires—aucune surprise.",
+        "author": "Salma K.",
+        "role": "Cheffe de projet, Rabat"
+      },
+      "testimonial3": {
+        "quote": "Le séquestre a rassuré les deux parties pour avancer avec un délai serré.",
+        "author": "Omar A.",
+        "role": "Chef de chantier, Tanger"
+      }
+    },
+    "stats": {
+      "machines": "Machines vérifiées",
+      "cities": "Villes couvertes",
+      "users": "Professionnels inscrits"
     }
   },
   "contactLanding": {
@@ -387,7 +427,8 @@
         "ratingRange": "Plage de note",
         "all": "Tous",
         "allOwners": "Tous les propriétaires",
-        "allPilots": "Tous les pilotes"
+        "allPilots": "Tous les pilotes",
+        "multiSelectHint": "Maintenez Ctrl/Cmd pour sélectionner plusieurs éléments"
       },
       "helpers": {
         "foaHint": "Sélectionnez l'activité principale pour laquelle cet équipement est utilisé."
@@ -433,7 +474,8 @@
         "TRANSPORT": "Transport",
         "LIFTING": "Levage",
         "ROADWORKS": "Travaux routiers",
-        "AGRICULTURE": "Agriculture"
+        "AGRICULTURE": "Agriculture",
+        "CHANTIER": "Chantier"
       },
       "created": "Équipement créé",
       "updated": "Équipement mis à jour",

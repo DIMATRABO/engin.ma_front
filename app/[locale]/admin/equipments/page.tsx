@@ -52,6 +52,8 @@ type Filters = {
     pilot_id?: string
     city_id?: string
     fields_of_activity?: string // comma-separated list in UI, will be split
+    // NEW: support selecting multiple categories
+    category_ids?: string[]
     model_year_min?: number
     model_year_max?: number
     construction_year_min?: number
@@ -73,6 +75,8 @@ async function fetchEquipments(input: {
     pilot_id?: string
     city_id?: string
     fields_of_activity?: string
+    // NEW: selected categories
+    category_ids?: string[]
     model_year_min?: number
     model_year_max?: number
     construction_year_min?: number
@@ -90,6 +94,8 @@ async function fetchEquipments(input: {
         ...(input.owner_id ? {owner_id: input.owner_id} : {}),
         ...(input.pilot_id ? {pilot_id: input.pilot_id} : {}),
         ...(input.city_id ? {city_ids: [input.city_id]} : {}),
+        // NEW: pass category_ids when present
+        ...(Array.isArray(input.category_ids) && input.category_ids.length > 0 ? {category_ids: input.category_ids} : {}),
         ...(() => {
             const arr = (input.fields_of_activity || '')
                 .split(',')
@@ -167,6 +173,108 @@ function getName(val: unknown): string {
 function getUserLabel(u?: UserItem): string {
     if (!u) return '-'
     return u.name || u.username || u.email || '-'
+}
+
+// Small mobile-friendly category picker component
+function MobileCategoryPicker({
+                                  label,
+                                  categories,
+                                  selectedIds,
+                                  onApply,
+                                  getRefName,
+                                  t,
+                              }: {
+    label: string;
+    categories: Array<{ id?: string; _id?: string; name?: string }>;
+    selectedIds: string[];
+    onApply: (ids: string[] | undefined) => void;
+    getRefName: (it: any) => string;
+    t: (key: string) => string;
+}) {
+    const [open, setOpen] = React.useState(false)
+    const [temp, setTemp] = React.useState<string[]>(selectedIds)
+
+    React.useEffect(() => {
+        if (open) setTemp(selectedIds)
+    }, [open, selectedIds])
+
+    const selectedNames = categories
+        .filter((c) => selectedIds.includes((c.id ?? c._id ?? '') as string))
+        .map((c) => getRefName(c))
+    const summary = selectedNames.length === 0
+        ? t('labels.all')
+        : selectedNames.length === 1
+            ? selectedNames[0]
+            : `${selectedNames.length} selected`
+
+    return (
+        <div className="md:hidden">
+            <label className="block text-xs text-muted-foreground mb-1">{label}</label>
+            <button
+                type="button"
+                onClick={() => setOpen(true)}
+                className="h-10 w-full border border-input bg-background rounded-md px-3 text-sm text-left"
+                aria-haspopup="dialog"
+                aria-expanded={open}
+            >
+                {summary}
+            </button>
+            {open && (
+                <Portal>
+                    <div role="dialog" aria-modal="true" className="fixed inset-0 z-[100]">
+                        <div className="absolute inset-0 bg-black/40" onMouseDown={() => setOpen(false)}/>
+                        <div
+                            className="absolute inset-x-0 bottom-0 bg-white rounded-t-lg shadow-xl border-t p-4 max-h-[80svh] overflow-auto">
+                            <div className="flex items-center justify-between mb-2">
+                                <div className="font-medium">{label}</div>
+                                <button
+                                    onClick={() => setOpen(false)}
+                                    className="h-8 px-2 text-sm rounded border"
+                                >{t('buttons.cancel')}</button>
+                            </div>
+                            <div className="space-y-2">
+                                {categories.map((c, idx) => {
+                                    const id = (c.id ?? c._id ?? '') as string
+                                    const checked = temp.includes(id)
+                                    return (
+                                        <label key={id || idx} className="flex items-center gap-2 py-1">
+                                            <input
+                                                type="checkbox"
+                                                className="size-4"
+                                                checked={checked}
+                                                onChange={(e) => {
+                                                    const next = e.target.checked
+                                                        ? Array.from(new Set([...temp, id]))
+                                                        : temp.filter((v) => v !== id)
+                                                    setTemp(next)
+                                                }}
+                                            />
+                                            <span className="text-sm">{getRefName(c)}</span>
+                                        </label>
+                                    )
+                                })}
+                            </div>
+                            <div className="mt-4 flex items-center justify-end gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => setOpen(false)}
+                                    className="h-9 rounded-md border border-input bg-background px-3 text-sm"
+                                >{t('buttons.cancel')}</button>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        onApply(temp.length ? temp : undefined)
+                                        setOpen(false)
+                                    }}
+                                    className="h-9 rounded-md bg-primary text-primary-foreground px-3 text-sm"
+                                >{t('buttons.apply')}</button>
+                            </div>
+                        </div>
+                    </div>
+                </Portal>
+            )}
+        </div>
+    )
 }
 
 export default function AdminEquipmentsPage() {
@@ -323,6 +431,8 @@ export default function AdminEquipmentsPage() {
                 pilot_id: applied.pilot_id,
                 city_id: applied.city_id,
                 fields_of_activity: applied.fields_of_activity,
+                // NEW: pass selected categories
+                category_ids: applied.category_ids,
                 model_year_min: applied.model_year_min,
                 model_year_max: applied.model_year_max,
                 construction_year_min: applied.construction_year_min,
@@ -596,6 +706,8 @@ export default function AdminEquipmentsPage() {
         if (f.owner_id) n++
         if (f.pilot_id) n++
         if (f.fields_of_activity) n++
+        // NEW: count categories
+        if (Array.isArray(f.category_ids) && f.category_ids.length > 0) n++
         if (f.model_year_min != null && f.model_year_max != null) n++
         if (f.construction_year_min != null && f.construction_year_max != null) n++
         if (f.customs_clearance_year_min != null && f.customs_clearance_year_max != null) n++
@@ -650,6 +762,7 @@ export default function AdminEquipmentsPage() {
     function FilterControls({onApplied}: { onApplied?: () => void }) {
         return (
             <div className="flex flex-col gap-3">
+                {/* Search */}
                 <div>
                     <label className="block text-xs text-muted-foreground mb-1">{t('labels.search')}</label>
                     <input
@@ -667,6 +780,7 @@ export default function AdminEquipmentsPage() {
                         }}
                     />
                 </div>
+                {/* City */}
                 <div>
                     <label className="block text-xs text-muted-foreground mb-1">{t('labels.city')}</label>
                     <select
@@ -681,6 +795,7 @@ export default function AdminEquipmentsPage() {
                         ))}
                     </select>
                 </div>
+                {/* Owner */}
                 <div>
                     <label className="block text-xs text-muted-foreground mb-1">{t('labels.owner')}</label>
                     <select
@@ -696,6 +811,7 @@ export default function AdminEquipmentsPage() {
                         })}
                     </select>
                 </div>
+                {/* Pilot */}
                 <div>
                     <label className="block text-xs text-muted-foreground mb-1">{t('labels.pilot')}</label>
                     <select
@@ -711,6 +827,7 @@ export default function AdminEquipmentsPage() {
                         })}
                     </select>
                 </div>
+                {/* FOA */}
                 <div>
                     <label className="block text-xs text-muted-foreground mb-1">{t('labels.fieldsOfActivity')}</label>
                     <select
@@ -722,6 +839,39 @@ export default function AdminEquipmentsPage() {
                         {foaList.map((val) => (<option key={val} value={val}>{tFoa(val)}</option>))}
                     </select>
                 </div>
+
+                {/* Category (desktop multi-select) */}
+                <div className="hidden md:block">
+                    <label className="block text-xs text-muted-foreground mb-1">{t('labels.category')}</label>
+                    <select
+                        multiple
+                        className="h-28 w-full border border-input bg-background rounded-md px-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        value={filters.category_ids ?? []}
+                        onChange={(e) => {
+                            const values = Array.from(e.target.selectedOptions).map((o) => o.value).filter(Boolean)
+                            setFilters((f) => ({...f, category_ids: values.length > 0 ? values : undefined}))
+                        }}
+                    >
+                        {categories.map((c, idx) => (
+                            <option key={`${c.id ?? c._id ?? idx}`} value={c.id ?? c._id ?? ''}>
+                                {getRefName(c)}
+                            </option>
+                        ))}
+                    </select>
+                    <p className="text-[11px] text-muted-foreground mt-1">{t('labels.multiSelectHint') || 'Hold Ctrl/Cmd to select multiple'}</p>
+                </div>
+
+                {/* Category (mobile-friendly picker) */}
+                <MobileCategoryPicker
+                    label={t('labels.category')}
+                    categories={categories as any}
+                    selectedIds={(filters.category_ids ?? []) as string[]}
+                    onApply={(ids) => setFilters((f) => ({...f, category_ids: ids}))}
+                    getRefName={getRefName}
+                    t={t as any}
+                />
+
+                {/* Ranges */}
                 <div className="flex flex-col gap-4">
                     <div>
                         <label className="block text-xs text-muted-foreground mb-2">{t('labels.modelYearRange')}</label>
@@ -801,6 +951,7 @@ export default function AdminEquipmentsPage() {
                         />
                     </div>
                 </div>
+                {/* Actions */}
                 <div className="flex items-center gap-2 pt-2">
                     <button onClick={() => {
                         applyFilters();
