@@ -14,7 +14,8 @@ export type SignUp = {
     birthdate?: string
     address?: string
     phoneNumber?: string
-    role: 'ADMIN' | 'CLIENT' | 'OWNER' | 'PILOT'
+    // API expects an array of roles (required by swagger). Use the specific union for elements.
+    roles: Array<'ADMIN' | 'CLIENT' | 'OWNER' | 'PILOT'>
 }
 
 export const usersService = {
